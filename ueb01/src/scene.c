@@ -32,7 +32,7 @@ static void drawStick(GLfloat x, GLfloat y) {
 
     glPushMatrix();
     {
-        glTranslatef(x, y, 0.0f);
+        glTranslatef(x, y, ZERO);
         glScalef(0.5f, BAR_THICKNESS, 1.0f);
         drawSquare();
     }
@@ -50,14 +50,11 @@ static void drawBorder(GLfloat posX, GLfloat posY, int showTop) {
     glPushMatrix();
     {
         if (showTop) {
-            // Obere Bar
-            glTranslatef(posX, posY, 0.0f);
-            glScalef((posY + BAR_THICKNESS) * 2 + (BAR_THICKNESS * 2) - OFFSET, BAR_THICKNESS, 1.0f);
+            glTranslatef(posX, posY, ZERO);
+            glScalef(BAR_WIDTH, BAR_HEIGHT, 1.0f);
         } else {
-            glTranslatef(posX, -(2 * OFFSET), 0.0f);
-
-            glScalef(BAR_THICKNESS, BAR_HEIGHT - (BAR_THICKNESS * 2) + OFFSET, 1.0f);
-            printf("a");
+            glTranslatef(posX, posY, ZERO);
+            glScalef(BAR_HEIGHT, BAR_WIDTH, 1.0f);
         }
 
         drawSquare();
@@ -74,7 +71,7 @@ int
 initScene(void) {
     /* Setzen der Farbattribute */
     /* Hintergrundfarbe */
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(ZERO, ZERO, ZERO, ZERO);
     /* Zeichenfarbe */
     glColor3f(1.0f, 1.0f, 1.0f);
 
@@ -91,11 +88,10 @@ initScene(void) {
 void drawScene(void) {
 
     /* Rahmen zeichnen */
-    drawBorder(0.0f, TOP_BAR, 1);
-    drawBorder(LEFT_BAR, TOP_BAR / 10, 0);
-    drawBorder(RIGHT_BAR, TOP_BAR / 10, 0);
-    drawStick(0.0f, -0.9f);
+    drawBorder(BAR_X_OFFSET, ZERO, 1);
+    drawBorder(-BAR_X_OFFSET, ZERO, 1);
+    drawBorder(ZERO, BAR_X_OFFSET - BAR_WIDTH, 0);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+    drawStick(ZERO, -BAR_X_OFFSET);
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
