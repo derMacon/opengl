@@ -1,6 +1,7 @@
 
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <GL/glut.h>
 #include "scene.h"
 #include "debug.h"
 
@@ -38,10 +39,11 @@ static void drawBorder(GLfloat posX, GLfloat posY, int showTop) {
 
         if (showTop) {
             // Obere Bar
-            glScalef(TOP_BAR, BAR_THICKNESS, 1.0f);
+            glScalef((posY + BAR_THICKNESS) * 2 + (BAR_THICKNESS * 2) - OFFSET, BAR_THICKNESS, 1.0f);
+            printf("a");
         } else {
             // Wie breit, wie hoch, wie Z-Achse lel
-            glScalef(BAR_THICKNESS, BAR_HEIGHT, 1.0f);
+            glScalef(BAR_THICKNESS, BAR_HEIGHT - (BAR_THICKNESS * 2) + OFFSET, 1.0f);
         }
 
         drawSquare();
@@ -55,19 +57,18 @@ static void drawBorder(GLfloat posX, GLfloat posY, int showTop) {
  * @return Rueckgabewert: im Fehlerfall 0, sonst 1.
  */
 int
-initScene (void)
-{
+initScene(void) {
     /* Setzen der Farbattribute */
     /* Hintergrundfarbe */
-    glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     /* Zeichenfarbe */
-    glColor3f (1.0f, 1.0f, 1.0f);
+    glColor3f(1.0f, 1.0f, 1.0f);
 
     /* Groese von Punkten */
-    glPointSize (4.0f);
+    glPointSize(4.0f);
 
     /* Breite von Linien */
-    glLineWidth (2.0f);
+    glLineWidth(2.0f);
 
     /* Alles in Ordnung? */
     return (GLGETERROR == GL_NO_ERROR);
@@ -76,11 +77,11 @@ initScene (void)
 void drawScene(void) {
 
     /* Rahmen zeichnen */
-    drawBorder(LEFT_BAR, 0.0f, 0);
-    drawBorder(RIGHT_BAR, 0.0f, 0);
+    drawBorder(0.0f, TOP_BAR, 1);
+    drawBorder(LEFT_BAR, TOP_BAR / 10, 0);
+    drawBorder(RIGHT_BAR, TOP_BAR / 10, 0);
 
-    drawBorder(0.0f, (BAR_HEIGHT / 2) - (BAR_THICKNESS / 2), 1);
-
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBegin(GL_POLYGON);
     {
         glColor3f(1.0f, 0.0f, 0.0f);
