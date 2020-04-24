@@ -25,7 +25,7 @@ $(PROG): directories .depend $(OBJS)
 	@echo "\e[1;34mBuilding" $@ "\e[0m"
 	$(CC) $(CCFLAGS) -o $(BUILDDIR)$(PROG) $(OBJS) $(LIBS)
 	@echo "\e[1;34mDONE Creating" $@ "in" $(BUILDDIR)$(PROG)"\e[0m"
-	
+
 
 debug: CCFLAGS += -g
 debug: $(PROG)
