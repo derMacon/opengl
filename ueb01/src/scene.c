@@ -26,6 +26,20 @@ static void drawSquare(void) {
     glEnd();
 }
 
+
+static void drawStick(GLfloat x, GLfloat y) {
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    glPushMatrix();
+    {
+        glTranslatef(x, y, 0.0f);
+        glScalef(0.5f, BAR_THICKNESS, 1.0f);
+        drawSquare();
+    }
+
+    glPopMatrix();
+}
+
 /**
  * Zeichnet einen Teil der Spielfeldbegrenzung.
  *
@@ -35,14 +49,15 @@ static void drawBorder(GLfloat posX, GLfloat posY, int showTop) {
 
     glPushMatrix();
     {
-        glTranslatef(posX, posY, 0.0f);
-
         if (showTop) {
             // Obere Bar
+            glTranslatef(posX, posY, 0.0f);
             glScalef((posY + BAR_THICKNESS) * 2 + (BAR_THICKNESS * 2) - OFFSET, BAR_THICKNESS, 1.0f);
         } else {
-            // Wie breit, wie hoch, wie Z-Achse lel
+            glTranslatef(posX, -(2 * OFFSET), 0.0f);
+
             glScalef(BAR_THICKNESS, BAR_HEIGHT - (BAR_THICKNESS * 2) + OFFSET, 1.0f);
+            printf("a");
         }
 
         drawSquare();
@@ -79,21 +94,8 @@ void drawScene(void) {
     drawBorder(0.0f, TOP_BAR, 1);
     drawBorder(LEFT_BAR, TOP_BAR / 10, 0);
     drawBorder(RIGHT_BAR, TOP_BAR / 10, 0);
+    drawStick(0.0f, -0.9f);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glBegin(GL_POLYGON);
-    {
-        glColor3f(1.0f, 0.0f, 0.0f);
-        glVertex2f(0.25f, 0.5f);
 
-        glColor3f(0.0f, 1.0f, 0.0f);
-        glVertex2f(-0.25f, 0.5f);
-
-        glColor3f(0.0f, 0.0f, 1.0f);
-        glVertex2f(-0.25f, -0.5f);
-
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glVertex2f(0.25f, -0.5f);
-    }
-    glEnd();
 }
