@@ -40,7 +40,6 @@ static void drawBorder(GLfloat posX, GLfloat posY, int showTop) {
         if (showTop) {
             // Obere Bar
             glScalef((posY + BAR_THICKNESS) * 2 + (BAR_THICKNESS * 2) - OFFSET, BAR_THICKNESS, 1.0f);
-            printf("a");
         } else {
             // Wie breit, wie hoch, wie Z-Achse lel
             glScalef(BAR_THICKNESS, BAR_HEIGHT - (BAR_THICKNESS * 2) + OFFSET, 1.0f);
