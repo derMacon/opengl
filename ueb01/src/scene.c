@@ -1,8 +1,10 @@
 
 #include <GL/gl.h>
+#include <GL/glut.h>
 #include "scene.h"
 #include "debug.h"
 #include "logic.h"
+#include "math.h"
 #include "variables.h"
 
 /**
@@ -24,6 +26,39 @@ static void drawSquare(void) {
         glVertex2f(-0.5, 0.5);
     }
     glEnd();
+}
+
+static void drawRound(void) {
+
+    float radius = 1.0f;
+
+    // TODO: WTF is delta theta
+    float delta_theta = 0.01f;
+
+    glBegin(GL_POLYGON);
+
+    // TODO: Erklaerung hierfuer finden xD
+    for (float angle = 0; angle < 2 * M_PI; angle += delta_theta) {
+        glVertex3f(radius * cos(angle), radius * sin(angle), 0);
+    }
+
+    glEnd();
+}
+
+static void drawBall(const CGPoint2f coords) {
+    GLfloat x = coords[0];
+    GLfloat y = coords[1];
+
+    glColor3f(1.0f, 0.0f, .0f);
+
+    glPushMatrix();
+    {
+        glTranslatef(x, y, ZERO);
+        glScalef(BALL_WIDTH, BALL_WIDTH, 1.0f);
+        drawRound();
+    }
+
+    glPopMatrix();
 }
 
 static void drawStick(const CGPoint2f coords) {
@@ -91,13 +126,16 @@ initScene(void) {
 void drawScene(void) {
 
     /* In der Logik berechnet Position beziehen */
-    CGPoint2f *quadCenter = getQuadCenter();
+    CGPoint2f *stickCenter = getStickCenter();
+    CGPoint2f *ballCenter = getBallCenter();
 
     /* Rahmen zeichnen */
     drawBorder(BAR_X_OFFSET, ZERO, 1);
     drawBorder(-BAR_X_OFFSET, ZERO, 1);
     drawBorder(ZERO, BAR_X_OFFSET - BAR_WIDTH, 0);
 
-    drawStick(*quadCenter);
-//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    drawStick(*stickCenter);
+    drawBall(*ballCenter);
+
+   // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }

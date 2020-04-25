@@ -49,7 +49,9 @@ cbTimer(int lastCallTime) {
     double interval = (double) (thisCallTime - lastCallTime) / 1000.0f;
 
     /* neue Position berechnen (zeitgesteuert) */
-    calcPosition(interval);
+    calcStickPosition(interval);
+
+    calcBallPosition(interval);
 
     /* Wieder als Timer-Funktion registrieren */
     glutTimerFunc(1000 / TIMER_CALLS_PS, cbTimer, thisCallTime);
@@ -95,7 +97,6 @@ cbReshape(int w, int h) {
     setProjection((GLdouble) w / (GLdouble) h);
 }
 
-
 /**
  * Verarbeitung eines Tasturereignisses.
  * Pfeiltasten steuern die Position des angezeigten Rechtecks.
@@ -127,10 +128,10 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
             switch (key) {
                 /* Bewegung des Rechtecks in entsprechende Richtung starten */
                 case GLUT_KEY_LEFT:
-                    setMovement(dirLeft, GL_TRUE);
+                    setStickMovement(dirLeft, GL_TRUE);
                     break;
                 case GLUT_KEY_RIGHT:
-                    setMovement(dirRight, GL_TRUE);
+                    setStickMovement(dirRight, GL_TRUE);
                     break;
             }
         }
@@ -153,10 +154,10 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
             switch (key) {
                 /* Bewegung des Rechtecks in entsprechende Richtung beenden */
                 case GLUT_KEY_LEFT:
-                    setMovement(dirLeft, GL_FALSE);
+                    setStickMovement(dirLeft, GL_FALSE);
                     break;
                 case GLUT_KEY_RIGHT:
-                    setMovement(dirRight, GL_FALSE);
+                    setStickMovement(dirRight, GL_FALSE);
                     break;
             }
         }

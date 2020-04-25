@@ -20,13 +20,12 @@
  * @return Rueckgabewert der Ausgabefunktion (vfprintf).
  */
 int
-dbgPrint (const char *template, ...)
-{
+dbgPrint(const char *template, ...) {
     va_list ap;
     int result;
 
     va_start (ap, template);
-    result = vfprintf (stderr, template, ap);
+    result = vfprintf(stderr, template, ap);
     va_end (ap);
     return result;
 }
@@ -38,15 +37,11 @@ dbgPrint (const char *template, ...)
  * @return Rueckgabewert der Ausgabefunktion (fprintf).
  */
 int
-dbgPrintGLState (GLenum state)
-{
-    if (state == GL_NO_ERROR)
-    {
-        return fprintf (stderr, "OK: %s\n", gluErrorString (state));
-    }
-    else
-    {
-        return fprintf (stderr, "NOT OK: %s\n", gluErrorString (state));
+dbgPrintGLState(GLenum state) {
+    if (state == GL_NO_ERROR) {
+        return fprintf(stderr, "OK: %s\n", gluErrorString(state));
+    } else {
+        return fprintf(stderr, "NOT OK: %s\n", gluErrorString(state));
     }
 }
 
@@ -56,11 +51,10 @@ dbgPrintGLState (GLenum state)
  * @return GL-Fehlercode (von glGetError()).
  */
 int
-dbgGetGLError (void)
-{
-    GLenum errorCode = glGetError ();
+dbgGetGLError(void) {
+    GLenum errorCode = glGetError();
 
-    dbgPrintGLState (errorCode);
+    dbgPrintGLState(errorCode);
 
     return errorCode;
 }
@@ -71,10 +65,9 @@ dbgGetGLError (void)
  * @return Rueckgabewert der Ausgabe-Funktion.
  */
 int
-dbgGL (void)
-{
+dbgGL(void) {
     /* GLStatuswert ermitteln */
-    GLenum errorCode = glGetError ();
+    GLenum errorCode = glGetError();
     /* In String umwandeln und zurueckgeben */
-    return dbgPrintGLState (errorCode);
+    return dbgPrintGLState(errorCode);
 }

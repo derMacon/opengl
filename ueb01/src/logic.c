@@ -3,57 +3,132 @@
 #include "logic.h"
 #include "variables.h"
 
-/** der Mittelpunkt des Quadrats */
-static CGPoint2f g_quadCenter = {0.0f, -BAR_X_OFFSET};
+/** der Mittelpunkt des Sticks */
+static CGPoint2f g_stickCenter = {0.0f, -BAR_X_OFFSET};
+
+/** der Mittelpunkt des Sticks */
+static CGPoint2f g_ballCenter = {0.0f, 0.0f};
+
+/** Geschwindigkeitsvektor des Quadrats. */
+static CGVector2f g_quadSpeed = {X_STEPS_PS, Y_STEPS_PS};
 
 /**
- * Bewegungsstatus der Rechtecks. Fuer alle vier Richtungen wird angegeben, ob
- * sich das Rechteck in die jeweilige Richtung bewegt.
+ * Bewegungsstatus der Sticks. Fuer alle zwei Richtungen wird angegeben, ob
+ * sich der Stick in die jeweilige Richtung bewegt.
  */
 static GLboolean g_movement[4] = {GL_FALSE, GL_FALSE};
 
 /**
- * Berechnet neue Position des Rechtecks.
+ * Reagiert auf Kollisionen des Rechtecks mit dem Rahmen.
+ * @param side Rahmenseite, mit der kollidiert wurde.
+ */
+static void
+handleBorderCollision(CGSide side) {
+    /* Bewegung in X-Richtung umkehren */
+    if (side == sideLeft || side == sideRight) {
+        g_quadSpeed[0] *= -1;
+    }
+
+    /* Bewegung in Y-Richtung umkehren */
+    if (side == sideTop || side == sideBottom) {
+        g_quadSpeed[1] *= -1;
+    }
+}
+
+static CGSide checkBorderCollision(void) {
+    CGSide
+            res = sideNone;
+
+    float collisionOffset = 0.005f;
+
+    /* Ball fliegt nach rechts und
+       die rechte Seite des Ball ueberschreitet den rechten Rand */
+    if (g_quadSpeed[0] > 0.0f &&
+        g_ballCenter[0] + (BALL_WIDTH / 2) + collisionOffset >= BAR_X_OFFSET - BAR_THICKNESS) {
+        res = sideRight;
+    }
+
+        /* Quadrat fliegt nach links und
+           die linke Seite des Quadrats ueberschreitet den linken Rand */
+    else if (g_quadSpeed[0] < 0.0f &&
+             g_ballCenter[0] - (BALL_WIDTH / 2) - collisionOffset <= -BAR_X_OFFSET + BAR_THICKNESS) {
+        res = sideLeft;
+    }
+
+        /* Quadrat fliegt nach oben und
+           die obere Seite des Quadrats ueberschreitet den oberen Rand */
+    else if (g_quadSpeed[1] > 0.0f &&
+             // zusaetzlich Bar-width abziehen, weil ueber die Top-Bar noch der Text steht
+             g_ballCenter[1] + BALL_WIDTH / 2 + collisionOffset >= BAR_X_OFFSET - BAR_WIDTH - BAR_THICKNESS) {
+        res = sideTop;
+    }
+
+    return res;
+}
+
+void calcBallPosition(double interval) {
+    CGSide
+            side = checkBorderCollision();
+
+    if (side != 0) {
+        handleBorderCollision(side);
+    }
+
+    g_ballCenter[0] += g_quadSpeed[0] * (float) interval;
+    g_ballCenter[1] += g_quadSpeed[1] * (float) interval;
+}
+
+/**
+ * Berechnet neue Position des Sticks.
  * @param interval Dauer der Bewegung in Sekunden.
  */
 void
-calcPosition(double interval) {
+calcStickPosition(double interval) {
     // Stick nach links bewegen
     if (g_movement[dirLeft]) {
         // Position linker Balken + Breite des Sticks - Breite des linken Balkens
         // ist der Punkt, der den Stick stoppt
         float leftBarPosition = -BAR_X_OFFSET - BAR_WIDTH + STICK_WIDTH;
 
-        if (g_quadCenter[0] > leftBarPosition) {
-            g_quadCenter[0] -= STEPS_PS * (float) interval;
+        if (g_stickCenter[0] > leftBarPosition) {
+            g_stickCenter[0] -= STEPS_PS * (float) interval;
         }
     }
 
     // Stick nach rechts bewegen
     if (g_movement[dirRight]) {
         float rightBarPosition = BAR_X_OFFSET + BAR_WIDTH - STICK_WIDTH;
-        if (g_quadCenter[0] < rightBarPosition) {
-            g_quadCenter[0] += STEPS_PS * (float) interval;
+        if (g_stickCenter[0] < rightBarPosition) {
+            g_stickCenter[0] += STEPS_PS * (float) interval;
         }
     }
 }
 
 /**
- * Setzt den Bewegunsstatus des Rechtecks.
+ * Setzt den Bewegunsstatus des Sticks.
  * @param direction Bewegungsrichtung deren Status veraendert werden soll.
  * @param status neuer Status der Bewegung: GL_TRUE->Rechteck bewegt sich in Richtung
- * direction, GL_FALSE->Rechteck bewegt sich nicht in Richtung direction.
+ * direction, GL_FALSE->Sticks bewegt sich nicht in Richtung direction.
  */
 void
-setMovement(CGDirection direction, GLboolean status) {
+setStickMovement(CGDirection direction, GLboolean status) {
     g_movement[direction] = status;
 }
 
 /**
- * Liefert aktuelle Postion (des Mittelpunktes) des Rechtecks.
- * @return Postion (des Mittelpunktes) des Rechtecks.
+ * Liefert aktuelle Postion (des Mittelpunktes) des Sticks.
+ * @return Postion (des Mittelpunktes) des Sticks.
  */
 CGPoint2f *
-getQuadCenter(void) {
-    return &g_quadCenter;
+getStickCenter(void) {
+    return &g_stickCenter;
+}
+
+/**
+ * Liefert aktuelle Postion (des Mittelpunktes) des Sticks.
+ * @return Postion (des Mittelpunktes) des Sticks.
+ */
+CGPoint2f *
+getBallCenter(void) {
+    return &g_ballCenter;
 }

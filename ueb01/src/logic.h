@@ -2,7 +2,6 @@
 #ifndef __LOGIC_H__
 #define __LOGIC_H__
 
-
 /** Punkt im 2D-Raum */
 typedef GLfloat CGPoint2f[2];
 
@@ -18,10 +17,13 @@ enum e_Direction {
  * Liefert aktuelle Postion (des Mittelpunktes) des Rechtecks.
  * @return Postion (des Mittelpunktes) des Rechtecks.
  */
-CGPoint2f *getQuadCenter (void);
+CGPoint2f *getStickCenter (void);
 
-void calcPosition (double interval);
+CGPoint2f *getBallCenter (void);
 
-void setMovement (CGDirection direction, GLboolean status);
+void calcStickPosition (double interval);
+void calcBallPosition (double interval);
+
+void setStickMovement (CGDirection direction, GLboolean status);
 
 #endif
