@@ -1,8 +1,7 @@
 
 #include <GL/gl.h>
 #include "logic.h"
-#include "scene.h"
-#include "debug.h"
+#include "variables.h"
 
 /** der Mittelpunkt des Quadrats */
 static CGPoint2f g_quadCenter = {0.0f, -BAR_X_OFFSET};

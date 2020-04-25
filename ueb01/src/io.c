@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "scene.h"
 #include "logic.h"
+#include "variables.h"
 
 /**
  * Setzen der Projektionsmatrix.

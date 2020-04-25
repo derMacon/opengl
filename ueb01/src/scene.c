@@ -1,10 +1,9 @@
 
 #include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
 #include "scene.h"
 #include "debug.h"
 #include "logic.h"
+#include "variables.h"
 
 /**
  * Zeichnet ein Rechteck mit der Breite und Hoehe 1.
@@ -26,7 +25,6 @@ static void drawSquare(void) {
     }
     glEnd();
 }
-
 
 static void drawStick(const CGPoint2f coords) {
 
@@ -93,7 +91,7 @@ initScene(void) {
 void drawScene(void) {
 
     /* In der Logik berechnet Position beziehen */
-    CGPoint2f *quadCenter = getQuadCenter ();
+    CGPoint2f *quadCenter = getQuadCenter();
 
     /* Rahmen zeichnen */
     drawBorder(BAR_X_OFFSET, ZERO, 1);
