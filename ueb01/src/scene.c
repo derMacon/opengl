@@ -4,6 +4,7 @@
 #include <GL/glut.h>
 #include "scene.h"
 #include "debug.h"
+#include "logic.h"
 
 /**
  * Zeichnet ein Rechteck mit der Breite und Hoehe 1.
@@ -27,7 +28,11 @@ static void drawSquare(void) {
 }
 
 
-static void drawStick(GLfloat x, GLfloat y) {
+static void drawStick(const CGPoint2f coords) {
+
+    GLfloat x = coords[0];
+    GLfloat y = coords[1];
+
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glPushMatrix();
@@ -87,11 +92,14 @@ initScene(void) {
 
 void drawScene(void) {
 
+    /* In der Logik berechnet Position beziehen */
+    CGPoint2f *quadCenter = getQuadCenter ();
+
     /* Rahmen zeichnen */
     drawBorder(BAR_X_OFFSET, ZERO, 1);
     drawBorder(-BAR_X_OFFSET, ZERO, 1);
     drawBorder(ZERO, BAR_X_OFFSET - BAR_WIDTH, 0);
 
-    drawStick(ZERO, -BAR_X_OFFSET);
+    drawStick(*quadCenter);
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
