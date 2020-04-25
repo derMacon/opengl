@@ -38,7 +38,7 @@ static void drawStick(const CGPoint2f coords) {
     glPushMatrix();
     {
         glTranslatef(x, y, ZERO);
-        glScalef(0.5f, BAR_THICKNESS, 1.0f);
+        glScalef(STICK_WIDTH, BAR_THICKNESS, 1.0f);
         drawSquare();
     }
 

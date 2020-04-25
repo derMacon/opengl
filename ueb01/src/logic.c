@@ -2,6 +2,7 @@
 #include <GL/gl.h>
 #include "logic.h"
 #include "scene.h"
+#include "debug.h"
 
 /** der Mittelpunkt des Quadrats */
 static CGPoint2f g_quadCenter = {0.0f, -BAR_X_OFFSET};
@@ -18,11 +19,23 @@ static GLboolean g_movement[4] = {GL_FALSE, GL_FALSE};
  */
 void
 calcPosition(double interval) {
+    // Stick nach links bewegen
     if (g_movement[dirLeft]) {
-        g_quadCenter[0] -= STEPS_PS * (float) interval;
+        // Position linker Balken + Breite des Sticks - Breite des linken Balkens
+        // ist der Punkt, der den Stick stoppt
+        float leftBarPosition = -BAR_X_OFFSET - BAR_WIDTH + STICK_WIDTH;
+
+        if (g_quadCenter[0] > leftBarPosition) {
+            g_quadCenter[0] -= STEPS_PS * (float) interval;
+        }
     }
+
+    // Stick nach rechts bewegen
     if (g_movement[dirRight]) {
-        g_quadCenter[0] += STEPS_PS * (float) interval;
+        float rightBarPosition = BAR_X_OFFSET + BAR_WIDTH - STICK_WIDTH;
+        if (g_quadCenter[0] < rightBarPosition) {
+            g_quadCenter[0] += STEPS_PS * (float) interval;
+        }
     }
 }
 
@@ -34,10 +47,7 @@ calcPosition(double interval) {
  */
 void
 setMovement(CGDirection direction, GLboolean status) {
-    //  if (direction <= dirDown)
-    // {
     g_movement[direction] = status;
-    // }
 }
 
 /**
