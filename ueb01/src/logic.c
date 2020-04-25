@@ -63,6 +63,18 @@ static CGSide checkBorderCollision(void) {
         res = sideTop;
     }
 
+        /* Quadrat fliegt nach unten und
+           die untere Seite des Quadrats ueberschreitet den unteren Rand */
+        // TODO: checken, wo der Ball auftrifft (falls er auftrifft) und dann Richtung bestimmen
+    else if (g_quadSpeed[1] < 0.0f &&
+             (g_ballCenter[0] >= (g_stickCenter[0] - STICK_WIDTH / 2)) &&
+             (g_ballCenter[0] <= (g_stickCenter[0] + STICK_WIDTH / 2) &&
+              g_ballCenter[1] < g_stickCenter[1] + BAR_THICKNESS + (2 * collisionOffset))) {
+
+
+        res = sideBottom;
+    }
+
     return res;
 }
 
