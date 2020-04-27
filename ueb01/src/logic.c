@@ -2,6 +2,7 @@
 #include <GL/gl.h>
 #include "logic.h"
 #include "variables.h"
+#include "math.h"
 
 /** der Mittelpunkt des Sticks */
 static CGPoint2f g_stickCenter = {0.0f, -BAR_X_OFFSET};
@@ -71,8 +72,28 @@ static CGSide checkBorderCollision(void) {
              (g_ballCenter[0] <= (g_stickCenter[0] + STICK_WIDTH / 2) &&
               g_ballCenter[1] < g_stickCenter[1] + BAR_THICKNESS + (2 * collisionOffset))) {
 
-
         res = sideBottom;
+
+        // An dieserm Punkt kollidiert der Ball auf der X-Achse mit dem Stick
+        float collisionX = g_ballCenter[0] - g_stickCenter[0];
+
+        // Maximumwerte beibehalten
+        if (collisionX < -0.15f) {
+            collisionX = -0.15f;
+        } else if (collisionX > 0.15f) {
+            collisionX = 0.15f;
+        }
+
+        // Freshe Formel, um die Ausgangswinkel zu berechnen
+        // f(x) = -22,222 * x^2 + 1
+        float angle = -22.222f * pow(collisionX, 2) + 1;
+
+        // x + y Geschwindigkeit berechnen
+        float xySpeed = g_quadSpeed[1] + g_quadSpeed[0];
+
+        // Werte setzen
+        g_quadSpeed[0] = (1 - angle) * xySpeed;
+        g_quadSpeed[1] = angle * xySpeed;
     }
 
     return res;
@@ -84,10 +105,11 @@ void calcBallPosition(double interval) {
 
     if (side != 0) {
         handleBorderCollision(side);
+    } else {
+        g_ballCenter[0] += g_quadSpeed[0] * (float) interval;
+        g_ballCenter[1] += g_quadSpeed[1] * (float) interval;
     }
 
-    g_ballCenter[0] += g_quadSpeed[0] * (float) interval;
-    g_ballCenter[1] += g_quadSpeed[1] * (float) interval;
 }
 
 /**
