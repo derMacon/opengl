@@ -1,0 +1,6 @@
+logic.o: src/logic.c src/logic.h src/variables.h
+main.o: src/main.c src/debug.h src/io.h
+io.o: src/io.c src/io.h src/debug.h src/scene.h src/logic.h \
+ src/variables.h
+debug.o: src/debug.c src/debug.h
+scene.o: src/scene.c src/scene.h src/debug.h src/logic.h src/variables.h

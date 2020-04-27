@@ -84,6 +84,8 @@ static CGSide checkBorderCollision(void) {
             collisionX = 0.15f;
         }
 
+
+
         // Freshe Formel, um die Ausgangswinkel zu berechnen
         // f(x) = -22,222 * x^2 + 1
         float angle = -22.222f * pow(collisionX, 2) + 1;
