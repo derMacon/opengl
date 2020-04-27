@@ -91,6 +91,11 @@ static CGSide checkBorderCollision(void) {
         // x + y Geschwindigkeit berechnen
         float xySpeed = g_quadSpeed[1] + g_quadSpeed[0];
 
+        // TODO: Muss man nicht wieder was von der Geschwindigkeit wegnehmen?
+        // Hier wird jetzt der Ball immer schneller / langsamer, da wird multiplizieren.
+        // Aber es darf ja nur eine Seite schneller werden. Die Gesamtgeschwindigkeit darf nicht berührt werden
+        // z.B Initialgeschwindigkeit 0.5 und 0.5 bei getroffen müsste z.B 0.7 und 0.3 werden
+
         // Werte setzen
         g_quadSpeed[0] = (1 - angle) * xySpeed;
         g_quadSpeed[1] = angle * xySpeed;
