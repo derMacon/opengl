@@ -1,7 +1,6 @@
 
 #include <GL/gl.h>
 #include <GL/glut.h>
-#include <time.h>
 #include "scene.h"
 #include "debug.h"
 #include "logic.h"
@@ -52,7 +51,7 @@ static void drawBall(const CGPoint2f coords) {
     GLfloat x = coords[0];
     GLfloat y = coords[1];
 
-    glColor3f(1.0f, 0.0f, .0f);
+    glColor3f(0.827f, 0.827f, 0.827f);
 
     glPushMatrix();
     {
@@ -70,35 +69,35 @@ float *selectColor(int randomNumber) {
 
     switch (randomNumber) {
         // Lila
-        case 0:
+        case 1:
             colors[0] = 0.576f;
             colors[1] = 0.439f;
             colors[2] = 0.859f;
             break;
 
             // Rot
-        case 1:
+        case 2:
             colors[0] = 0.980f;
             colors[1] = 0.502f;
             colors[2] = 0.447f;
             break;
 
             // Blau
-        case 2:
+        case 3:
             colors[0] = 0.941f;
             colors[1] = 0.902f;
             colors[2] = 0.549f;
             break;
 
             // Gruen
-        case 3:
+        case 4:
             colors[0] = 0.596f;
             colors[1] = 0.984f;
             colors[2] = 0.596f;
             break;
 
             // Gelb
-        case 4:
+        case 5:
             colors[0] = 0.529f;
             colors[1] = 0.808f;
             colors[2] = 0.922f;
@@ -120,7 +119,8 @@ float *selectColor(int randomNumber) {
  * @return
  */
 int genNumber(int maxNumber) {
-    return rand() % maxNumber + 1;
+    return (rand() %
+            (maxNumber - 1 + 1)) + 1;
 }
 
 static void drawBlock(const Block block) {
@@ -180,6 +180,8 @@ static void drawBorder(GLfloat posX, GLfloat posY, int showTop) {
 
 void generateBlocks(Block *block) {
     int count = 0;
+
+    // TODO: Werte hardcoded, bei Groessenaenderungen, duefte das nicht mehr funktioniernen
     for (float i = -0.7f; i < 0.8f; i += 0.2f) {
         for (float j = 0.65f; j > -0.7; j -= 0.2f) {
 
@@ -194,6 +196,8 @@ void generateBlocks(Block *block) {
             block[count].position[1] = j;
 
             count++;
+
+            free(colors);
         }
     }
 }
@@ -238,11 +242,12 @@ void drawScene(void) {
     drawStick(*stickCenter);
     drawBall(*ballCenter);
 
+    // Bloecke zeichnen
     for (int i = 0; i < NUMBER_OF_BLOCKS; i++) {
         if (!bloecke[i].hidden) {
             drawBlock(bloecke[i]);
         }
     }
 
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }

@@ -29,7 +29,6 @@
 /** Anzahl der Aufrufe der Timer-Funktion pro Sekunde */
 #define TIMER_CALLS_PS 144
 
-
 /** Vektor im 2D-Raum */
 typedef GLfloat CGVector2f[2];
 

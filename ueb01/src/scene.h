@@ -22,14 +22,6 @@ struct struct_Block {
     int hidden;
 };
 
-
-/** Datentyp zur Verwaltung der Spielballdaten. */
 typedef struct struct_Block Block;
-
-struct struct_Bloecke {
-    Block block[NUMBER_OF_BLOCKS];
-};
-
-typedef struct struct_Bloecke Bloecke;
 
 #endif
