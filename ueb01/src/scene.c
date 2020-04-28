@@ -120,12 +120,7 @@ float *selectColor(int randomNumber) {
  * @return
  */
 int genNumber(int maxNumber) {
-
-    /* Intializes random number generator */
-    time_t t;
-    srand((unsigned) time(&t));
-
-    return rand() % maxNumber;
+    return rand() % maxNumber + 1;
 }
 
 static void drawBlock(const Block block) {
@@ -188,7 +183,6 @@ void generateBlocks(Block *block) {
     for (float i = -0.7f; i < 0.8f; i += 0.2f) {
         for (float j = 0.65f; j > -0.7; j -= 0.2f) {
 
-            // TODO: Farben sind immer gleich??
             float *colors = selectColor(genNumber(5));
 
             block[count].color[0] = colors[0];
