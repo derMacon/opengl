@@ -1,11 +1,14 @@
 
 #include <GL/gl.h>
 #include <GL/glut.h>
+#include <time.h>
 #include "scene.h"
 #include "debug.h"
 #include "logic.h"
 #include "math.h"
 #include "variables.h"
+
+static Block bloecke[NUMBER_OF_BLOCKS];
 
 /**
  * Zeichnet ein Rechteck mit der Breite und Hoehe 1.
@@ -61,6 +64,86 @@ static void drawBall(const CGPoint2f coords) {
     glPopMatrix();
 }
 
+float *selectColor(int randomNumber) {
+
+    float *colors = malloc(3);
+
+    switch (randomNumber) {
+        // Lila
+        case 0:
+            colors[0] = 0.576f;
+            colors[1] = 0.439f;
+            colors[2] = 0.859f;
+            break;
+
+            // Rot
+        case 1:
+            colors[0] = 0.980f;
+            colors[1] = 0.502f;
+            colors[2] = 0.447f;
+            break;
+
+            // Blau
+        case 2:
+            colors[0] = 0.941f;
+            colors[1] = 0.902f;
+            colors[2] = 0.549f;
+            break;
+
+            // Gruen
+        case 3:
+            colors[0] = 0.596f;
+            colors[1] = 0.984f;
+            colors[2] = 0.596f;
+            break;
+
+            // Gelb
+        case 4:
+            colors[0] = 0.529f;
+            colors[1] = 0.808f;
+            colors[2] = 0.922f;
+            break;
+
+        default:
+            colors[0] = 0.941f;
+            colors[1] = 1.000f;
+            colors[2] = 1.000f;
+            break;
+    }
+
+    return colors;
+}
+
+/**
+ * Generiert fuer die Bloecke Nummern, die anhand von selectColor in Farben umgewandelt werden.
+ * @param maxNumber hoechste Nummer (standardmaessig 5)
+ * @return
+ */
+int genNumber(int maxNumber) {
+
+    /* Intializes random number generator */
+    time_t t;
+    srand((unsigned) time(&t));
+
+    return rand() % maxNumber;
+}
+
+static void drawBlock(const Block block) {
+    GLfloat x = block.position[0];
+    GLfloat y = block.position[1];
+
+    glColor3f(block.color[0], block.color[1], block.color[2]);
+
+    glPushMatrix();
+    {
+        glTranslatef(x, y, ZERO);
+        glScalef(BLOCK_WIDTH, BLOCK_HEIGHT, 1.0f);
+        drawSquare();
+    }
+
+    glPopMatrix();
+}
+
 static void drawStick(const CGPoint2f coords) {
 
     GLfloat x = coords[0];
@@ -100,6 +183,27 @@ static void drawBorder(GLfloat posX, GLfloat posY, int showTop) {
     glPopMatrix();
 }
 
+void generateBlocks(Block *block) {
+    int count = 0;
+    for (float i = -0.7f; i < 0.8f; i += 0.2f) {
+        for (float j = 0.65f; j > -0.7; j -= 0.2f) {
+
+            // TODO: Farben sind immer gleich??
+            float *colors = selectColor(genNumber(5));
+
+            block[count].color[0] = colors[0];
+            block[count].color[1] = colors[1];
+            block[count].color[2] = colors[2];
+
+            block[count].hidden = 0;
+            block[count].position[0] = i;
+            block[count].position[1] = j;
+
+            count++;
+        }
+    }
+}
+
 /**
  * Initialisierung der Szene (inbesondere der OpenGL-Statusmaschine).
  * Setzt Hintergrund- und Zeichenfarbe.
@@ -109,7 +213,8 @@ int
 initScene(void) {
     /* Setzen der Farbattribute */
     /* Hintergrundfarbe */
-    glClearColor(ZERO, ZERO, ZERO, ZERO);
+    glClearColor(0.1f, 0.1f, 0.11f, 1.0f);
+
     /* Zeichenfarbe */
     glColor3f(1.0f, 1.0f, 1.0f);
 
@@ -118,6 +223,8 @@ initScene(void) {
 
     /* Breite von Linien */
     glLineWidth(2.0f);
+
+    generateBlocks(bloecke);
 
     /* Alles in Ordnung? */
     return (GLGETERROR == GL_NO_ERROR);
@@ -137,5 +244,11 @@ void drawScene(void) {
     drawStick(*stickCenter);
     drawBall(*ballCenter);
 
-   //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    for (int i = 0; i < NUMBER_OF_BLOCKS; i++) {
+        if (!bloecke[i].hidden) {
+            drawBlock(bloecke[i]);
+        }
+    }
+
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }

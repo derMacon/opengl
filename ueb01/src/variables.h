@@ -9,12 +9,13 @@
 
 /** Werte des Balles **/
 #define BALL_WIDTH 0.04f
+#define X_STEPS_PS 0.5f // X-Geschwindigkeit
+#define Y_STEPS_PS 0.5f // Y-Geschwindigkeit
 
-/** Geschwindigkeit (Schritte in X-Richtung pro Sekunde) */
-#define X_STEPS_PS     0.5f
-
-/** Geschwindigkeit (Schritte in Y-Richtung pro Sekunde) */
-#define Y_STEPS_PS     0.5f
+/** Werte der Bloecke **/
+#define NUMBER_OF_BLOCKS 56
+#define BLOCK_WIDTH  0.15f
+#define BLOCK_HEIGHT 0.075f
 
 /** Werte des Sticks **/
 #define STICK_WIDTH 0.3f

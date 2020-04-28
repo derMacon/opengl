@@ -3,6 +3,7 @@
 #include "logic.h"
 #include "variables.h"
 #include "math.h"
+#include "scene.h"
 
 /** der Mittelpunkt des Sticks */
 static CGPoint2f g_stickCenter = {0.0f, -BAR_X_OFFSET};
@@ -17,7 +18,7 @@ static CGVector2f g_quadSpeed = {X_STEPS_PS, Y_STEPS_PS};
  * Bewegungsstatus der Sticks. Fuer alle zwei Richtungen wird angegeben, ob
  * sich der Stick in die jeweilige Richtung bewegt.
  */
-static GLboolean g_movement[4] = {GL_FALSE, GL_FALSE};
+static GLboolean g_movement[2] = {GL_FALSE, GL_FALSE};
 
 /**
  * Reagiert auf Kollisionen des Rechtecks mit dem Rahmen.
