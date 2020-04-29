@@ -243,6 +243,7 @@ void drawScene(void) {
     drawStick(*stickCenter);
     drawBall(*ballCenter);
 
+
     // Bloecke zeichnen
     for (int i = 0; i < NUMBER_OF_BLOCKS; i++) {
         if (!bloecke[i].hidden && checkBlockCollision(&bloecke[i])) {

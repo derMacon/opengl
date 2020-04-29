@@ -3,8 +3,8 @@
 #include "logic.h"
 #include "variables.h"
 #include "math.h"
-#include "scene.h"
 #include "types.h"
+#include <stdio.h>
 
 /** der Mittelpunkt des Sticks */
 static CGPoint2f g_stickCenter = {0.0f, -BAR_X_OFFSET};
@@ -14,6 +14,9 @@ static CGPoint2f g_ballCenter = {0.0f, -0.9f};
 
 /** Geschwindigkeitsvektor des Balls. */
 static CGVector2f g_quadSpeed = {X_STEPS_PS, Y_STEPS_PS};
+
+float ball_speed = INITIAL_BALL_SPEED;
+
 
 /**
  * Bewegungsstatus der Sticks. Fuer alle zwei Richtungen wird angegeben, ob
@@ -49,39 +52,39 @@ float calculateAngle(float value) {
         value = maxVal;
     }
 
+    // Dreisatz 0.15 entsprechen 100% und 45°
     return (value * 45) / maxVal;
 }
 
 static CGSide checkBorderCollision(void) {
-    CGSide
-            res = sideNone;
+    CGSide res = sideNone;
 
     float collisionOffset = 0.005f;
 
-    /* Ball fliegt nach rechts und
-       die rechte Seite des Ball ueberschreitet den rechten Rand */
     if (g_quadSpeed[0] > 0.0f &&
         g_ballCenter[0] + (BALL_WIDTH / 2) + collisionOffset >= BAR_X_OFFSET - BAR_THICKNESS) {
+        // Ball fliegt nach rechts und
+        // die rechte Seite des Ball ueberschreitet den rechten Rand
         res = sideRight;
     }
 
-        /* Quadrat fliegt nach links und
-           die linke Seite des Quadrats ueberschreitet den linken Rand */
+        // Quadrat fliegt nach links und
+        //  die linke Seite des Quadrats ueberschreitet den linken Rand
     else if (g_quadSpeed[0] < 0.0f &&
              g_ballCenter[0] - (BALL_WIDTH / 2) - collisionOffset <= -BAR_X_OFFSET + BAR_THICKNESS) {
         res = sideLeft;
     }
 
-        /* Quadrat fliegt nach oben und
-           die obere Seite des Quadrats ueberschreitet den oberen Rand */
+        // Quadrat fliegt nach oben und
+        // die obere Seite des Quadrats ueberschreitet den oberen Rand
     else if (g_quadSpeed[1] > 0.0f &&
              // zusaetzlich Bar-width abziehen, weil ueber die Top-Bar noch der Text steht
              g_ballCenter[1] + BALL_WIDTH / 2 + collisionOffset >= BAR_X_OFFSET - BAR_WIDTH - BAR_THICKNESS) {
         res = sideTop;
     }
 
-        /* Quadrat fliegt nach unten und
-           die untere Seite des Quadrats ueberschreitet den unteren Rand */
+        // Quadrat fliegt nach unten und
+        //  die untere Seite des Quadrats ueberschreitet den unteren Rand
     else if (g_quadSpeed[1] < 0.0f &&
              (g_ballCenter[0] >= (g_stickCenter[0] - STICK_WIDTH / 2)) &&
              (g_ballCenter[0] <= (g_stickCenter[0] + STICK_WIDTH / 2) &&
@@ -90,11 +93,26 @@ static CGSide checkBorderCollision(void) {
         // An dieserm Punkt kollidiert der Ball auf der X-Achse mit dem Stick
         float collisionX = g_ballCenter[0] - g_stickCenter[0];
 
-        // x
-        g_quadSpeed[0] = cosf(calculateAngle(collisionX)) * BALL_SPEED;
+        // Neuen Winkel berechnen
+        float newAngle = calculateAngle(collisionX) ;
 
-        // y
-        g_quadSpeed[1] = sinf(calculateAngle(collisionX)) * BALL_SPEED;
+        printf("BallCenterX Alt: %f\n", g_ballCenter[0]);
+        printf("Collisionx: %f\n", collisionX * 100);
+        printf("New angle %f\n", newAngle);
+
+        if (newAngle == 0) {
+            g_quadSpeed[1] *= -1;
+        } else {
+            g_quadSpeed[0] = ball_speed * cosf(newAngle);
+
+            // y
+           g_quadSpeed[1] = ball_speed * sinf(newAngle);
+
+           printf("Speed X: %f\n", ball_speed * cosf(newAngle));
+           printf("Speed Y: %f\n", - ball_speed * -sinf(newAngle));
+        }
+
+        printf("\n");
 
         res = sideNone;
     }
@@ -111,7 +129,6 @@ void calcBallPosition(double interval) {
         g_ballCenter[0] += g_quadSpeed[0] * (float) interval;
         g_ballCenter[1] += g_quadSpeed[1] * (float) interval;
     }
-
 }
 
 /**
@@ -120,12 +137,12 @@ void calcBallPosition(double interval) {
  */
 void
 calcStickPosition(double interval) {
+
     // Stick nach links bewegen
     if (g_movement[dirLeft]) {
         // Position linker Balken + Breite des Sticks - Breite des linken Balkens
         // ist der Punkt, der den Stick stoppt
         float leftBarPosition = -BAR_X_OFFSET - BAR_WIDTH + STICK_WIDTH;
-
         if (g_stickCenter[0] > leftBarPosition) {
             g_stickCenter[0] -= STEPS_PS * (float) interval;
         }
