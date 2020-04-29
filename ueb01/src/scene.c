@@ -6,6 +6,7 @@
 #include "logic.h"
 #include "math.h"
 #include "variables.h"
+#include "types.h"
 
 static Block bloecke[NUMBER_OF_BLOCKS];
 
@@ -244,7 +245,7 @@ void drawScene(void) {
 
     // Bloecke zeichnen
     for (int i = 0; i < NUMBER_OF_BLOCKS; i++) {
-        if (!bloecke[i].hidden) {
+        if (!bloecke[i].hidden && checkBlockCollision(&bloecke[i])) {
             drawBlock(bloecke[i]);
         }
     }

@@ -5,6 +5,7 @@
 #include "scene.h"
 #include "logic.h"
 #include "variables.h"
+#include "types.h"
 
 /**
  * Setzen der Projektionsmatrix.

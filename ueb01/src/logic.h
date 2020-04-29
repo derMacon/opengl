@@ -2,16 +2,8 @@
 #ifndef __LOGIC_H__
 #define __LOGIC_H__
 
-/** Punkt im 2D-Raum */
-typedef GLfloat CGPoint2f[2];
-
-/** Datentyp fuer Bewegungsrichtungen. */
-typedef enum e_Direction CGDirection;
-
-/** Bewegungsrichtungen. */
-enum e_Direction {
-    dirLeft, dirRight
-};
+#include "scene.h"
+#include "types.h"
 
 /**
  * Liefert aktuelle Postion (des Mittelpunktes) des Rechtecks.
@@ -20,6 +12,8 @@ enum e_Direction {
 CGPoint2f *getStickCenter (void);
 
 CGPoint2f *getBallCenter (void);
+
+int checkBlockCollision(Block *block);
 
 void calcStickPosition (double interval);
 void calcBallPosition (double interval);

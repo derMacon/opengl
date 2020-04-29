@@ -79,7 +79,7 @@ file(GLOB src_files
 )
 
 # erstellen des Targets ${PROJECT_NAME} 
-add_executable(${PROJECT_NAME} ${src_files} src/debug.h src/debug.c src/variables.h)
+add_executable(${PROJECT_NAME} ${src_files} src/debug.h src/debug.c src/variables.h src/types.h)
 
 #Visual Studio
 # erstellen der filter fuer die content-files

@@ -4,14 +4,15 @@
 #include "variables.h"
 #include "math.h"
 #include "scene.h"
+#include "types.h"
 
 /** der Mittelpunkt des Sticks */
 static CGPoint2f g_stickCenter = {0.0f, -BAR_X_OFFSET};
 
-/** der Mittelpunkt des Sticks */
-static CGPoint2f g_ballCenter = {0.0f, 0.0f};
+/** der Mittelpunkt des Balls */
+static CGPoint2f g_ballCenter = {0.0f, -0.9f};
 
-/** Geschwindigkeitsvektor des Quadrats. */
+/** Geschwindigkeitsvektor des Balls. */
 static CGVector2f g_quadSpeed = {X_STEPS_PS, Y_STEPS_PS};
 
 /**
@@ -35,6 +36,20 @@ handleBorderCollision(CGSide side) {
     if (side == sideTop || side == sideBottom) {
         g_quadSpeed[1] *= -1;
     }
+}
+
+float calculateAngle(float value) {
+
+    float maxVal = 0.15f;
+
+    // Maximumwerte beibehalten
+    if (value < -maxVal) {
+        value = -maxVal;
+    } else if (value > maxVal) {
+        value = maxVal;
+    }
+
+    return (value * 45) / maxVal;
 }
 
 static CGSide checkBorderCollision(void) {
@@ -67,51 +82,30 @@ static CGSide checkBorderCollision(void) {
 
         /* Quadrat fliegt nach unten und
            die untere Seite des Quadrats ueberschreitet den unteren Rand */
-        // TODO: checken, wo der Ball auftrifft (falls er auftrifft) und dann Richtung bestimmen
     else if (g_quadSpeed[1] < 0.0f &&
              (g_ballCenter[0] >= (g_stickCenter[0] - STICK_WIDTH / 2)) &&
              (g_ballCenter[0] <= (g_stickCenter[0] + STICK_WIDTH / 2) &&
               g_ballCenter[1] < g_stickCenter[1] + BAR_THICKNESS + (2 * collisionOffset))) {
 
-        res = sideBottom;
-
         // An dieserm Punkt kollidiert der Ball auf der X-Achse mit dem Stick
         float collisionX = g_ballCenter[0] - g_stickCenter[0];
 
-        // Maximumwerte beibehalten
-        if (collisionX < -0.15f) {
-            collisionX = -0.15f;
-        } else if (collisionX > 0.15f) {
-            collisionX = 0.15f;
-        }
+        // x
+        g_quadSpeed[0] = cosf(calculateAngle(collisionX)) * BALL_SPEED;
 
+        // y
+        g_quadSpeed[1] = sinf(calculateAngle(collisionX)) * BALL_SPEED;
 
-
-        // Freshe Formel, um die Ausgangswinkel zu berechnen
-        // f(x) = -22,222 * x^2 + 1
-        float angle = -22.222f * pow(collisionX, 2) + 1;
-
-        // x + y Geschwindigkeit berechnen
-        float xySpeed = g_quadSpeed[1] + g_quadSpeed[0];
-
-        // TODO: Muss man nicht wieder was von der Geschwindigkeit wegnehmen?
-        // Hier wird jetzt der Ball immer schneller / langsamer, da wird multiplizieren.
-        // Aber es darf ja nur eine Seite schneller werden. Die Gesamtgeschwindigkeit darf nicht berührt werden
-        // z.B Initialgeschwindigkeit 0.5 und 0.5 bei getroffen müsste z.B 0.7 und 0.3 werden
-
-        // Werte setzen
-        g_quadSpeed[0] = (1 - angle) * xySpeed;
-        g_quadSpeed[1] = angle * xySpeed;
+        res = sideNone;
     }
 
     return res;
 }
 
 void calcBallPosition(double interval) {
-    CGSide
-            side = checkBorderCollision();
+    CGSide side = checkBorderCollision();
 
-    if (side != 0) {
+    if (side != sideNone) {
         handleBorderCollision(side);
     } else {
         g_ballCenter[0] += g_quadSpeed[0] * (float) interval;
@@ -144,6 +138,73 @@ calcStickPosition(double interval) {
             g_stickCenter[0] += STEPS_PS * (float) interval;
         }
     }
+}
+
+int checkBlockCollision(Block *block) {
+
+    // Blockposition
+    GLfloat blockX = block->position[0];
+    GLfloat blockY = block->position[1];
+
+    // Ballposition
+    GLfloat ballX = g_ballCenter[0];
+    GLfloat ballY = g_ballCenter[1];
+
+    // Trefferpunkte
+    GLfloat blockRight = (blockX + BLOCK_WIDTH / 2) + BALL_WIDTH;
+    GLfloat blockLeft = (blockX - BLOCK_WIDTH / 2) - BALL_WIDTH;
+
+    GLfloat blockTop = (blockY + BLOCK_HEIGHT / 2) + BALL_WIDTH;
+    GLfloat blockBottom = (blockY - BLOCK_HEIGHT / 2) - BALL_WIDTH;
+
+    // Pruefen, ob getroffen wurde
+    if ((ballY <= blockTop && ballY >= blockBottom)
+        && (ballX >= blockLeft && ballX <= blockRight)) {
+        // Ausblenden
+        block->hidden = 1;
+
+        // Werte, um zu pruefen, wo der Block genau getroffen wurde
+        // links
+        float xCheckLeft = fabsf(ballX - blockLeft);
+
+        // rechts
+        float xCheckRight = fabsf(ballX - blockRight);
+
+        // unten
+        float xCheckBottom = fabsf(ballY - blockBottom);
+
+        // oben
+        float xCheckTop = fabsf(ballY - blockTop);
+
+        // Beim kleinsten Wert wurde der Block getroffen
+        float val = xCheckLeft;
+        CGSide side = sideLeft;
+
+        // Rechts
+        if (xCheckRight < val) {
+            val = xCheckRight;
+            side = sideRight;
+        }
+
+        // Unten
+        if (xCheckBottom < val) {
+            val = xCheckBottom;
+            side = sideBottom;
+        }
+
+        // Oben
+        if (xCheckTop < val) {
+            side = sideTop;
+        }
+
+        // neuer Winkel fuer den Ball
+        handleBorderCollision(side);
+
+        // Kollision
+        return 0;
+    }
+
+    return 1;
 }
 
 /**

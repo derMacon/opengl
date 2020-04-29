@@ -8,9 +8,11 @@
 #define BAR_WIDTH 0.1f
 
 /** Werte des Balles **/
-#define BALL_WIDTH 0.04f
-#define X_STEPS_PS 0.5f // X-Geschwindigkeit
-#define Y_STEPS_PS 0.5f // Y-Geschwindigkeit
+#define BALL_SPEED 1.0f
+#define BALL_WIDTH 0.03f
+#define X_STEPS_PS 0.0f // X-Geschwindigkeit
+#define Y_STEPS_PS 1.0f // Y-Geschwindigkeit
+#include "logic.h"
 
 /** Werte der Bloecke **/
 #define NUMBER_OF_BLOCKS 56
@@ -28,26 +30,5 @@
 
 /** Anzahl der Aufrufe der Timer-Funktion pro Sekunde */
 #define TIMER_CALLS_PS 144
-
-/** Vektor im 2D-Raum */
-typedef GLfloat CGVector2f[2];
-
-/* struct zur Verwaltung der Spielballdaten. */
-struct struct_Ball {
-    GLfloat speed;
-    CGPoint2f position;
-    GLfloat rotation;
-};
-
-/** Datentyp zur Verwaltung der Spielballdaten. */
-typedef struct s_Ball Ball;
-
-/** Kollisionsseiten. */
-enum e_Side {
-    sideNone, sideLeft, sideRight, sideTop, sideBottom
-};
-
-/** Datentyp fuer Kollisionsseiten. */
-typedef enum e_Side CGSide;
 
 #endif
