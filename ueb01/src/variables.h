@@ -24,9 +24,12 @@
 #define STICK_WIDTH 0.3f
 #define STEPS_PS 1.0f
 
+/** Werte des Spielers **/
+#define INITIAL_LIVES 3
+#define INITIAL_POINTS 0
+
 /** Globale NULL **/
 #define ZERO 0.0f
-
 
 /** Anzahl der Aufrufe der Timer-Funktion pro Sekunde */
 #define TIMER_CALLS_PS 144

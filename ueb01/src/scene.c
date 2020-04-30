@@ -223,6 +223,7 @@ initScene(void) {
     /* Breite von Linien */
     glLineWidth(2.0f);
 
+    /* Bloecke generieren */
     generateBlocks(bloecke);
 
     /* Alles in Ordnung? */

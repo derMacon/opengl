@@ -17,7 +17,6 @@ int checkBlockCollision(Block *block);
 
 void calcStickPosition (double interval);
 void calcBallPosition (double interval);
-
 void setStickMovement (CGDirection direction, GLboolean status);
 
 #endif

@@ -43,6 +43,11 @@ struct struct_Ball {
 /** Datentyp zur Verwaltung der Spielballdaten. */
 typedef struct s_Ball Ball;
 
+typedef struct Player {
+    int lives;
+    int points;
+} Player;
+
 /** Kollisionsseiten. */
 enum e_Side {
     sideNone, sideLeft, sideRight, sideTop, sideBottom
