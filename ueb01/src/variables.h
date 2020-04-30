@@ -16,7 +16,7 @@
 
 /** Werte der Bloecke **/
 // #define NUMBER_OF_BLOCKS 56
-#define NUMBER_OF_BLOCKS 56
+#define NUMBER_OF_BLOCKS 1
 #define BLOCK_WIDTH  0.15f
 #define BLOCK_HEIGHT 0.075f
 

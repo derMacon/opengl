@@ -203,6 +203,7 @@ void generateBlocks(Block *block) {
     }
 }
 
+
 /**
  * Initialisierung der Szene (inbesondere der OpenGL-Statusmaschine).
  * Setzt Hintergrund- und Zeichenfarbe.
@@ -226,6 +227,7 @@ initScene(void) {
     /* Bloecke generieren */
     generateBlocks(bloecke);
 
+
     /* Alles in Ordnung? */
     return (GLGETERROR == GL_NO_ERROR);
 }
@@ -243,7 +245,6 @@ void drawScene(void) {
 
     drawStick(*stickCenter);
     drawBall(*ballCenter);
-
 
     // Bloecke zeichnen
     for (int i = 0; i < NUMBER_OF_BLOCKS; i++) {

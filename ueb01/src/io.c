@@ -7,6 +7,8 @@
 #include "variables.h"
 #include "types.h"
 
+GLboolean game_paused = GL_FALSE;
+
 /**
  * Setzen der Projektionsmatrix.
  * Setzt die Projektionsmatrix unter Berücksichtigung des Seitenverhaeltnisses
@@ -48,6 +50,10 @@ cbTimer(int lastCallTime) {
 
     /* Seit dem letzten Funktionsaufruf vergangene Zeit in Sekunden */
     double interval = (double) (thisCallTime - lastCallTime) / 1000.0f;
+
+    if (game_paused){
+        interval = 0.0f;
+    }
 
     /* neue Position berechnen (zeitgesteuert) */
     calcStickPosition(interval);

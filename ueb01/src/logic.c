@@ -5,6 +5,8 @@
 #include "math.h"
 #include "types.h"
 #include <stdio.h>
+#include <GL/glut.h>
+#include <stdarg.h>
 
 /** der Mittelpunkt des Sticks */
 static CGPoint2f g_stickCenter = {0.0f, -BAR_X_OFFSET};
@@ -114,8 +116,6 @@ static CGSide checkBorderCollision(void) {
             printf("Speed Y: %f\n", -ball_speed * -sinf(newAngle));*/
         }
 
-        printf("\n");
-
         res = sideNone;
     }
 
@@ -159,6 +159,7 @@ calcStickPosition(double interval) {
     }
 }
 
+
 /**
  * Wenn die Bloecke getroffen wurden, Punkte hinzufuegen
  * und ggf. Leben und Geschwindigkeit erhoehen
@@ -179,6 +180,17 @@ void handleHits() {
 
     // Ausgabe
     printf("Punkte: %d | Verbleibende Leben: %d\n", player.points, player.lives);
+
+    // Spieler hat gewonnen
+    if (player.points >= NUMBER_OF_BLOCKS){
+        // Gewonnen
+        printf("Sie haben gewonnen!");
+
+        // Sofortige Ausgabe
+        fflush(stdout);
+
+        game_paused = GL_TRUE;
+    }
 }
 
 int checkBlockCollision(Block *block) {
