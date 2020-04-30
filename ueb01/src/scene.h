@@ -12,7 +12,7 @@ void drawScene(void);
  */
 int initScene(void);
 
-
+void drawExtra();
 
 
 #endif

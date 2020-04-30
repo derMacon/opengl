@@ -27,6 +27,17 @@ static Player player = {INITIAL_LIVES, INITIAL_POINTS};
  */
 static GLboolean g_movement[2] = {GL_FALSE, GL_FALSE};
 
+/**
+ * Errechnet anhand eines Wahrscheinlichkeitwertes, ob etwas zutrifft oder nicht
+ * @param propability int Wert von 0 - 100
+ */
+GLboolean propabilityOccured() {
+
+    int highestNumber = 100 + 1;
+    int calculatedNumber = (rand() % ((highestNumber - 1) + 1));
+
+    return calculatedNumber < EXTRA_PROPABILITY;
+}
 
 /**
  * Reagiert auf Kollisionen des Rechtecks mit dem Rahmen.
@@ -210,6 +221,13 @@ void handleHits() {
     if (player.points % 10 == 0) {
         // TODO: Nach korrekter Winkelberechnung besseren Wert finden fuer ballspeed
         ball_speed += 0.1f;
+    }
+
+    // EXTRAS
+    if (propabilityOccured()){
+        // TODO: Nicht so, sondern irgendwie mit Boolean und dann in DrawScene, damit das Extra auch bleibt
+        printf("EXTRA\n");
+        drawExtra();
     }
 
     // Ausgabe

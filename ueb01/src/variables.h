@@ -17,10 +17,10 @@
 #include "logic.h"
 
 /** Werte der Bloecke **/
-// #define NUMBER_OF_BLOCKS 56
 #define NUMBER_OF_BLOCKS 56
 #define BLOCK_WIDTH  0.15f
 #define BLOCK_HEIGHT 0.075f
+#define EXTRA_PROPABILITY 100
 
 /** Werte des Sticks **/
 #define STICK_WIDTH 0.3f

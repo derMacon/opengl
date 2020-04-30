@@ -49,6 +49,22 @@ static void drawRound(void) {
     glEnd();
 }
 
+void drawExtra(){
+    GLfloat x = 0.0f;
+    GLfloat y = 0.0f;
+
+    glColor3f(0.0f, 1.0f, 0.0f);
+
+    glPushMatrix();
+    {
+        glTranslatef(x, y, ZERO);
+        glScalef(STICK_WIDTH, BAR_THICKNESS, 1.0f);
+        drawSquare();
+    }
+
+    glPopMatrix();
+}
+
 static void drawBall(const CGPoint2f coords) {
     GLfloat x = coords[0];
     GLfloat y = coords[1];
