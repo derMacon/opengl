@@ -176,6 +176,9 @@ void handleHits() {
         // TODO: Nach korrekter Winkelberechnung besseren Wert finden fuer ballspeed
         ball_speed += 0.1f;
     }
+
+    // Ausgabe
+    printf("Punkte: %d | Verbleibende Leben: %d\n", player.points, player.lives);
 }
 
 int checkBlockCollision(Block *block) {
