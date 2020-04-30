@@ -12,7 +12,7 @@
 static CGPoint2f g_stickCenter = {0.0f, -BAR_X_OFFSET};
 
 /** der Mittelpunkt des Balls */
-static CGPoint2f g_ballCenter = {0.0f, -0.9f};
+static CGPoint2f g_ballCenter = {INITIAL_BALL_X_POS, INITIAL_BALL_Y_POST};
 
 /** Geschwindigkeitsvektor des Balls. */
 static CGVector2f g_quadSpeed = {X_STEPS_PS, Y_STEPS_PS};
@@ -60,10 +60,40 @@ float calculateAngle(float value) {
     return (value * 45) / maxVal;
 }
 
+/**
+ * Spieler hat verloren!
+ * Ausgabe von Punkten, Spiel pausuerne
+ */
+void handleLoss() {
+
+    player.lives -= 1;
+    printf("Sie haben ein Leben verloren!\nVerbleibende Leben: %d\n", player.lives);
+
+    if (player.lives == 0) {
+        printf("Sie haben verloren und %d Punkte erreicht!\n", player.points);
+        fflush(stdout);
+        game_paused = GL_TRUE;
+    } else {
+        // Ball neu spawnen
+        g_ballCenter[0] = g_stickCenter[0];
+        g_ballCenter[1] = INITIAL_BALL_Y_POST;
+
+        // TODO: Winkel random berechnen zwischen -45° und 45°
+        g_quadSpeed[0] = 0.5f;
+        g_quadSpeed[1] = 0.5f;
+    }
+
+}
+
 static CGSide checkBorderCollision(void) {
     CGSide res = sideNone;
 
     float collisionOffset = 0.005f;
+
+    // Ball ist unter dem Stick, also verloren
+    if (g_ballCenter[1] <= -1.0f) {
+        handleLoss();
+    }
 
     if (g_quadSpeed[0] > 0.0f &&
         g_ballCenter[0] + (BALL_WIDTH / 2) + collisionOffset >= BAR_X_OFFSET - BAR_THICKNESS) {
@@ -94,6 +124,7 @@ static CGSide checkBorderCollision(void) {
              (g_ballCenter[0] <= (g_stickCenter[0] + STICK_WIDTH / 2) &&
               g_ballCenter[1] < g_stickCenter[1] + BAR_THICKNESS + (2 * collisionOffset))) {
 
+
         // An dieserm Punkt kollidiert der Ball auf der X-Achse mit dem Stick
         float collisionX = g_ballCenter[0] - g_stickCenter[0];
 
@@ -123,13 +154,16 @@ static CGSide checkBorderCollision(void) {
 }
 
 void calcBallPosition(double interval) {
-    CGSide side = checkBorderCollision();
 
-    if (side != sideNone) {
-        handleBorderCollision(side);
-    } else {
-        g_ballCenter[0] += g_quadSpeed[0] * (float) interval;
-        g_ballCenter[1] += g_quadSpeed[1] * (float) interval;
+    if (!game_paused) {
+        CGSide side = checkBorderCollision();
+
+        if (side != sideNone) {
+            handleBorderCollision(side);
+        } else {
+            g_ballCenter[0] += g_quadSpeed[0] * (float) interval;
+            g_ballCenter[1] += g_quadSpeed[1] * (float) interval;
+        }
     }
 }
 
@@ -182,7 +216,7 @@ void handleHits() {
     printf("Punkte: %d | Verbleibende Leben: %d\n", player.points, player.lives);
 
     // Spieler hat gewonnen
-    if (player.points >= NUMBER_OF_BLOCKS){
+    if (player.points >= NUMBER_OF_BLOCKS) {
         // Gewonnen
         printf("Sie haben gewonnen!");
 

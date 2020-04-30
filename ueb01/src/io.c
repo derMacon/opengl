@@ -51,7 +51,7 @@ cbTimer(int lastCallTime) {
     /* Seit dem letzten Funktionsaufruf vergangene Zeit in Sekunden */
     double interval = (double) (thisCallTime - lastCallTime) / 1000.0f;
 
-    if (game_paused){
+    if (game_paused) {
         interval = 0.0f;
     }
 
@@ -145,12 +145,15 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
             /* normale Taste gedrueckt */
         else {
             switch (key) {
-                /* Programm beenden */
+                case 'p':
+                    game_paused = !game_paused;
+                    break;
+
+                    /* Programm beenden */
                 case 'q':
                 case 'Q':
                 case ESC:
                     exit(0);
-                    break;
             }
         }
     }
