@@ -7,6 +7,7 @@
 #include "math.h"
 #include "variables.h"
 #include "types.h"
+#include <time.h>
 
 static Block bloecke[NUMBER_OF_BLOCKS];
 
@@ -120,8 +121,7 @@ float *selectColor(int randomNumber) {
  * @return
  */
 int genNumber(int maxNumber) {
-    return (rand() %
-            (maxNumber - 1 + 1)) + 1;
+    return (rand() % (maxNumber - 1 + 1)) + 1;
 }
 
 static void drawBlock(const Block block) {
@@ -224,12 +224,27 @@ initScene(void) {
     /* Breite von Linien */
     glLineWidth(2.0f);
 
+    // Zeit fuer Random einbeziehen, um Zufallsfarben zu generieren
+    // srand steht hier, weil es nur einmal aufgerufen werden darf
+    srand(time(NULL));
+
     /* Bloecke generieren */
     generateBlocks(bloecke);
 
-
     /* Alles in Ordnung? */
     return (GLGETERROR == GL_NO_ERROR);
+}
+
+/**
+ * Alle Bloecke zeichnen, wenn sie nicht versteckt sind und
+ * der Ball gerade nicht kollidiert
+ */
+void drawBlocks() {
+    for (int i = 0; i < NUMBER_OF_BLOCKS; i++) {
+        if (!bloecke[i].hidden && checkBlockCollision(&bloecke[i])) {
+            drawBlock(bloecke[i]);
+        }
+    }
 }
 
 void drawScene(void) {
@@ -247,11 +262,7 @@ void drawScene(void) {
     drawBall(*ballCenter);
 
     // Bloecke zeichnen
-    for (int i = 0; i < NUMBER_OF_BLOCKS; i++) {
-        if (!bloecke[i].hidden && checkBlockCollision(&bloecke[i])) {
-            drawBlock(bloecke[i]);
-        }
-    }
+    drawBlocks();
 
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
