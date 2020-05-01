@@ -8,6 +8,8 @@
 #include "types.h"
 
 GLboolean game_paused = GL_FALSE;
+GLboolean show_extra = GL_FALSE;
+
 
 /**
  * Setzen der Projektionsmatrix.

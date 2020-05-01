@@ -14,5 +14,4 @@ int initScene(void);
 
 void drawExtra();
 
-
 #endif

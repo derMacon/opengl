@@ -29,7 +29,12 @@
 #define STICK_WIDTH 0.3f
 #define STEPS_PS 1.0f
 
-/** Werte des Spielers **/
+/** Extras **/
+#define EXTRA_PROPABILITY 10 // Wahrscheinlichkeit, dass ein Extra spawnt
+#define EXTRA_WIDTH 0.1f
+#define EXTRA_HEIGHT 0.1f
+
+/** Spielers **/
 #define INITIAL_LIVES 3
 #define INITIAL_POINTS 0
 

@@ -103,6 +103,7 @@ static CGSide checkBorderCollision(void) {
 
     // Ball ist unter dem Stick, also verloren
     if (g_ballCenter[1] <= -1.0f) {
+        show_extra = GL_FALSE;
         handleLoss();
     }
 
@@ -225,9 +226,8 @@ void handleHits() {
 
     // EXTRAS
     if (propabilityOccured()){
-        // TODO: Nicht so, sondern irgendwie mit Boolean und dann in DrawScene, damit das Extra auch bleibt
         printf("EXTRA\n");
-        drawExtra();
+        show_extra = GL_TRUE;
     }
 
     // Ausgabe

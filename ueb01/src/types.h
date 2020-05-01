@@ -50,6 +50,8 @@ typedef struct Player {
 
 GLboolean game_paused;
 
+GLboolean show_extra;
+
 /** Kollisionsseiten. */
 enum e_Side {
     sideNone, sideLeft, sideRight, sideTop, sideBottom

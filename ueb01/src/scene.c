@@ -11,6 +11,24 @@
 
 static Block bloecke[NUMBER_OF_BLOCKS];
 
+static void drawTriangle(void) {
+    glBegin(GL_TRIANGLES);
+
+    float x = 0.7f;
+
+    glColor3f(1, 0, 0);
+
+    // Links unten
+    glVertex2f(-x, -x);
+
+    // Rechts unten
+    glVertex2f(x, -x);
+
+    // oben
+    glVertex2f(0, x);
+    glEnd();
+}
+
 /**
  * Zeichnet ein Rechteck mit der Breite und Hoehe 1.
  */
@@ -49,7 +67,7 @@ static void drawRound(void) {
     glEnd();
 }
 
-void drawExtra(){
+void drawExtra() {
     GLfloat x = 0.0f;
     GLfloat y = 0.0f;
 
@@ -58,8 +76,8 @@ void drawExtra(){
     glPushMatrix();
     {
         glTranslatef(x, y, ZERO);
-        glScalef(STICK_WIDTH, BAR_THICKNESS, 1.0f);
-        drawSquare();
+        glScalef(EXTRA_WIDTH, EXTRA_HEIGHT, 1.0f);
+        drawTriangle();
     }
 
     glPopMatrix();
@@ -219,7 +237,6 @@ void generateBlocks(Block *block) {
     }
 }
 
-
 /**
  * Initialisierung der Szene (inbesondere der OpenGL-Statusmaschine).
  * Setzt Hintergrund- und Zeichenfarbe.
@@ -276,6 +293,11 @@ void drawScene(void) {
 
     drawStick(*stickCenter);
     drawBall(*ballCenter);
+
+    // TODO: Pruefen, dass ein neues Extra gespawnt werden muss?
+    if (show_extra) {
+        drawExtra();
+    }
 
     // Bloecke zeichnen
     drawBlocks();
