@@ -66,7 +66,6 @@ float calculateAngle(float value) {
     } else if (value > maxVal) {
         value = maxVal;
     }
-
     // Dreisatz 0.15 entsprechen 100% und 45°
     return (value * 45) / maxVal;
 }
@@ -136,27 +135,39 @@ static CGSide checkBorderCollision(void) {
              (g_ballCenter[0] <= (g_stickCenter[0] + STICK_WIDTH / 2) &&
               g_ballCenter[1] < g_stickCenter[1] + BAR_THICKNESS + (2 * collisionOffset))) {
 
-
         // An dieserm Punkt kollidiert der Ball auf der X-Achse mit dem Stick
         float collisionX = g_ballCenter[0] - g_stickCenter[0];
 
         // Neuen Winkel berechnen
-        float newAngle = calculateAngle(collisionX);
+        float newAngle = calculateAngle(collisionX) + 90;
 
+        // newAngle = atan2f(g_quadSpeed[1], g_quadSpeed[0]);
         /*  printf("BallCenterX Alt: %f\n", g_ballCenter[0]);
-          printf("Collisionx: %f\n", collisionX * 100);
-          printf("New angle %f\n", newAngle); */
+          printf("Collisionx: %f\n", collisionX * 100);*/
+        printf("New angle %f\n", newAngle);
+
+        // newAngle = 90.0f;
 
         if (newAngle == 0) {
             g_quadSpeed[1] *= -1;
         } else {
-            g_quadSpeed[0] = ball_speed * cosf(newAngle);
 
-            // y
-            g_quadSpeed[1] = ball_speed * sinf(newAngle);
-/*
-            printf("Speed X: %f\n", ball_speed * cosf(newAngle));
-            printf("Speed Y: %f\n", -ball_speed * -sinf(newAngle));*/
+            float xOld = g_quadSpeed[0];
+             //xOld = -1.0f;
+            float yOld = g_quadSpeed[1];
+             //yOld = 0.0;
+
+            float x = xOld * cosf(newAngle) - yOld * sinf(newAngle);
+            float y = xOld * sinf(newAngle) + yOld * cosf(newAngle);
+
+            printf("NSX: %f\n", x);
+            printf("NSY: %f\n", y);
+            g_quadSpeed[0] = x;
+            g_quadSpeed[1] = y;
+
+            float newA = atan2(y, x) * 180 / M_PI;
+            printf("Angle: %f\n\n", newA);
+
         }
 
         res = sideNone;
@@ -225,7 +236,7 @@ void handleHits() {
     }
 
     // EXTRAS
-    if (propabilityOccured()){
+    if (propabilityOccured()) {
         printf("EXTRA\n");
         show_extra = GL_TRUE;
     }
