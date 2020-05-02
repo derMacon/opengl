@@ -50,6 +50,8 @@ typedef struct Player {
 
 GLboolean game_paused;
 
+GLboolean show_wireframe;
+
 GLboolean show_extra;
 
 /** Kollisionsseiten. */

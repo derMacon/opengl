@@ -11,7 +11,7 @@ void drawScene(void);
  * @return Rueckgabewert: im Fehlerfall 0, sonst 1.
  */
 int initScene(void);
-
+void toggleWireframe();
 void drawExtra();
 
 #endif

@@ -9,6 +9,8 @@
 #include "types.h"
 #include <time.h>
 
+
+GLboolean show_wireframe = GL_FALSE;
 static Block bloecke[NUMBER_OF_BLOCKS];
 
 static void drawTriangle(void) {
@@ -266,6 +268,18 @@ initScene(void) {
 
     /* Alles in Ordnung? */
     return (GLGETERROR == GL_NO_ERROR);
+}
+
+/**
+ * Schaltet den Wireframe-Modus an oder aus
+ */
+void toggleWireframe() {
+    show_wireframe = !show_wireframe;
+    if (show_wireframe) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    } else {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
 }
 
 /**

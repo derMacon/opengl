@@ -171,6 +171,9 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case GLUT_KEY_RIGHT:
                     setStickMovement(dirRight, GL_FALSE);
                     break;
+                case GLUT_KEY_F1:
+                    toggleWireframe();
+                    break;
             }
         }
     }
