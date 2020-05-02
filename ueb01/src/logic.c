@@ -56,8 +56,7 @@ handleBorderCollision(CGSide side) {
     }
 }
 
-float calculateAngle(float value) {
-
+float calculateNewAngle(float value) {
     float maxVal = 0.15f;
 
     // Maximumwerte beibehalten
@@ -66,16 +65,15 @@ float calculateAngle(float value) {
     } else if (value > maxVal) {
         value = maxVal;
     }
-    // Dreisatz 0.15 entsprechen 100% und 45°
-    return (value * 45) / maxVal;
+
+    return (value / 3) * 10;
 }
 
-float randomXValue()
-{
+float randomXValue() {
     float min = -0.5f;
     float max = 0.5f;
     float scale = rand() / (float) RAND_MAX; /* [0, 1.0] */
-    return min + scale * ( max - min );      /* [min, max] */
+    return min + scale * (max - min);      /* [min, max] */
 }
 
 /**
@@ -146,36 +144,9 @@ static CGSide checkBorderCollision(void) {
         float collisionX = g_ballCenter[0] - g_stickCenter[0];
 
         // Neuen Winkel berechnen
-        float newAngle = calculateAngle(collisionX) + 90;
-
-        // newAngle = atan2f(g_quadSpeed[1], g_quadSpeed[0]);
-        /*  printf("BallCenterX Alt: %f\n", g_ballCenter[0]);
-          printf("Collisionx: %f\n", collisionX * 100);*/
-        printf("New angle %f\n", newAngle);
-
-        // newAngle = 90.0f;
-
-        if (newAngle == 0) {
-            g_quadSpeed[1] *= -1;
-        } else {
-
-            float xOld = g_quadSpeed[0];
-             //xOld = -1.0f;
-            float yOld = g_quadSpeed[1];
-             //yOld = 0.0;
-
-            float x = xOld * cosf(newAngle) - yOld * sinf(newAngle);
-            float y = xOld * sinf(newAngle) + yOld * cosf(newAngle);
-
-            printf("NSX: %f\n", x);
-            printf("NSY: %f\n", y);
-            g_quadSpeed[0] = x;
-            g_quadSpeed[1] = y;
-
-            float newA = atan2(y, x) * 180 / M_PI;
-            printf("Angle: %f\n\n", newA);
-
-        }
+        g_quadSpeed[0] = calculateNewAngle(collisionX);
+        float newval = Y_STEPS_PS - fabs(calculateNewAngle(collisionX));
+        g_quadSpeed[1] = Y_STEPS_PS + newval;
 
         res = sideNone;
     }
