@@ -100,6 +100,42 @@ void handleLoss() {
 
 }
 
+float calculateRadiant(float value) {
+
+    float maxVal = 0.15f;
+
+    // Maximumwerte beibehalten
+    if (value < -maxVal) {
+        value = -maxVal;
+    } else if (value > maxVal) {
+        value = maxVal;
+    }
+
+    float angle = (value * 45) / maxVal;
+
+    // Inititaler Ballspeed ist 0.5, also um 45° korrigieren
+    // x und y sind beide iniital 0.5 -> also 45°
+    float correctedAngle = angle - 45;
+    float radiant = correctedAngle * M_PI / 180;
+
+    // Dreisatz 0.15 entsprechen 100% und 45°
+    return radiant;
+}
+
+void rotate(float radiant) {
+
+    float x = X_STEPS_PS, y = Y_STEPS_PS;
+    float tempX = x, tempY = y;
+    float cos = cosf(radiant);
+    float sin = sinf(radiant);
+
+    x = tempX * cos + tempY * sin;
+    y = -tempX * sin + tempY * cos;
+
+    g_quadSpeed[0] = x;
+    g_quadSpeed[1] = y;
+}
+
 static CGSide checkBorderCollision(void) {
     CGSide res = sideNone;
 
@@ -144,9 +180,13 @@ static CGSide checkBorderCollision(void) {
         float collisionX = g_ballCenter[0] - g_stickCenter[0];
 
         // Neuen Winkel berechnen
-        g_quadSpeed[0] = calculateNewAngle(collisionX);
-        float newval = Y_STEPS_PS - fabs(calculateNewAngle(collisionX));
-        g_quadSpeed[1] = Y_STEPS_PS + newval;
+        float radiant = calculateRadiant(collisionX);
+
+        if (radiant == 0) {
+            g_quadSpeed[1] *= -1;
+        } else {
+            rotate(radiant);
+        }
 
         res = sideNone;
     }

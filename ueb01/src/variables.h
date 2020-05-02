@@ -17,8 +17,8 @@
 #define INITIAL_BALL_X_POS 0.0f
 #define INITIAL_BALL_Y_POST -0.8f
 #define BALL_WIDTH 0.02f
-#define X_STEPS_PS 0.2f // X-Geschwindigkeit
-#define Y_STEPS_PS 0.3f // Y-Geschwindigkeit
+#define X_STEPS_PS 0.5f // X-Geschwindigkeit
+#define Y_STEPS_PS 0.5f // Y-Geschwindigkeit
 
 /** Bloecke **/
 #define NUMBER_OF_BLOCKS 56
