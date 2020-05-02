@@ -70,6 +70,14 @@ float calculateAngle(float value) {
     return (value * 45) / maxVal;
 }
 
+float randomXValue()
+{
+    float min = -0.5f;
+    float max = 0.5f;
+    float scale = rand() / (float) RAND_MAX; /* [0, 1.0] */
+    return min + scale * ( max - min );      /* [min, max] */
+}
+
 /**
  * Spieler hat verloren!
  * Ausgabe von Punkten, Spiel pausuerne
@@ -88,8 +96,7 @@ void handleLoss() {
         g_ballCenter[0] = g_stickCenter[0];
         g_ballCenter[1] = INITIAL_BALL_Y_POST;
 
-        // TODO: Winkel random berechnen zwischen -45° und 45°
-        g_quadSpeed[0] = 0.5f;
+        g_quadSpeed[0] = randomXValue();
         g_quadSpeed[1] = 0.5f;
     }
 
