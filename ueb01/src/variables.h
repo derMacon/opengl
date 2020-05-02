@@ -17,6 +17,7 @@
 #define INITIAL_BALL_X_POS 0.0f
 #define INITIAL_BALL_Y_POST -0.8f
 #define BALL_WIDTH 0.02f
+#define BALL_SPEED_INCREASE 0.3f
 #define X_STEPS_PS 0.5f // X-Geschwindigkeit
 #define Y_STEPS_PS 0.5f // Y-Geschwindigkeit
 

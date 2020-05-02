@@ -17,8 +17,7 @@ static void drawTriangle(void) {
     glBegin(GL_TRIANGLES);
 
     float x = 0.7f;
-
-    glColor3f(1, 0, 0);
+    glColor3f(1, 0.843, 0);
 
     // Links unten
     glVertex2f(-x, -x);

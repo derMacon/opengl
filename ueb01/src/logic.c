@@ -91,6 +91,7 @@ void handleLoss() {
         game_paused = GL_TRUE;
     } else {
         // Ball neu spawnen
+        ball_speed = INITIAL_BALL_SPEED;
         g_ballCenter[0] = g_stickCenter[0];
         g_ballCenter[1] = INITIAL_BALL_Y_POST;
 
@@ -132,8 +133,8 @@ void rotate(float radiant) {
     x = tempX * cos + tempY * sin;
     y = -tempX * sin + tempY * cos;
 
-    g_quadSpeed[0] = x;
-    g_quadSpeed[1] = y;
+    g_quadSpeed[0] = x * ball_speed;
+    g_quadSpeed[1] = y * ball_speed;
 }
 
 static CGSide checkBorderCollision(void) {
@@ -187,6 +188,8 @@ static CGSide checkBorderCollision(void) {
         } else {
             rotate(radiant);
         }
+
+        printf("Ballspeed: %f\n", ball_speed);
 
         res = sideNone;
     }
@@ -249,8 +252,9 @@ void handleHits() {
 
     // Alle 10 Punkte die Geschwindigkeit erhoehen
     if (player.points % 10 == 0) {
-        // TODO: Nach korrekter Winkelberechnung besseren Wert finden fuer ballspeed
-        ball_speed += 0.1f;
+        ball_speed += BALL_SPEED_INCREASE;
+        g_quadSpeed[0] *= ball_speed;
+        g_quadSpeed[1] *= ball_speed;
     }
 
     // EXTRAS
