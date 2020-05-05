@@ -9,9 +9,11 @@
 #include "types.h"
 #include <time.h>
 
-
 GLboolean show_wireframe = GL_FALSE;
 static Block bloecke[NUMBER_OF_BLOCKS];
+int tAngle = 0;
+
+float stick_width = STICK_WIDTH;
 
 static void drawTriangle(void) {
     glBegin(GL_TRIANGLES);
@@ -68,17 +70,24 @@ static void drawRound(void) {
     glEnd();
 }
 
-void drawExtra() {
-    GLfloat x = 0.0f;
-    GLfloat y = 0.0f;
+void drawExtra(const CGPoint2f coords) {
+    GLfloat x = coords[0];
+    GLfloat y = coords[1];
 
     glColor3f(0.0f, 1.0f, 0.0f);
 
     glPushMatrix();
     {
         glTranslatef(x, y, ZERO);
-        glScalef(EXTRA_WIDTH, EXTRA_HEIGHT, 1.0f);
+        glRotatef(tAngle, 0, 0, 1);
+
+        glScalef(EXTRA_WIDTH, EXTRA_HEIGHT, 2.0f);
         drawTriangle();
+
+        tAngle++;
+        if (tAngle > 360) {
+            tAngle = 0;
+        }
     }
 
     glPopMatrix();
@@ -87,7 +96,6 @@ void drawExtra() {
 static void drawBall(const CGPoint2f coords) {
     GLfloat x = coords[0];
     GLfloat y = coords[1];
-
     glColor3f(0.827f, 0.827f, 0.827f);
 
     glPushMatrix();
@@ -185,7 +193,7 @@ static void drawStick(const CGPoint2f coords) {
     glPushMatrix();
     {
         glTranslatef(x, y, ZERO);
-        glScalef(STICK_WIDTH, BAR_THICKNESS, 1.0f);
+        glScalef(stick_width, BAR_THICKNESS, 1.0f);
         drawSquare();
     }
 
@@ -197,10 +205,10 @@ static void drawStick(const CGPoint2f coords) {
  *
  */
 static void drawBorder(GLfloat posX, GLfloat posY, int showTop) {
-    glColor3f(1.0f, 1.0f, 1.0f);
 
     glPushMatrix();
     {
+        glColor3f(1.0f, 1.0f, 1.0f);
         if (showTop) {
             glTranslatef(posX, posY, ZERO);
             glScalef(BAR_WIDTH, BAR_HEIGHT, 1.0f);
@@ -298,6 +306,7 @@ void drawScene(void) {
     /* In der Logik berechnet Position beziehen */
     CGPoint2f *stickCenter = getStickCenter();
     CGPoint2f *ballCenter = getBallCenter();
+    CGPoint2f *extraCenter = getExtraCenter();
 
     /* Rahmen zeichnen */
     drawBorder(BAR_X_OFFSET, ZERO, 1);
@@ -307,13 +316,12 @@ void drawScene(void) {
     drawStick(*stickCenter);
     drawBall(*ballCenter);
 
+
     // TODO: Pruefen, dass ein neues Extra gespawnt werden muss?
     if (show_extra) {
-        drawExtra();
+        drawExtra(*extraCenter);
     }
 
     // Bloecke zeichnen
     drawBlocks();
-
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
