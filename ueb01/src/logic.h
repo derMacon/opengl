@@ -9,14 +9,19 @@
  * Liefert aktuelle Postion (des Mittelpunktes) des Rechtecks.
  * @return Postion (des Mittelpunktes) des Rechtecks.
  */
-CGPoint2f *getStickCenter (void);
+CGPoint2f *getStickCenter(void);
 
-CGPoint2f *getBallCenter (void);
+CGPoint2f *getBallCenter(void);
+CGPoint2f *getExtraCenter(void);
 
 int checkBlockCollision(Block *block);
 
-void calcStickPosition (double interval);
-void calcBallPosition (double interval);
-void setStickMovement (CGDirection direction, GLboolean status);
+void calcStickPosition(double interval);
+
+void calcBallPosition(double interval);
+
+void calcExtraPosition(double interval);
+
+void setStickMovement(CGDirection direction, GLboolean status);
 
 #endif

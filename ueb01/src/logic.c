@@ -13,11 +13,13 @@ static CGPoint2f g_stickCenter = {0.0f, -BAR_X_OFFSET};
 
 /** der Mittelpunkt des Balls */
 static CGPoint2f g_ballCenter = {INITIAL_BALL_X_POS, INITIAL_BALL_Y_POST};
+static CGPoint2f g_extraCenter = {INITIAL_BALL_X_POS, 0.0f};
 
 /** Geschwindigkeitsvektor des Balls. */
 static CGVector2f g_quadSpeed = {X_STEPS_PS, Y_STEPS_PS};
 
 float ball_speed = INITIAL_BALL_SPEED;
+float extra_speed = EXTRA_SPEED;
 
 static Player player = {INITIAL_LIVES, INITIAL_POINTS};
 
@@ -56,19 +58,6 @@ handleBorderCollision(CGSide side) {
     }
 }
 
-float calculateNewAngle(float value) {
-    float maxVal = 0.15f;
-
-    // Maximumwerte beibehalten
-    if (value < -maxVal) {
-        value = -maxVal;
-    } else if (value > maxVal) {
-        value = maxVal;
-    }
-
-    return (value / 3) * 10;
-}
-
 float randomXValue() {
     float min = -0.5f;
     float max = 0.5f;
@@ -98,7 +87,11 @@ void handleLoss() {
         g_quadSpeed[0] = randomXValue();
         g_quadSpeed[1] = 0.5f;
     }
+}
 
+void resetExtraPosition() {
+    show_extra = GL_FALSE;
+    g_extraCenter[1] = 0;
 }
 
 float calculateRadiant(float value) {
@@ -144,7 +137,7 @@ static CGSide checkBorderCollision(void) {
 
     // Ball ist unter dem Stick, also verloren
     if (g_ballCenter[1] <= -1.0f) {
-        show_extra = GL_FALSE;
+        resetExtraPosition();
         handleLoss();
     }
 
@@ -173,8 +166,8 @@ static CGSide checkBorderCollision(void) {
         // Ball fliegt nach unten und
         //  die untere Seite des Balls ueberschreitet den unteren Rand
     else if (g_quadSpeed[1] < 0.0f &&
-             (g_ballCenter[0] >= (g_stickCenter[0] - STICK_WIDTH / 2)) &&
-             (g_ballCenter[0] <= (g_stickCenter[0] + STICK_WIDTH / 2) &&
+             (g_ballCenter[0] >= (g_stickCenter[0] - stick_width / 2)) &&
+             (g_ballCenter[0] <= (g_stickCenter[0] + stick_width / 2) &&
               g_ballCenter[1] < g_stickCenter[1] + BAR_THICKNESS + (2 * collisionOffset))) {
 
         // An dieserm Punkt kollidiert der Ball auf der X-Achse mit dem Stick
@@ -189,12 +182,31 @@ static CGSide checkBorderCollision(void) {
             rotate(radiant);
         }
 
-        printf("Ballspeed: %f\n", ball_speed);
-
         res = sideNone;
     }
 
     return res;
+}
+
+void activateExtra() {
+    stick_width *= EXTRA_WIDEN;
+}
+
+void checkExtraCollision() {
+    float extra_x = g_extraCenter[0];
+    float extra_y = g_extraCenter[1];
+
+    float stick_x = g_stickCenter[0];
+    float stick_y = g_stickCenter[1];
+
+    // Wenn Extra auf Schlaeger auftrifft
+    if ((extra_x >= stick_x - stick_width / 2) &&
+        (extra_x <= stick_x + stick_width / 2)
+        && extra_y < stick_y + BAR_THICKNESS) {
+
+        activateExtra();
+        resetExtraPosition();
+    }
 }
 
 void calcBallPosition(double interval) {
@@ -211,6 +223,15 @@ void calcBallPosition(double interval) {
     }
 }
 
+void calcExtraPosition(double interval) {
+    g_extraCenter[1] -= extra_speed * (float) interval;
+    checkExtraCollision();
+
+    if (g_extraCenter[1] <= -1.0f) {
+        resetExtraPosition();
+    }
+}
+
 /**
  * Berechnet neue Position des Sticks.
  * @param interval Dauer der Bewegung in Sekunden.
@@ -222,16 +243,20 @@ calcStickPosition(double interval) {
     if (g_movement[dirLeft]) {
         // Position linker Balken + Breite des Sticks - Breite des linken Balkens
         // ist der Punkt, der den Stick stoppt
-        float leftBarPosition = -BAR_X_OFFSET - BAR_WIDTH + STICK_WIDTH;
-        if (g_stickCenter[0] > leftBarPosition) {
+        float stickPosition = g_stickCenter[0] - (stick_width / 2);
+        float leftBarPosition = -BAR_X_OFFSET + BAR_WIDTH / 2;
+
+        if (stickPosition > leftBarPosition) {
             g_stickCenter[0] -= STEPS_PS * (float) interval;
         }
     }
 
     // Stick nach rechts bewegen
     if (g_movement[dirRight]) {
-        float rightBarPosition = BAR_X_OFFSET + BAR_WIDTH - STICK_WIDTH;
-        if (g_stickCenter[0] < rightBarPosition) {
+        float stickPosition = g_stickCenter[0] + (stick_width / 2);
+        float rightBarPosition = BAR_X_OFFSET - BAR_WIDTH / 2 ;
+
+        if (stickPosition < rightBarPosition) {
             g_stickCenter[0] += STEPS_PS * (float) interval;
         }
     }
@@ -375,10 +400,19 @@ getStickCenter(void) {
 }
 
 /**
- * Liefert aktuelle Postion (des Mittelpunktes) des Sticks.
- * @return Postion (des Mittelpunktes) des Sticks.
+ * Liefert aktuelle Postion (des Mittelpunktes) des Balls.
+ * @return Postion (des Mittelpunktes) des Balls.
  */
 CGPoint2f *
 getBallCenter(void) {
     return &g_ballCenter;
+}
+
+/**
+ * Liefert aktuelle Postion (des Mittelpunktes) des Extras.
+ * @return Postion (des Mittelpunktes) des Extras.
+ */
+CGPoint2f *
+getExtraCenter(void) {
+    return &g_extraCenter;
 }

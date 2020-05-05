@@ -54,6 +54,8 @@ GLboolean show_wireframe;
 
 GLboolean show_extra;
 
+float stick_width;
+
 /** Kollisionsseiten. */
 enum e_Side {
     sideNone, sideLeft, sideRight, sideTop, sideBottom

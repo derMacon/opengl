@@ -31,9 +31,11 @@
 #define STEPS_PS 1.0f
 
 /** Extras **/
-#define EXTRA_PROPABILITY 10 // Wahrscheinlichkeit, dass ein Extra spawnt
-#define EXTRA_WIDTH 0.1f
-#define EXTRA_HEIGHT 0.1f
+#define EXTRA_SPEED 0.7f
+#define EXTRA_PROPABILITY 6 // Wahrscheinlichkeit, dass ein Extra spawnt
+#define EXTRA_WIDTH 0.05f
+#define EXTRA_HEIGHT 0.05f
+#define EXTRA_WIDEN 1.2f
 
 /** Spielers **/
 #define INITIAL_LIVES 3

@@ -62,6 +62,10 @@ cbTimer(int lastCallTime) {
 
     calcBallPosition(interval);
 
+    if (show_extra){
+        calcExtraPosition(interval);
+    }
+
     /* Wieder als Timer-Funktion registrieren */
     glutTimerFunc(1000 / TIMER_CALLS_PS, cbTimer, thisCallTime);
 

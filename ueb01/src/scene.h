@@ -12,6 +12,4 @@ void drawScene(void);
  */
 int initScene(void);
 void toggleWireframe();
-void drawExtra();
-
 #endif
