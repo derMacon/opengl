@@ -252,6 +252,12 @@ void handleHits() {
 
     // Alle 10 Punkte die Geschwindigkeit erhoehen
     if (player.points % 10 == 0) {
+        // BAll speed entfernen für Inititalgeschwindigkeit
+        // plus richtigem Winkel
+        g_quadSpeed[0] /= ball_speed;
+        g_quadSpeed[1] /= ball_speed;
+
+        // Ballgeschwindigkeit erhoehen
         ball_speed += BALL_SPEED_INCREASE;
         g_quadSpeed[0] *= ball_speed;
         g_quadSpeed[1] *= ball_speed;
