@@ -22,6 +22,7 @@ float ball_speed = INITIAL_BALL_SPEED;
 float extra_speed = EXTRA_SPEED;
 
 static Player player = {INITIAL_LIVES, INITIAL_POINTS};
+int extra_points = 0;
 
 /**
  * Bewegungsstatus der Sticks. Fuer alle zwei Richtungen wird angegeben, ob
@@ -78,6 +79,7 @@ void handleLoss() {
         printf("Sie haben verloren und %d Punkte erreicht!\n", player.points);
         fflush(stdout);
         game_paused = GL_TRUE;
+        extra_points = 0;
     } else {
         // Ball neu spawnen
         ball_speed = INITIAL_BALL_SPEED;
@@ -96,7 +98,7 @@ void resetExtraPosition() {
 
 float calculateRadiant(float value) {
 
-    float maxVal = 0.15f;
+    float maxVal = stick_width / 2;
 
     // Maximumwerte beibehalten
     if (value < -maxVal) {
@@ -188,8 +190,59 @@ static CGSide checkBorderCollision(void) {
     return res;
 }
 
+void addExtraPoints() {
+    player.points += EXTRA_POINTS;
+    extra_points += EXTRA_POINTS;
+    printf("Extra: %d Punkte erhalten\n", EXTRA_POINTS);
+}
+
+void increaseStickWidth() {
+    // Den Stick nicht zu breit machen :)
+    float maxWidth = STICK_WIDTH * 3;
+
+    if (stick_width < maxWidth) {
+        stick_width *= EXTRA_WIDEN;
+        printf("Extra: Stick wurde verbreitert!\n");
+    } else {
+        addExtraPoints();
+    }
+}
+
+void decreaseBallSpeed() {
+    printf("Extra: Ball wurde verlangsamt!\n");
+
+    float minSpeed = INITIAL_BALL_SPEED;
+
+    if (ball_speed > minSpeed) {
+        g_quadSpeed[0] /= ball_speed;
+        g_quadSpeed[1] /= ball_speed;
+
+        ball_speed -= BALL_SPEED_MODIFIER;
+
+        g_quadSpeed[0] *= ball_speed;
+        g_quadSpeed[1] *= ball_speed;
+    } else {
+        addExtraPoints();
+    }
+}
+
 void activateExtra() {
-    stick_width *= EXTRA_WIDEN;
+
+    int random = (rand() % 3) + 1;
+
+    switch (random) {
+        case 1:
+            increaseStickWidth();
+            break;
+
+        case 2:
+            decreaseBallSpeed();
+            break;
+
+        case 3:
+            addExtraPoints();
+            break;;
+    }
 }
 
 void checkExtraCollision() {
@@ -254,7 +307,7 @@ calcStickPosition(double interval) {
     // Stick nach rechts bewegen
     if (g_movement[dirRight]) {
         float stickPosition = g_stickCenter[0] + (stick_width / 2);
-        float rightBarPosition = BAR_X_OFFSET - BAR_WIDTH / 2 ;
+        float rightBarPosition = BAR_X_OFFSET - BAR_WIDTH / 2;
 
         if (stickPosition < rightBarPosition) {
             g_stickCenter[0] += STEPS_PS * (float) interval;
@@ -270,35 +323,40 @@ calcStickPosition(double interval) {
 void handleHits() {
     player.points += 1;
 
+    int points = player.points - extra_points;
+
     // Alle 20 Punkte ein Leben hinzufuegen
-    if (player.points % 20 == 0) {
+    if (points % 20 == 0) {
         player.lives += 1;
+        printf("Leben erhalten!\n");
     }
 
     // Alle 10 Punkte die Geschwindigkeit erhoehen
-    if (player.points % 10 == 0) {
+    if (points % 10 == 0) {
         // BAll speed entfernen für Inititalgeschwindigkeit
         // plus richtigem Winkel
         g_quadSpeed[0] /= ball_speed;
         g_quadSpeed[1] /= ball_speed;
 
         // Ballgeschwindigkeit erhoehen
-        ball_speed += BALL_SPEED_INCREASE;
+        ball_speed += BALL_SPEED_MODIFIER;
         g_quadSpeed[0] *= ball_speed;
         g_quadSpeed[1] *= ball_speed;
+        printf("Ballgeschwindigkeit erhoeht!\n");
     }
 
     // EXTRAS
-    if (propabilityOccured()) {
-        printf("EXTRA\n");
+    if (!show_extra && propabilityOccured()) {
         show_extra = GL_TRUE;
+        g_extraCenter[0] = g_ballCenter[0];
+        g_extraCenter[1] = g_ballCenter[1];
     }
 
     // Ausgabe
     printf("Punkte: %d | Verbleibende Leben: %d\n", player.points, player.lives);
 
     // Spieler hat gewonnen
-    if (player.points >= NUMBER_OF_BLOCKS) {
+    if (points >= NUMBER_OF_BLOCKS) {
         // Gewonnen
         printf("Sie haben gewonnen!");
 

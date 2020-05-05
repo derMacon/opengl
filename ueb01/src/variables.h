@@ -17,7 +17,7 @@
 #define INITIAL_BALL_X_POS 0.0f
 #define INITIAL_BALL_Y_POST -0.8f
 #define BALL_WIDTH 0.02f
-#define BALL_SPEED_INCREASE 0.3f
+#define BALL_SPEED_MODIFIER 0.3f
 #define X_STEPS_PS 0.5f // X-Geschwindigkeit
 #define Y_STEPS_PS 0.5f // Y-Geschwindigkeit
 
@@ -36,6 +36,7 @@
 #define EXTRA_WIDTH 0.05f
 #define EXTRA_HEIGHT 0.05f
 #define EXTRA_WIDEN 1.2f
+#define EXTRA_POINTS 5
 
 /** Spielers **/
 #define INITIAL_LIVES 3

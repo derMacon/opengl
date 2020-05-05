@@ -316,7 +316,6 @@ void drawScene(void) {
     drawStick(*stickCenter);
     drawBall(*ballCenter);
 
-
     // TODO: Pruefen, dass ein neues Extra gespawnt werden muss?
     if (show_extra) {
         drawExtra(*extraCenter);
