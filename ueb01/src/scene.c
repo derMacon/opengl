@@ -7,6 +7,7 @@
 #include "variables.h"
 #include "types.h"
 #include "debug.h"
+#include "helper.h"
 #include <time.h>
 
 GLboolean show_wireframe = GL_FALSE;
@@ -29,6 +30,7 @@ static void drawTriangle(void) {
 
     // oben
     glVertex2f(0, x);
+
     glEnd();
 }
 
@@ -36,19 +38,22 @@ static void drawTriangle(void) {
  * Zeichnet ein Rechteck mit der Breite und Hoehe 1.
  */
 static void drawSquare(void) {
+
+    float val = 0.5f;
+
     glBegin(GL_QUADS);
     {
         // Links unten
-        glVertex2f(-0.5, -0.5);
+        glVertex2f(-val, -val);
 
         // Rechts unten
-        glVertex2f(0.5, -0.5);
+        glVertex2f(val, -val);
 
         // Links oben
-        glVertex2f(0.5, 0.5);
+        glVertex2f(val, val);
 
         // Rechts oben
-        glVertex2f(-0.5, 0.5);
+        glVertex2f(-val, val);
     }
     glEnd();
 }
@@ -64,7 +69,7 @@ static void drawRound(void) {
 
     // TODO: Erklaerung hierfuer finden xD
     for (float angle = 0; angle < 2 * M_PI; angle += delta_theta) {
-        glVertex3f(radius * cos(angle), radius * sin(angle), 0);
+        glVertex3f(radius * cosf(angle), radius * sinf(angle), 0);
     }
 
     glEnd();
@@ -103,6 +108,39 @@ static void drawBall(const CGPoint2f coords) {
         glTranslatef(x, y, ZERO);
         glScalef(BALL_WIDTH, BALL_WIDTH, 1.0f);
         drawRound();
+    }
+
+    glPopMatrix();
+}
+
+static void drawBlock(const Block block) {
+    GLfloat x = block.position[0];
+    GLfloat y = block.position[1];
+
+    glColor3f(block.color[0], block.color[1], block.color[2]);
+
+    glPushMatrix();
+    {
+        glTranslatef(x, y, ZERO);
+        glScalef(BLOCK_WIDTH, BLOCK_HEIGHT, 1.0f);
+        drawSquare();
+    }
+
+    glPopMatrix();
+}
+
+static void drawStick(const CGPoint2f coords) {
+
+    GLfloat x = coords[0];
+    GLfloat y = coords[1];
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    glPushMatrix();
+    {
+        glTranslatef(x, y, ZERO);
+        glScalef(stick_width, BAR_THICKNESS, 1.0f);
+        drawSquare();
     }
 
     glPopMatrix();
@@ -158,47 +196,6 @@ float *selectColor(int randomNumber) {
     return colors;
 }
 
-/**
- * Generiert fuer die Bloecke Nummern, die anhand von selectColor in Farben umgewandelt werden.
- * @param maxNumber hoechste Nummer (standardmaessig 5)
- * @return
- */
-int genNumber(int maxNumber) {
-    return (rand() % (maxNumber - 1 + 1)) + 1;
-}
-
-static void drawBlock(const Block block) {
-    GLfloat x = block.position[0];
-    GLfloat y = block.position[1];
-
-    glColor3f(block.color[0], block.color[1], block.color[2]);
-
-    glPushMatrix();
-    {
-        glTranslatef(x, y, ZERO);
-        glScalef(BLOCK_WIDTH, BLOCK_HEIGHT, 1.0f);
-        drawSquare();
-    }
-
-    glPopMatrix();
-}
-
-static void drawStick(const CGPoint2f coords) {
-
-    GLfloat x = coords[0];
-    GLfloat y = coords[1];
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-
-    glPushMatrix();
-    {
-        glTranslatef(x, y, ZERO);
-        glScalef(stick_width, BAR_THICKNESS, 1.0f);
-        drawSquare();
-    }
-
-    glPopMatrix();
-}
 
 /**
  * Zeichnet einen Teil der Spielfeldbegrenzung.
@@ -231,7 +228,7 @@ void generateBlocks(Block *block) {
     for (float j = width; j > -width; j -= gap) {
         for (float i = -height; i <= height; i += gap) {
 
-            float *colors = selectColor(genNumber(5));
+            float *colors = selectColor(genRandomNumber(5, 1));
 
             block[count].color[0] = colors[0];
             block[count].color[1] = colors[1];

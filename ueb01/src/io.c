@@ -83,6 +83,7 @@ cbDisplay(void) {
 
     /* Nachfolgende Operationen beeinflussen Modelviewmatrix */
     glMatrixMode(GL_MODELVIEW);
+
     /* Matrix zuruecksetzen - Einheitsmatrix laden */
     glLoadIdentity();
 

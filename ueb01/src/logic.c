@@ -4,6 +4,7 @@
 #include "variables.h"
 #include "math.h"
 #include "types.h"
+#include "helper.h"
 #include <stdio.h>
 #include <GL/glut.h>
 
@@ -34,11 +35,7 @@ static GLboolean g_movement[2] = {GL_FALSE, GL_FALSE};
  * @param propability int Wert von 0 - 100
  */
 GLboolean propabilityOccured() {
-
-    int highestNumber = 100 + 1;
-    int calculatedNumber = (rand() % ((highestNumber - 1) + 1));
-
-    return calculatedNumber < EXTRA_PROPABILITY;
+    return genRandomNumber(100, 1) < EXTRA_PROPABILITY;
 }
 
 /**
@@ -227,7 +224,7 @@ void decreaseBallSpeed() {
 
 void activateExtra() {
 
-    int random = (rand() % 3) + 1;
+    int random = genRandomNumber(3, 1);
 
     switch (random) {
         case 1:
