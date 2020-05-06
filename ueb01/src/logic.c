@@ -170,7 +170,7 @@ static CGSide checkBorderCollision(void) {
     else if (g_quadSpeed[1] < 0.0f &&
              (g_ballCenter[0] >= (g_stickCenter[0] - stick_width / 2)) &&
              (g_ballCenter[0] <= (g_stickCenter[0] + stick_width / 2) &&
-              g_ballCenter[1] < g_stickCenter[1] + BAR_THICKNESS + (2 * collisionOffset))) {
+              g_ballCenter[1] + BALL_WIDTH / 2 < g_stickCenter[1] + BAR_THICKNESS)) {
 
         // An dieserm Punkt kollidiert der Ball auf der X-Achse mit dem Stick
         float collisionX = g_ballCenter[0] - g_stickCenter[0];
@@ -183,6 +183,9 @@ static CGSide checkBorderCollision(void) {
         } else {
             rotate(radiant);
         }
+
+        g_quadSpeed[0] = 0;
+        g_quadSpeed[1] = 0;
 
         res = sideNone;
     }
