@@ -2,11 +2,11 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include "scene.h"
-#include "debug.h"
 #include "logic.h"
 #include "math.h"
 #include "variables.h"
 #include "types.h"
+#include "debug.h"
 #include <time.h>
 
 GLboolean show_wireframe = GL_FALSE;

@@ -1,7 +1,6 @@
 
 #include <GL/glut.h>
 #include "io.h"
-#include "debug.h"
 #include "scene.h"
 #include "logic.h"
 #include "variables.h"
@@ -9,7 +8,6 @@
 
 GLboolean game_paused = GL_FALSE;
 GLboolean show_extra = GL_FALSE;
-
 
 /**
  * Setzen der Projektionsmatrix.
@@ -116,8 +114,6 @@ cbReshape(int w, int h) {
  * F1-Taste (de-)aktiviert Wireframemodus.
  * F2-Taste schaltet zwischen Fenster und Vollbilddarstellung um.
  * ESC-Taste und q, Q beenden das Programm.
- * Falls Debugging aktiviert ist, wird jedes Tastaturereignis auf stdout
- * ausgegeben.
  * @param key Taste, die das Ereignis ausgeloest hat. (ASCII-Wert oder WERT des
  *        GLUT_KEY_<SPECIAL>.
  * @param status Status der Taste, GL_TRUE=gedrueckt, GL_FALSE=losgelassen.
@@ -130,9 +126,6 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     int y) {
     /** Keycode der ESC-Taste */
 #define ESC 27
-
-    /* Debugausgabe */
-    // debugPrintKeyboardEvent (key, status, isSpecialKey, x, y);
 
     /* Taste gedrueckt */
     if (status == GLUT_DOWN) {
@@ -281,7 +274,7 @@ void registerCallbacks(void) {
  */
 int
 initAndStartIO(char *title, int width, int height) {
-    int windowID = 0;
+    int windowID;
 
     /* Kommandozeile immitieren */
     int argc = 1;
@@ -289,9 +282,6 @@ initAndStartIO(char *title, int width, int height) {
 
     /* Glut initialisieren */
     glutInit(&argc, &argv);
-
-    /* DEBUG-Ausgabe */
-    INFO (("Erzeuge Fenster...\n"));
 
     /* Initialisieren des Fensters */
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
@@ -302,39 +292,14 @@ initAndStartIO(char *title, int width, int height) {
     windowID = glutCreateWindow(title);
 
     if (windowID) {
-
-        /* DEBUG-Ausgabe */
-        INFO (("...fertig.\n\n"));
-
-        /* DEBUG-Ausgabe */
-        INFO (("Initialisiere Szene...\n"));
-
         if (initScene()) {
-            /* DEBUG-Ausgabe */
-            INFO (("...fertig.\n\n"));
-
-            /* DEBUG-Ausgabe */
-            INFO (("Registriere Callbacks...\n"));
 
             registerCallbacks();
-
-            /* DEBUG-Ausgabe */
-            INFO (("...fertig.\n\n"));
-
-            /* DEBUG-Ausgabe */
-            INFO (("Trete in Schleife der Ereignisbehandlung ein...\n"));
-
             glutMainLoop();
         } else {
-            /* DEBUG-Ausgabe */
-            INFO (("...fehlgeschlagen.\n\n"));
-
             glutDestroyWindow(windowID);
             windowID = 0;
         }
-    } else {
-        /* DEBUG-Ausgabe */
-        INFO (("...fehlgeschlagen.\n\n"));
     }
 
     return windowID;

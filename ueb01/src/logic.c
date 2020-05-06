@@ -6,7 +6,6 @@
 #include "types.h"
 #include <stdio.h>
 #include <GL/glut.h>
-#include <stdarg.h>
 
 /** der Mittelpunkt des Sticks */
 static CGPoint2f g_stickCenter = {0.0f, -BAR_X_OFFSET};
