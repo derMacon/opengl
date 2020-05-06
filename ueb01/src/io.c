@@ -9,6 +9,7 @@
 
 GLboolean gamePaused = GL_FALSE;
 GLboolean showExtra = GL_FALSE;
+GLboolean showFullscreen = GL_FALSE;
 
 /**
  * Setzen der Projektionsmatrix.
@@ -186,6 +187,9 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case GLUT_KEY_F1:
                     toggleWireframe();
                     break;
+                case GLUT_KEY_F2:
+                    toggleFullscreen();
+                    break;
             }
         } else {
             switch (key) {
@@ -312,7 +316,9 @@ initAndStartIO(char *title, int width, int height) {
     /* Initialisieren des Fensters */
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowSize(width, height);
-    glutInitWindowPosition(0, 0);
+
+    // Auf dem aktuellen Bildschirm anzeigen
+    glutInitWindowPosition(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
 
     /* Fenster erzeugen */
     windowID = glutCreateWindow(title);

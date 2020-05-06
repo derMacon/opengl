@@ -290,7 +290,6 @@ void checkExtraCollision() {
     if ((extraX >= stickX - stickWidth / 2) &&
         (extraX <= stickX + stickWidth / 2)
         && extraY < stickY + BAR_THICKNESS) {
-
         chooseExtra();
         resetExtraPosition();
     }

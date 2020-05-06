@@ -1,5 +1,6 @@
 #include "helper.h"
 #include <stdio.h>
+#include <GL/glut.h>
 
 /**
  * Generiert eine Zufallszahl
@@ -80,6 +81,7 @@ void showHelp() {
     printf("a, A: Stick nach links bewegen\n");
     printf("d, D: Stick nach rechts bewegen\n");
     printf("F1: Wireframe umschalten\n");
+    printf("F2: Vollbild umschalten\n");
     printf("p, P: Spiel pausieren\n");
     printf("h, H: Hilfe anzeigen\n");
     printf("q, Q, ESC: Spiel beenden\n");

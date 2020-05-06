@@ -263,6 +263,7 @@ initScene(void) {
     // srand steht hier, weil es nur einmal aufgerufen werden darf
     srand(time(NULL));
 
+
     // Ball soll in zufaellige Richtung fliegen
     setRandomBallAngle();
 
@@ -286,6 +287,19 @@ void toggleWireframe() {
 }
 
 /**
+ * Schaltet den Fullscreen an oder aus
+ */
+void toggleFullscreen() {
+    showFullscreen = !showFullscreen;
+
+    if (showFullscreen) {
+        glutFullScreen();
+    } else {
+        glutPositionWindow(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
+    }
+}
+
+/**
  * Zeichnet die gesamte Szene (Grenzen, Ball, Stick und evtl. Extras
  */
 void drawScene(void) {
@@ -302,6 +316,7 @@ void drawScene(void) {
 
     drawStick(*stickCenter);
     drawBall(*ballCenter);
+
 
     if (showExtra) {
         drawExtra(*extraCenter);
