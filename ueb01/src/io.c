@@ -51,10 +51,12 @@ cbTimer(int lastCallTime) {
     /* Seit dem letzten Funktionsaufruf vergangene Zeit in Sekunden */
     double interval = (double) (thisCallTime - lastCallTime) / 1000.0f;
 
+    // Spiel pausieren, also Intervall auf 0 setzen
     if (gamePaused) {
         interval = 0.0f;
     }
 
+    // Gegenstaende setzen
     calcStickPosition(interval);
     calcBallPosition(interval);
 
@@ -123,7 +125,6 @@ cbReshape(int w, int h) {
 static void
 handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     int y) {
-    /** Keycode der ESC-Taste */
 #define ESC 27
 
     /* Taste gedrueckt */

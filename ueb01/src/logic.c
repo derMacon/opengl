@@ -8,11 +8,11 @@
 #include <stdio.h>
 #include <GL/glut.h>
 
-
+/* Initial-Werte setzen */
 static CGPoint2f stickCenter = {0.0f, -BAR_X_OFFSET};
 static CGPoint2f ballCenter = {BALL_INITIAL_X_POS, BALL_INITIAL_Y_POS};
 static CGPoint2f extraCenter = {BALL_INITIAL_X_POS, 0.0f};
-static CGVector2f ballSpeedVector = {BALL_STEPS_X, BALL_STEPS_Y};
+static CGVector2f ballSpeedVector; // Wird initial gesetzt durch setRandomBallAngle()
 
 float ballSpeed = BALL_SPEED_INITIAL;
 float extraSpeed = EXTRA_SPEED;
@@ -51,19 +51,28 @@ handleBorderCollision(CGSide side) {
     }
 }
 
+/**
+ * Generiert fuer den (neu) gespawnten Ball einen zufaelligen Winkel
+ */
 void setRandomBallAngle() {
     ballSpeedVector[0] = randomBallXValue();
     ballSpeedVector[1] = 0.5f;
 }
 
+/**
+ * Setzt die Y-Position des aktuellen Extras zurueck und blendet es aus
+ * x-Position wird bei erneutem Spawn bei Kollision des Balls mit einem Blocks gesetzt
+ */
 void resetExtraPosition() {
     showExtra = GL_FALSE;
     extraCenter[1] = 0;
 }
 
 /**
- * Spieler hat verloren!
- * Ausgabe von Punkten, Spiel pausuerne
+ * Zieht dem Spieler ein Leben ab.
+ * Bei keinen verbleibenden Leben ist das Spiel beendet.
+ * Bei uebrigen Leben wird ein neuer Ball gespawnt
+ * Gibt zudem Info ueber evtl. verbleibende Leben aus
  */
 void handleLoss() {
 
@@ -85,72 +94,94 @@ void handleLoss() {
     }
 }
 
-float calculateRadiant(float value) {
+/**
+ * Wird fuer die Berechnung des Ausgangswinkels des Balls verwendet.
+ * @param collisionX - An dieser X-Stelle kollidiert der Ball mit dem Stick
+ * @return Winkelmaß
+ */
+float calculateRadiant(float collisionX) {
 
     float maxVal = stickWidth / 2;
+    int maxAngle = 45;
 
     // Maximumwerte beibehalten
-    if (value < -maxVal) {
-        value = -maxVal;
-    } else if (value > maxVal) {
-        value = maxVal;
+    if (collisionX < -maxVal) {
+        collisionX = -maxVal;
+    } else if (collisionX > maxVal) {
+        collisionX = maxVal;
     }
 
-    float angle = (value * 45) / maxVal;
+    float angle = (collisionX * maxAngle) / maxVal;
 
     // Inititaler Ballspeed ist 0.5, also um 45° korrigieren
     // x und y sind beide iniital 0.5 -> also 45°
-    float correctedAngle = angle - 45;
+    float correctedAngle = angle - maxAngle;
     return correctedAngle * M_PI / 180;
 }
 
+/**
+ * Rotiert den Ball in einen angegebenen Winkelmaß
+ * @param radiant - Winkelmaß fuer die Rotation
+ */
 void rotate(float radiant) {
 
     float x = BALL_STEPS_X, y = BALL_STEPS_Y;
+    // Temp x, um den X-Wert fuer die Formel nicht vorher zu ueberschreiben
     float tempX = x, tempY = y;
     float cos = cosf(radiant);
     float sin = sinf(radiant);
 
+    // Neuer X-Wert: x * cos + y * sin
+    // Neuer Y-Wert: -y * sin + y * cos
     x = tempX * cos + tempY * sin;
     y = -tempX * sin + tempY * cos;
 
+    // Werte setzen
     ballSpeedVector[0] = x * ballSpeed;
     ballSpeedVector[1] = y * ballSpeed;
 }
 
+/**
+ * Prueft, ob der Ball mit einem der Raender kollidiert
+ * @return gibt die Seite der Kollision aus
+ */
 static CGSide checkBorderCollision(void) {
+    // Initial auf nichts setzen
+    // -> wir gehen davon aus, dass wir nicht kollidieren
     CGSide res = sideNone;
 
-    float collisionOffset = 0.005f;
+    // Fuer bessere Uebersicht lokale Variablen erstellen
     float ballX = ballCenter[0];
     float ballY = ballCenter[1];
     float stickX = stickCenter[0];
     float stickY = stickCenter[1];
 
-    // Ball ist unter dem Stick, also verloren
+    float collisionOffset = 0.005f;
+
+    // Ball ist unter dem Stick, also (Punkt) verloren
     if (ballY <= -1.0f) {
         resetExtraPosition();
         handleLoss();
     }
 
+    // Ball fliegt nach rechts und
+    // die rechte Seite des Balls ueberschreitet den rechten Rand
     if (ballSpeedVector[0] > 0.0f &&
         ballX + (BALL_WIDTH / 2) + collisionOffset >= BAR_X_OFFSET - BAR_THICKNESS) {
-        // Ball fliegt nach rechts und
-        // die rechte Seite des Ball ueberschreitet den rechten Rand
         res = sideRight;
     }
 
-        // Quadrat fliegt nach links und
-        //  die linke Seite des Quadrats ueberschreitet den linken Rand
+        // Ball fliegt nach links und
+        //  die linke Seite des Balls ueberschreitet den linken Rand
     else if (ballSpeedVector[0] < 0.0f &&
              ballX - (BALL_WIDTH / 2) - collisionOffset <= -BAR_X_OFFSET + BAR_THICKNESS) {
         res = sideLeft;
     }
 
-        // Quadrat fliegt nach oben und
-        // die obere Seite des Quadrats ueberschreitet den oberen Rand
+        // Ball fliegt nach oben und
+        // die obere Seite des Balls ueberschreitet den oberen Rand
     else if (ballSpeedVector[1] > 0.0f &&
-             // zusaetzlich Bar-width abziehen, weil ueber die Top-Bar noch der Text steht
+             // zusaetzlich Bar-Breite abziehen, weil ueber die Top-Bar noch der Text steht
              ballY + BALL_WIDTH / 2 + collisionOffset >= BAR_X_OFFSET - BAR_WIDTH - BAR_THICKNESS) {
         res = sideTop;
     }
@@ -165,27 +196,38 @@ static CGSide checkBorderCollision(void) {
         // An dieserm Punkt kollidiert der Ball auf der X-Achse mit dem Stick
         float collisionX = ballX - stickX;
 
-        // Neuen Winkel berechnen
+        // Neues Winkelmaß berechnen
         float radiant = calculateRadiant(collisionX);
 
+        // Wenn Ball in der Mitte auftritt, Ball umkehren,
+        // sonst mit winkelmaß rotieren
         if (radiant == 0) {
             ballSpeedVector[1] *= -1;
         } else {
             rotate(radiant);
         }
 
+        // Side none, damit nicht erneut Ball umgedreht wird
+        // (in handleBorderCollision())
         res = sideNone;
     }
 
     return res;
 }
 
+/**
+ * Extra Punkte dem Spieler hinzufuegen und eine Info ausgeben
+ */
 void addExtraPoints() {
     player.points += EXTRA_POINTS;
     extraPoints += EXTRA_POINTS;
     printf("Extra: %d Punkte erhalten\n", EXTRA_POINTS);
 }
 
+/**
+ * Stick vergroessern (bis zu einer maximalen Breite)
+ * Falls Stick maximale Breite erreicht hat, stattdessen Extrapunkte vergeben
+ */
 void increaseStickWidth() {
     // Den Stick nicht zu breit machen :)
     float maxWidth = STICK_WIDTH * 3;
@@ -198,6 +240,10 @@ void increaseStickWidth() {
     }
 }
 
+/**
+ * Ball geschwindigkeit verringern
+ * Falls minimale Geschwindigkeit erreicht wurde, stattdessen Extrapunkte vergeben
+ */
 void decreaseBallSpeed() {
     printf("Extra: Ball wurde verlangsamt!\n");
 
@@ -216,7 +262,11 @@ void decreaseBallSpeed() {
     }
 }
 
-void activateExtra() {
+/**
+ * Zufaellig eines der drei Extras auswaehlen
+ * (Stick vergroessern, Ballgeschwindigkeit verringern oder Extrapunkte hinzufuegen)
+ */
+void chooseExtra() {
 
     int random = genRandomNumber(3, 1);
 
@@ -235,6 +285,10 @@ void activateExtra() {
     }
 }
 
+/**
+ * Prueft, ob der Ball das Extra getroffen hat
+ * Falls er es getroffen hat, Extra anzeigen
+ */
 void checkExtraCollision() {
     float extraX = extraCenter[0];
     float extraY = extraCenter[1];
@@ -247,11 +301,15 @@ void checkExtraCollision() {
         (extraX <= stickX + stickWidth / 2)
         && extraY < stickY + BAR_THICKNESS) {
 
-        activateExtra();
+        chooseExtra();
         resetExtraPosition();
     }
 }
 
+/**
+ * Berechnet neue Position des Balls, wenn das Spiel nicht pausiert wurde.
+ * @param interval Dauer der Bewegung in Sekunden.
+ */
 void calcBallPosition(double interval) {
 
     if (!gamePaused) {
@@ -266,45 +324,53 @@ void calcBallPosition(double interval) {
     }
 }
 
+/**
+ * Berechnet neue Position des Extras
+ * @param interval Dauer der Bewegung in Sekunden.
+ */
 void calcExtraPosition(double interval) {
+    // Extra nach unten bewegen
     extraCenter[1] -= extraSpeed * (float) interval;
     checkExtraCollision();
 
+    // Wenn Extra nicht getroffen wurde und zu tief ist,
+    // soll die Position fuer das naechste Extra zurueckgesetzt werden
     if (extraCenter[1] <= -1.0f) {
         resetExtraPosition();
     }
 }
 
 /**
- * Berechnet neue Position des Sticks.
+ * Berechnet neue Position des Sticks, wenn das Spiel nicht pausiert wurde
  * @param interval Dauer der Bewegung in Sekunden.
  */
 void
 calcStickPosition(double interval) {
 
     // Stick nach links bewegen
-    if (stickMovementDirection[dirLeft]) {
-        // Position linker Balken + Breite des Sticks - Breite des linken Balkens
-        // ist der Punkt, der den Stick stoppt
-        float stickPosition = stickCenter[0] - (stickWidth / 2);
-        float leftBarPosition = -BAR_X_OFFSET + BAR_WIDTH / 2;
+    if (!gamePaused) {
+        if (stickMovementDirection[dirLeft]) {
+            // Position linker Balken + Breite des Sticks - Breite des linken Balkens
+            // ist der Punkt, der den Stick stoppt
+            float stickPosition = stickCenter[0] - (stickWidth / 2);
+            float leftBarPosition = -BAR_X_OFFSET + BAR_WIDTH / 2;
 
-        if (stickPosition > leftBarPosition) {
-            stickCenter[0] -= STICK_SPEED * (float) interval;
+            if (stickPosition > leftBarPosition) {
+                stickCenter[0] -= STICK_SPEED * (float) interval;
+            }
         }
-    }
 
-    // Stick nach rechts bewegen
-    if (stickMovementDirection[dirRight]) {
-        float stickPosition = stickCenter[0] + (stickWidth / 2);
-        float rightBarPosition = BAR_X_OFFSET - BAR_WIDTH / 2;
+        // Stick nach rechts bewegen
+        if (stickMovementDirection[dirRight]) {
+            float stickPosition = stickCenter[0] + (stickWidth / 2);
+            float rightBarPosition = BAR_X_OFFSET - BAR_WIDTH / 2;
 
-        if (stickPosition < rightBarPosition) {
-            stickCenter[0] += STICK_SPEED * (float) interval;
+            if (stickPosition < rightBarPosition) {
+                stickCenter[0] += STICK_SPEED * (float) interval;
+            }
         }
     }
 }
-
 
 /**
  * Wenn die Bloecke getroffen wurden, Punkte hinzufuegen
@@ -357,7 +423,12 @@ void handleHits() {
     }
 }
 
-int checkBlockCollision(Block *block) {
+/**
+ * Prueft, ob der uebergebene Block vom Ball getroffen wurde
+ * @param block - dieser Block wird geprueft
+ * @return true wenn collided, false wenn nicht
+ */
+GLboolean blockCollided(Block *block) {
 
     // Blockposition
     GLfloat blockX = block->position[0];
@@ -421,10 +492,10 @@ int checkBlockCollision(Block *block) {
         handleBorderCollision(side);
 
         // Kollision
-        return 0;
+        return GL_TRUE;
     }
 
-    return 1;
+    return GL_FALSE;
 }
 
 /**
