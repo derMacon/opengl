@@ -29,7 +29,7 @@
 
 /** Sticks / Paddle **/
 #define STICK_WIDTH 0.3f
-#define STEPS_PS 1.0f
+#define STICK_SPEED 1.0f
 
 /** Extras **/
 #define EXTRA_SPEED 0.7f
@@ -40,7 +40,7 @@
 #define EXTRA_POINTS 5
 
 /** Spielers **/
-#define INITIAL_LIVES 3
-#define INITIAL_POINTS 0
+#define PLAYER_INITIAL_LIVES 3
+#define PLAYER_INITIAL_POINTS 0
 
 #endif

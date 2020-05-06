@@ -21,7 +21,7 @@ static CGVector2f g_quadSpeed = {BALL_STEPS_X, BALL_STEPS_Y};
 float ball_speed = BALL_SPEED_INITIAL;
 float extra_speed = EXTRA_SPEED;
 
-static Player player = {INITIAL_LIVES, INITIAL_POINTS};
+static Player player = {PLAYER_INITIAL_LIVES, PLAYER_INITIAL_POINTS};
 int extra_points = 0;
 
 /**
@@ -300,7 +300,7 @@ calcStickPosition(double interval) {
         float leftBarPosition = -BAR_X_OFFSET + BAR_WIDTH / 2;
 
         if (stickPosition > leftBarPosition) {
-            g_stickCenter[0] -= STEPS_PS * (float) interval;
+            g_stickCenter[0] -= STICK_SPEED * (float) interval;
         }
     }
 
@@ -310,7 +310,7 @@ calcStickPosition(double interval) {
         float rightBarPosition = BAR_X_OFFSET - BAR_WIDTH / 2;
 
         if (stickPosition < rightBarPosition) {
-            g_stickCenter[0] += STEPS_PS * (float) interval;
+            g_stickCenter[0] += STICK_SPEED * (float) interval;
         }
     }
 }
