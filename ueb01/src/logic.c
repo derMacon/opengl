@@ -12,13 +12,13 @@
 static CGPoint2f g_stickCenter = {0.0f, -BAR_X_OFFSET};
 
 /** der Mittelpunkt des Balls */
-static CGPoint2f g_ballCenter = {INITIAL_BALL_X_POS, INITIAL_BALL_Y_POST};
-static CGPoint2f g_extraCenter = {INITIAL_BALL_X_POS, 0.0f};
+static CGPoint2f g_ballCenter = {BALL_INITIAL_X_POS, BALL_INITIAL_Y_POS};
+static CGPoint2f g_extraCenter = {BALL_INITIAL_X_POS, 0.0f};
 
 /** Geschwindigkeitsvektor des Balls. */
-static CGVector2f g_quadSpeed = {X_STEPS_PS, Y_STEPS_PS};
+static CGVector2f g_quadSpeed = {BALL_STEPS_X, BALL_STEPS_Y};
 
-float ball_speed = INITIAL_BALL_SPEED;
+float ball_speed = BALL_SPEED_INITIAL;
 float extra_speed = EXTRA_SPEED;
 
 static Player player = {INITIAL_LIVES, INITIAL_POINTS};
@@ -82,9 +82,9 @@ void handleLoss() {
         extra_points = 0;
     } else {
         // Ball neu spawnen
-        ball_speed = INITIAL_BALL_SPEED;
+        ball_speed = BALL_SPEED_INITIAL;
         g_ballCenter[0] = g_stickCenter[0];
-        g_ballCenter[1] = INITIAL_BALL_Y_POST;
+        g_ballCenter[1] = BALL_INITIAL_Y_POS;
 
         g_quadSpeed[0] = randomXValue();
         g_quadSpeed[1] = 0.5f;
@@ -120,7 +120,7 @@ float calculateRadiant(float value) {
 
 void rotate(float radiant) {
 
-    float x = X_STEPS_PS, y = Y_STEPS_PS;
+    float x = BALL_STEPS_X, y = BALL_STEPS_Y;
     float tempX = x, tempY = y;
     float cos = cosf(radiant);
     float sin = sinf(radiant);
@@ -184,9 +184,6 @@ static CGSide checkBorderCollision(void) {
             rotate(radiant);
         }
 
-        g_quadSpeed[0] = 0;
-        g_quadSpeed[1] = 0;
-
         res = sideNone;
     }
 
@@ -214,7 +211,7 @@ void increaseStickWidth() {
 void decreaseBallSpeed() {
     printf("Extra: Ball wurde verlangsamt!\n");
 
-    float minSpeed = INITIAL_BALL_SPEED;
+    float minSpeed = BALL_SPEED_INITIAL;
 
     if (ball_speed > minSpeed) {
         g_quadSpeed[0] /= ball_speed;
