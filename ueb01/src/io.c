@@ -163,6 +163,11 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case 'H':
                     showHelp();
                     break;
+                case 'f':
+                case 'F':
+                    toggleFullscreen();
+                    break;
+
                     /* Programm beenden */
                 case 'q':
                 case 'Q':
@@ -186,9 +191,6 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     break;
                 case GLUT_KEY_F1:
                     toggleWireframe();
-                    break;
-                case GLUT_KEY_F2:
-                    toggleFullscreen();
                     break;
             }
         } else {
