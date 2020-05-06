@@ -17,7 +17,7 @@ static CGPoint2f g_ballCenter = {BALL_INITIAL_X_POS, BALL_INITIAL_Y_POS};
 static CGPoint2f g_extraCenter = {BALL_INITIAL_X_POS, 0.0f};
 
 /** Geschwindigkeitsvektor des Balls. */
-static CGVector2f ball_speed_vector = {BALL_STEPS_X, BALL_STEPS_Y};
+static CGVector2f ballSpeedVector = {BALL_STEPS_X, BALL_STEPS_Y};
 
 float ball_speed = BALL_SPEED_INITIAL;
 float extra_speed = EXTRA_SPEED;
@@ -47,18 +47,23 @@ static void
 handleBorderCollision(CGSide side) {
     /* Bewegung in X-Richtung umkehren */
     if (side == sideLeft || side == sideRight) {
-        ball_speed_vector[0] *= -1;
+        ballSpeedVector[0] *= -1;
     }
 
     /* Bewegung in Y-Richtung umkehren */
     if (side == sideTop || side == sideBottom) {
-        ball_speed_vector[1] *= -1;
+        ballSpeedVector[1] *= -1;
     }
 }
 
-void setRandomBallAngle(){
-    ball_speed_vector[0] = randomBallXValue();
-    ball_speed_vector[1] = 0.5f;
+void setRandomBallAngle() {
+    ballSpeedVector[0] = randomBallXValue();
+    ballSpeedVector[1] = 0.5f;
+}
+
+void resetExtraPosition() {
+    show_extra = GL_FALSE;
+    g_extraCenter[1] = 0;
 }
 
 /**
@@ -83,11 +88,6 @@ void handleLoss() {
 
         setRandomBallAngle();
     }
-}
-
-void resetExtraPosition() {
-    show_extra = GL_FALSE;
-    g_extraCenter[1] = 0;
 }
 
 float calculateRadiant(float value) {
@@ -122,23 +122,27 @@ void rotate(float radiant) {
     x = tempX * cos + tempY * sin;
     y = -tempX * sin + tempY * cos;
 
-    ball_speed_vector[0] = x * ball_speed;
-    ball_speed_vector[1] = y * ball_speed;
+    ballSpeedVector[0] = x * ball_speed;
+    ballSpeedVector[1] = y * ball_speed;
 }
 
 static CGSide checkBorderCollision(void) {
     CGSide res = sideNone;
 
     float collisionOffset = 0.005f;
+    float ballX = g_ballCenter[0];
+    float ballY = g_ballCenter[1];
+    float stickX = g_stickCenter[0];
+    float stickY = g_stickCenter[1];
 
     // Ball ist unter dem Stick, also verloren
-    if (g_ballCenter[1] <= -1.0f) {
+    if (ballY <= -1.0f) {
         resetExtraPosition();
         handleLoss();
     }
 
-    if (ball_speed_vector[0] > 0.0f &&
-        g_ballCenter[0] + (BALL_WIDTH / 2) + collisionOffset >= BAR_X_OFFSET - BAR_THICKNESS) {
+    if (ballSpeedVector[0] > 0.0f &&
+        ballX + (BALL_WIDTH / 2) + collisionOffset >= BAR_X_OFFSET - BAR_THICKNESS) {
         // Ball fliegt nach rechts und
         // die rechte Seite des Ball ueberschreitet den rechten Rand
         res = sideRight;
@@ -146,34 +150,34 @@ static CGSide checkBorderCollision(void) {
 
         // Quadrat fliegt nach links und
         //  die linke Seite des Quadrats ueberschreitet den linken Rand
-    else if (ball_speed_vector[0] < 0.0f &&
-             g_ballCenter[0] - (BALL_WIDTH / 2) - collisionOffset <= -BAR_X_OFFSET + BAR_THICKNESS) {
+    else if (ballSpeedVector[0] < 0.0f &&
+             ballX - (BALL_WIDTH / 2) - collisionOffset <= -BAR_X_OFFSET + BAR_THICKNESS) {
         res = sideLeft;
     }
 
         // Quadrat fliegt nach oben und
         // die obere Seite des Quadrats ueberschreitet den oberen Rand
-    else if (ball_speed_vector[1] > 0.0f &&
+    else if (ballSpeedVector[1] > 0.0f &&
              // zusaetzlich Bar-width abziehen, weil ueber die Top-Bar noch der Text steht
-             g_ballCenter[1] + BALL_WIDTH / 2 + collisionOffset >= BAR_X_OFFSET - BAR_WIDTH - BAR_THICKNESS) {
+             ballY + BALL_WIDTH / 2 + collisionOffset >= BAR_X_OFFSET - BAR_WIDTH - BAR_THICKNESS) {
         res = sideTop;
     }
 
         // Ball fliegt nach unten und
         //  die untere Seite des Balls ueberschreitet den unteren Rand
-    else if (ball_speed_vector[1] < 0.0f &&
-             (g_ballCenter[0] >= (g_stickCenter[0] - stick_width / 2)) &&
-             (g_ballCenter[0] <= (g_stickCenter[0] + stick_width / 2) &&
-              g_ballCenter[1] + BALL_WIDTH / 2 < g_stickCenter[1] + BAR_THICKNESS)) {
+    else if (ballSpeedVector[1] < 0.0f &&
+             (ballX >= (stickX - stick_width / 2)) &&
+             (ballX <= (stickX + stick_width / 2) &&
+              ballY + BALL_WIDTH / 2 < stickY + BAR_THICKNESS)) {
 
         // An dieserm Punkt kollidiert der Ball auf der X-Achse mit dem Stick
-        float collisionX = g_ballCenter[0] - g_stickCenter[0];
+        float collisionX = ballX - stickX;
 
         // Neuen Winkel berechnen
         float radiant = calculateRadiant(collisionX);
 
         if (radiant == 0) {
-            ball_speed_vector[1] *= -1;
+            ballSpeedVector[1] *= -1;
         } else {
             rotate(radiant);
         }
@@ -208,13 +212,13 @@ void decreaseBallSpeed() {
     float minSpeed = BALL_SPEED_INITIAL;
 
     if (ball_speed > minSpeed) {
-        ball_speed_vector[0] /= ball_speed;
-        ball_speed_vector[1] /= ball_speed;
+        ballSpeedVector[0] /= ball_speed;
+        ballSpeedVector[1] /= ball_speed;
 
         ball_speed -= BALL_SPEED_MODIFIER;
 
-        ball_speed_vector[0] *= ball_speed;
-        ball_speed_vector[1] *= ball_speed;
+        ballSpeedVector[0] *= ball_speed;
+        ballSpeedVector[1] *= ball_speed;
     } else {
         addExtraPoints();
     }
@@ -264,8 +268,8 @@ void calcBallPosition(double interval) {
         if (side != sideNone) {
             handleBorderCollision(side);
         } else {
-            g_ballCenter[0] += ball_speed_vector[0] * (float) interval;
-            g_ballCenter[1] += ball_speed_vector[1] * (float) interval;
+            g_ballCenter[0] += ballSpeedVector[0] * (float) interval;
+            g_ballCenter[1] += ballSpeedVector[1] * (float) interval;
         }
     }
 }
@@ -329,13 +333,13 @@ void handleHits() {
     if (points % 10 == 0) {
         // BAll speed entfernen für Inititalgeschwindigkeit
         // plus richtigem Winkel
-        ball_speed_vector[0] /= ball_speed;
-        ball_speed_vector[1] /= ball_speed;
+        ballSpeedVector[0] /= ball_speed;
+        ballSpeedVector[1] /= ball_speed;
 
         // Ballgeschwindigkeit erhoehen
         ball_speed += BALL_SPEED_MODIFIER;
-        ball_speed_vector[0] *= ball_speed;
-        ball_speed_vector[1] *= ball_speed;
+        ballSpeedVector[0] *= ball_speed;
+        ballSpeedVector[1] *= ball_speed;
         printf("Ballgeschwindigkeit erhoeht!\n");
     }
 
