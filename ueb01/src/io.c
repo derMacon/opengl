@@ -115,7 +115,7 @@ cbReshape(int w, int h) {
  * Verarbeitung eines Tasturereignisses.
  * Pfeiltasten steuern die Position des angezeigten Rechtecks.
  * F1-Taste (de-)aktiviert Wireframemodus.
- * F2-Taste schaltet zwischen Fenster und Vollbilddarstellung um.
+ * f-Taste schaltet zwischen Fenster und Vollbilddarstellung um.
  * ESC-Taste und q, Q beenden das Programm.
  * @param key Taste, die das Ereignis ausgeloest hat. (ASCII-Wert oder WERT des
  *        GLUT_KEY_<SPECIAL>.
