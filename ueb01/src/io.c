@@ -6,8 +6,8 @@
 #include "variables.h"
 #include "types.h"
 
-GLboolean game_paused = GL_FALSE;
-GLboolean show_extra = GL_FALSE;
+GLboolean gamePaused = GL_FALSE;
+GLboolean showExtra = GL_FALSE;
 
 /**
  * Setzen der Projektionsmatrix.
@@ -51,16 +51,14 @@ cbTimer(int lastCallTime) {
     /* Seit dem letzten Funktionsaufruf vergangene Zeit in Sekunden */
     double interval = (double) (thisCallTime - lastCallTime) / 1000.0f;
 
-    if (game_paused) {
+    if (gamePaused) {
         interval = 0.0f;
     }
 
-    /* neue Position berechnen (zeitgesteuert) */
     calcStickPosition(interval);
-
     calcBallPosition(interval);
 
-    if (show_extra){
+    if (showExtra){
         calcExtraPosition(interval);
     }
 
@@ -146,7 +144,7 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
         else {
             switch (key) {
                 case 'p':
-                    game_paused = !game_paused;
+                    gamePaused = !gamePaused;
                     break;
 
                     /* Programm beenden */
@@ -294,7 +292,6 @@ initAndStartIO(char *title, int width, int height) {
 
     if (windowID) {
         if (initScene()) {
-
             registerCallbacks();
             glutMainLoop();
         } else {

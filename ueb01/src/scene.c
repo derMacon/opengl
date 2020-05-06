@@ -10,10 +10,10 @@
 #include "helper.h"
 #include <time.h>
 
-GLboolean show_wireframe = GL_FALSE;
+GLboolean showWireframe = GL_FALSE;
 static Block bloecke[BLOCKS_COUNT];
 int tAngle = 0;
-float stick_width = STICK_WIDTH;
+float stickWidth = STICK_WIDTH;
 
 static void drawTriangle(void) {
     glBegin(GL_TRIANGLES);
@@ -62,12 +62,12 @@ static void drawRound(void) {
     float radius = 1.0f;
 
     // TODO: WTF is delta theta
-    float delta_theta = 0.01f;
+    float deltaTheta = 0.01f;
 
     glBegin(GL_POLYGON);
 
     // TODO: Erklaerung hierfuer finden xD
-    for (float angle = 0; angle < 2 * M_PI; angle += delta_theta) {
+    for (float angle = 0; angle < 2 * M_PI; angle += deltaTheta) {
         glVertex3f(radius * cosf(angle), radius * sinf(angle), 0);
     }
 
@@ -138,7 +138,7 @@ static void drawStick(const CGPoint2f coords) {
     glPushMatrix();
     {
         glTranslatef(x, y, ZERO);
-        glScalef(stick_width, BAR_THICKNESS, 1.0f);
+        glScalef(stickWidth, BAR_THICKNESS, 1.0f);
         drawSquare();
     }
 
@@ -244,8 +244,8 @@ initScene(void) {
  * Schaltet den Wireframe-Modus an oder aus
  */
 void toggleWireframe() {
-    show_wireframe = !show_wireframe;
-    if (show_wireframe) {
+    showWireframe = !showWireframe;
+    if (showWireframe) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     } else {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -267,7 +267,7 @@ void drawScene(void) {
     drawStick(*stickCenter);
     drawBall(*ballCenter);
 
-    if (show_extra) {
+    if (showExtra) {
         drawExtra(*extraCenter);
     }
 

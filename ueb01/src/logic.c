@@ -8,28 +8,23 @@
 #include <stdio.h>
 #include <GL/glut.h>
 
-/** der Mittelpunkt des Sticks */
 
-static CGPoint2f g_stickCenter = {0.0f, -BAR_X_OFFSET};
-
-/** der Mittelpunkt des Balls */
-static CGPoint2f g_ballCenter = {BALL_INITIAL_X_POS, BALL_INITIAL_Y_POS};
-static CGPoint2f g_extraCenter = {BALL_INITIAL_X_POS, 0.0f};
-
-/** Geschwindigkeitsvektor des Balls. */
+static CGPoint2f stickCenter = {0.0f, -BAR_X_OFFSET};
+static CGPoint2f ballCenter = {BALL_INITIAL_X_POS, BALL_INITIAL_Y_POS};
+static CGPoint2f extraCenter = {BALL_INITIAL_X_POS, 0.0f};
 static CGVector2f ballSpeedVector = {BALL_STEPS_X, BALL_STEPS_Y};
 
-float ball_speed = BALL_SPEED_INITIAL;
-float extra_speed = EXTRA_SPEED;
-
+float ballSpeed = BALL_SPEED_INITIAL;
+float extraSpeed = EXTRA_SPEED;
 static Player player = {PLAYER_INITIAL_LIVES, PLAYER_INITIAL_POINTS};
-int extra_points = 0;
+
+int extraPoints = 0;
 
 /**
  * Bewegungsstatus der Sticks. Fuer alle zwei Richtungen wird angegeben, ob
  * sich der Stick in die jeweilige Richtung bewegt.
  */
-static GLboolean g_movement[2] = {GL_FALSE, GL_FALSE};
+static GLboolean stickMovementDirection[2] = {GL_FALSE, GL_FALSE};
 
 /**
  * Errechnet anhand eines Wahrscheinlichkeitwertes, ob etwas zutrifft oder nicht
@@ -62,8 +57,8 @@ void setRandomBallAngle() {
 }
 
 void resetExtraPosition() {
-    show_extra = GL_FALSE;
-    g_extraCenter[1] = 0;
+    showExtra = GL_FALSE;
+    extraCenter[1] = 0;
 }
 
 /**
@@ -78,13 +73,13 @@ void handleLoss() {
     if (player.lives == 0) {
         printf("Sie haben verloren und %d Punkte erreicht!\n", player.points);
         fflush(stdout);
-        game_paused = GL_TRUE;
-        extra_points = 0;
+        gamePaused = GL_TRUE;
+        extraPoints = 0;
     } else {
         // Ball neu spawnen
-        ball_speed = BALL_SPEED_INITIAL;
-        g_ballCenter[0] = g_stickCenter[0];
-        g_ballCenter[1] = BALL_INITIAL_Y_POS;
+        ballSpeed = BALL_SPEED_INITIAL;
+        ballCenter[0] = stickCenter[0];
+        ballCenter[1] = BALL_INITIAL_Y_POS;
 
         setRandomBallAngle();
     }
@@ -92,7 +87,7 @@ void handleLoss() {
 
 float calculateRadiant(float value) {
 
-    float maxVal = stick_width / 2;
+    float maxVal = stickWidth / 2;
 
     // Maximumwerte beibehalten
     if (value < -maxVal) {
@@ -106,10 +101,7 @@ float calculateRadiant(float value) {
     // Inititaler Ballspeed ist 0.5, also um 45° korrigieren
     // x und y sind beide iniital 0.5 -> also 45°
     float correctedAngle = angle - 45;
-    float radiant = correctedAngle * M_PI / 180;
-
-    // Dreisatz 0.15 entsprechen 100% und 45°
-    return radiant;
+    return correctedAngle * M_PI / 180;
 }
 
 void rotate(float radiant) {
@@ -122,18 +114,18 @@ void rotate(float radiant) {
     x = tempX * cos + tempY * sin;
     y = -tempX * sin + tempY * cos;
 
-    ballSpeedVector[0] = x * ball_speed;
-    ballSpeedVector[1] = y * ball_speed;
+    ballSpeedVector[0] = x * ballSpeed;
+    ballSpeedVector[1] = y * ballSpeed;
 }
 
 static CGSide checkBorderCollision(void) {
     CGSide res = sideNone;
 
     float collisionOffset = 0.005f;
-    float ballX = g_ballCenter[0];
-    float ballY = g_ballCenter[1];
-    float stickX = g_stickCenter[0];
-    float stickY = g_stickCenter[1];
+    float ballX = ballCenter[0];
+    float ballY = ballCenter[1];
+    float stickX = stickCenter[0];
+    float stickY = stickCenter[1];
 
     // Ball ist unter dem Stick, also verloren
     if (ballY <= -1.0f) {
@@ -166,8 +158,8 @@ static CGSide checkBorderCollision(void) {
         // Ball fliegt nach unten und
         //  die untere Seite des Balls ueberschreitet den unteren Rand
     else if (ballSpeedVector[1] < 0.0f &&
-             (ballX >= (stickX - stick_width / 2)) &&
-             (ballX <= (stickX + stick_width / 2) &&
+             (ballX >= (stickX - stickWidth / 2)) &&
+             (ballX <= (stickX + stickWidth / 2) &&
               ballY + BALL_WIDTH / 2 < stickY + BAR_THICKNESS)) {
 
         // An dieserm Punkt kollidiert der Ball auf der X-Achse mit dem Stick
@@ -190,7 +182,7 @@ static CGSide checkBorderCollision(void) {
 
 void addExtraPoints() {
     player.points += EXTRA_POINTS;
-    extra_points += EXTRA_POINTS;
+    extraPoints += EXTRA_POINTS;
     printf("Extra: %d Punkte erhalten\n", EXTRA_POINTS);
 }
 
@@ -198,8 +190,8 @@ void increaseStickWidth() {
     // Den Stick nicht zu breit machen :)
     float maxWidth = STICK_WIDTH * 3;
 
-    if (stick_width < maxWidth) {
-        stick_width *= EXTRA_WIDEN;
+    if (stickWidth < maxWidth) {
+        stickWidth *= EXTRA_WIDEN;
         printf("Extra: Stick wurde verbreitert!\n");
     } else {
         addExtraPoints();
@@ -211,14 +203,14 @@ void decreaseBallSpeed() {
 
     float minSpeed = BALL_SPEED_INITIAL;
 
-    if (ball_speed > minSpeed) {
-        ballSpeedVector[0] /= ball_speed;
-        ballSpeedVector[1] /= ball_speed;
+    if (ballSpeed > minSpeed) {
+        ballSpeedVector[0] /= ballSpeed;
+        ballSpeedVector[1] /= ballSpeed;
 
-        ball_speed -= BALL_SPEED_MODIFIER;
+        ballSpeed -= BALL_SPEED_MODIFIER;
 
-        ballSpeedVector[0] *= ball_speed;
-        ballSpeedVector[1] *= ball_speed;
+        ballSpeedVector[0] *= ballSpeed;
+        ballSpeedVector[1] *= ballSpeed;
     } else {
         addExtraPoints();
     }
@@ -244,16 +236,16 @@ void activateExtra() {
 }
 
 void checkExtraCollision() {
-    float extra_x = g_extraCenter[0];
-    float extra_y = g_extraCenter[1];
+    float extraX = extraCenter[0];
+    float extraY = extraCenter[1];
 
-    float stick_x = g_stickCenter[0];
-    float stick_y = g_stickCenter[1];
+    float stickX = stickCenter[0];
+    float stickY = stickCenter[1];
 
     // Wenn Extra auf Schlaeger auftrifft
-    if ((extra_x >= stick_x - stick_width / 2) &&
-        (extra_x <= stick_x + stick_width / 2)
-        && extra_y < stick_y + BAR_THICKNESS) {
+    if ((extraX >= stickX - stickWidth / 2) &&
+        (extraX <= stickX + stickWidth / 2)
+        && extraY < stickY + BAR_THICKNESS) {
 
         activateExtra();
         resetExtraPosition();
@@ -262,23 +254,23 @@ void checkExtraCollision() {
 
 void calcBallPosition(double interval) {
 
-    if (!game_paused) {
+    if (!gamePaused) {
         CGSide side = checkBorderCollision();
 
         if (side != sideNone) {
             handleBorderCollision(side);
         } else {
-            g_ballCenter[0] += ballSpeedVector[0] * (float) interval;
-            g_ballCenter[1] += ballSpeedVector[1] * (float) interval;
+            ballCenter[0] += ballSpeedVector[0] * (float) interval;
+            ballCenter[1] += ballSpeedVector[1] * (float) interval;
         }
     }
 }
 
 void calcExtraPosition(double interval) {
-    g_extraCenter[1] -= extra_speed * (float) interval;
+    extraCenter[1] -= extraSpeed * (float) interval;
     checkExtraCollision();
 
-    if (g_extraCenter[1] <= -1.0f) {
+    if (extraCenter[1] <= -1.0f) {
         resetExtraPosition();
     }
 }
@@ -291,24 +283,24 @@ void
 calcStickPosition(double interval) {
 
     // Stick nach links bewegen
-    if (g_movement[dirLeft]) {
+    if (stickMovementDirection[dirLeft]) {
         // Position linker Balken + Breite des Sticks - Breite des linken Balkens
         // ist der Punkt, der den Stick stoppt
-        float stickPosition = g_stickCenter[0] - (stick_width / 2);
+        float stickPosition = stickCenter[0] - (stickWidth / 2);
         float leftBarPosition = -BAR_X_OFFSET + BAR_WIDTH / 2;
 
         if (stickPosition > leftBarPosition) {
-            g_stickCenter[0] -= STICK_SPEED * (float) interval;
+            stickCenter[0] -= STICK_SPEED * (float) interval;
         }
     }
 
     // Stick nach rechts bewegen
-    if (g_movement[dirRight]) {
-        float stickPosition = g_stickCenter[0] + (stick_width / 2);
+    if (stickMovementDirection[dirRight]) {
+        float stickPosition = stickCenter[0] + (stickWidth / 2);
         float rightBarPosition = BAR_X_OFFSET - BAR_WIDTH / 2;
 
         if (stickPosition < rightBarPosition) {
-            g_stickCenter[0] += STICK_SPEED * (float) interval;
+            stickCenter[0] += STICK_SPEED * (float) interval;
         }
     }
 }
@@ -321,7 +313,7 @@ calcStickPosition(double interval) {
 void handleHits() {
     player.points += 1;
 
-    int points = player.points - extra_points;
+    int points = player.points - extraPoints;
 
     // Alle 20 Punkte ein Leben hinzufuegen
     if (points % 20 == 0) {
@@ -331,23 +323,23 @@ void handleHits() {
 
     // Alle 10 Punkte die Geschwindigkeit erhoehen
     if (points % 10 == 0) {
-        // BAll speed entfernen für Inititalgeschwindigkeit
+        // Ball speed entfernen für Inititalgeschwindigkeit
         // plus richtigem Winkel
-        ballSpeedVector[0] /= ball_speed;
-        ballSpeedVector[1] /= ball_speed;
+        ballSpeedVector[0] /= ballSpeed;
+        ballSpeedVector[1] /= ballSpeed;
 
         // Ballgeschwindigkeit erhoehen
-        ball_speed += BALL_SPEED_MODIFIER;
-        ballSpeedVector[0] *= ball_speed;
-        ballSpeedVector[1] *= ball_speed;
+        ballSpeed += BALL_SPEED_MODIFIER;
+        ballSpeedVector[0] *= ballSpeed;
+        ballSpeedVector[1] *= ballSpeed;
         printf("Ballgeschwindigkeit erhoeht!\n");
     }
 
     // EXTRAS
-    if (!show_extra && propabilityOccured()) {
-        show_extra = GL_TRUE;
-        g_extraCenter[0] = g_ballCenter[0];
-        g_extraCenter[1] = g_ballCenter[1];
+    if (!showExtra && propabilityOccured()) {
+        showExtra = GL_TRUE;
+        extraCenter[0] = ballCenter[0];
+        extraCenter[1] = ballCenter[1];
     }
 
     // Ausgabe
@@ -361,7 +353,7 @@ void handleHits() {
         // Sofortige Ausgabe
         fflush(stdout);
 
-        game_paused = GL_TRUE;
+        gamePaused = GL_TRUE;
     }
 }
 
@@ -372,8 +364,8 @@ int checkBlockCollision(Block *block) {
     GLfloat blockY = block->position[1];
 
     // Ballposition
-    GLfloat ballX = g_ballCenter[0];
-    GLfloat ballY = g_ballCenter[1];
+    GLfloat ballX = ballCenter[0];
+    GLfloat ballY = ballCenter[1];
 
     // Trefferpunkte
     GLfloat blockRight = (blockX + BLOCK_WIDTH / 2) + BALL_WIDTH;
@@ -443,7 +435,7 @@ int checkBlockCollision(Block *block) {
  */
 void
 setStickMovement(CGDirection direction, GLboolean status) {
-    g_movement[direction] = status;
+    stickMovementDirection[direction] = status;
 }
 
 /**
@@ -452,7 +444,7 @@ setStickMovement(CGDirection direction, GLboolean status) {
  */
 CGPoint2f *
 getStickCenter(void) {
-    return &g_stickCenter;
+    return &stickCenter;
 }
 
 /**
@@ -461,7 +453,7 @@ getStickCenter(void) {
  */
 CGPoint2f *
 getBallCenter(void) {
-    return &g_ballCenter;
+    return &ballCenter;
 }
 
 /**
@@ -470,5 +462,5 @@ getBallCenter(void) {
  */
 CGPoint2f *
 getExtraCenter(void) {
-    return &g_extraCenter;
+    return &extraCenter;
 }
