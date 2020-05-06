@@ -1,5 +1,6 @@
 #ifndef UEB01_VARIABLES_H
 #define UEB01_VARIABLES_H
+
 #include "logic.h"
 
 /** Globale Einstellungen **/
@@ -13,22 +14,22 @@
 #define BAR_WIDTH 0.1f
 
 /** Ball **/
-#define INITIAL_BALL_SPEED 1.0f
-#define INITIAL_BALL_X_POS 0.0f
-#define INITIAL_BALL_Y_POST -0.8f
-#define BALL_WIDTH 0.02f
+#define BALL_SPEED_INITIAL 1.0f
+#define BALL_INITIAL_X_POS 0.0f
+#define BALL_INITIAL_Y_POS -0.8f
 #define BALL_SPEED_MODIFIER 0.3f
-#define X_STEPS_PS 0.5f // X-Geschwindigkeit
-#define Y_STEPS_PS 0.5f // Y-Geschwindigkeit
+#define BALL_WIDTH 0.02f
+#define BALL_STEPS_X 0.5f // X-Geschwindigkeit
+#define BALL_STEPS_Y 0.5f // Y-Geschwindigkeit
 
 /** Bloecke **/
-#define NUMBER_OF_BLOCKS 56
+#define BLOCKS_COUNT 56
 #define BLOCK_WIDTH  0.15f
 #define BLOCK_HEIGHT 0.075f
 
 /** Sticks / Paddle **/
 #define STICK_WIDTH 0.3f
-#define STEPS_PS 1.0f
+#define STICK_SPEED 1.0f
 
 /** Extras **/
 #define EXTRA_SPEED 0.7f
@@ -39,7 +40,7 @@
 #define EXTRA_POINTS 5
 
 /** Spielers **/
-#define INITIAL_LIVES 3
-#define INITIAL_POINTS 0
+#define PLAYER_INITIAL_LIVES 3
+#define PLAYER_INITIAL_POINTS 0
 
 #endif

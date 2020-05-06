@@ -19,11 +19,11 @@ enum e_Direction {
 };
 
 /** RGB-Farbwert */
-typedef GLfloat rgb_color[3];
+typedef GLfloat rgbColor[3];
 
 struct struct_Block {
     CGPoint2f position;
-    rgb_color color;
+    rgbColor color;
     int hidden;
 };
 
@@ -33,35 +33,23 @@ typedef struct struct_Block Block;
 /** Vektor im 2D-Raum */
 typedef GLfloat CGVector2f[2];
 
-/* struct zur Verwaltung der Spielballdaten. */
-struct struct_Ball {
-    GLfloat speed;
-    CGPoint2f position;
-    GLfloat rotation;
-};
-
-/** Datentyp zur Verwaltung der Spielballdaten. */
-typedef struct s_Ball Ball;
-
 typedef struct Player {
     int lives;
     int points;
 } Player;
 
-GLboolean game_paused;
-
-GLboolean show_wireframe;
-
-GLboolean show_extra;
-
-float stick_width;
+GLboolean gamePaused;
+GLboolean showWireframe;
+GLboolean showExtra;
+GLboolean showFullscreen;
+float stickWidth;
 
 /** Kollisionsseiten. */
-enum e_Side {
+enum collisionSide {
     sideNone, sideLeft, sideRight, sideTop, sideBottom
 };
 
 /** Datentyp fuer Kollisionsseiten. */
-typedef enum e_Side CGSide;
+typedef enum collisionSide CGSide;
 
 #endif //UEB01_TYPES_H

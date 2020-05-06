@@ -3,12 +3,10 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
-
 #include <GL/glut.h>
 
 #endif
 
-#include "debug.h"
 #include "io.h"
 
 int
@@ -16,11 +14,10 @@ main(int argc, char **argv) {
     (void) argc;
     (void) argv;
 
-
     /* Initialisierung des I/O-Sytems
        (inkl. Erzeugung des Fensters und Starten der Ereignisbehandlung). */
     if (!initAndStartIO
-            ("Mein erstes OpenGL-Programm mit Quadriken in 2D", 500, 500)) {
+            ("Bricks", 500, 500)) {
         fprintf(stderr, "Initialisierung fehlgeschlagen!\n");
         return 1;
     } else {

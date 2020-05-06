@@ -2,20 +2,25 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include "scene.h"
-#include "debug.h"
 #include "logic.h"
 #include "math.h"
 #include "variables.h"
 #include "types.h"
+#include "debug.h"
+#include "helper.h"
 #include <time.h>
 
-GLboolean show_wireframe = GL_FALSE;
-static Block bloecke[NUMBER_OF_BLOCKS];
+GLboolean showWireframe = GL_FALSE;
+static Block bloecke[BLOCKS_COUNT];
+float stickWidth = STICK_WIDTH;
+
+// Winkel fuer das Extra
 int tAngle = 0;
 
-float stick_width = STICK_WIDTH;
-
-static void drawTriangle(void) {
+/**
+ * Zeichnet ein Dreieck (fuer das Extra)
+ */
+static void drawTriangle() {
     glBegin(GL_TRIANGLES);
 
     float x = 0.7f;
@@ -29,51 +34,17 @@ static void drawTriangle(void) {
 
     // oben
     glVertex2f(0, x);
+
     glEnd();
 }
 
 /**
- * Zeichnet ein Rechteck mit der Breite und Hoehe 1.
+ * Zeichnet das Extra
+ * @param coords an diesen Koordinaten wird das Extra gezeichnet
  */
-static void drawSquare(void) {
-    glBegin(GL_QUADS);
-    {
-        // Links unten
-        glVertex2f(-0.5, -0.5);
-
-        // Rechts unten
-        glVertex2f(0.5, -0.5);
-
-        // Links oben
-        glVertex2f(0.5, 0.5);
-
-        // Rechts oben
-        glVertex2f(-0.5, 0.5);
-    }
-    glEnd();
-}
-
-static void drawRound(void) {
-
-    float radius = 1.0f;
-
-    // TODO: WTF is delta theta
-    float delta_theta = 0.01f;
-
-    glBegin(GL_POLYGON);
-
-    // TODO: Erklaerung hierfuer finden xD
-    for (float angle = 0; angle < 2 * M_PI; angle += delta_theta) {
-        glVertex3f(radius * cos(angle), radius * sin(angle), 0);
-    }
-
-    glEnd();
-}
-
 void drawExtra(const CGPoint2f coords) {
     GLfloat x = coords[0];
     GLfloat y = coords[1];
-
     glColor3f(0.0f, 1.0f, 0.0f);
 
     glPushMatrix();
@@ -84,15 +55,69 @@ void drawExtra(const CGPoint2f coords) {
         glScalef(EXTRA_WIDTH, EXTRA_HEIGHT, 2.0f);
         drawTriangle();
 
-        tAngle++;
-        if (tAngle > 360) {
-            tAngle = 0;
+        if (!gamePaused) {
+            // Extra drehen
+            tAngle += 2;
+            if (tAngle > 360) {
+                tAngle = 0;
+            }
         }
     }
 
     glPopMatrix();
 }
 
+/**
+ * Zeichnet ein Rechteck mit der Breite und Hoehe 1.
+ */
+static void drawSquare() {
+
+    float length = 0.5f;
+
+    glBegin(GL_QUADS);
+    {
+        // Links unten
+        glVertex2f(-length, -length);
+
+        // Rechts unten
+        glVertex2f(length, -length);
+
+        // Links oben
+        glVertex2f(length, length);
+
+        // Rechts oben
+        glVertex2f(-length, length);
+    }
+
+    glEnd();
+}
+
+/**
+ * Zeichnet einen Kreis (fuer den Ball)
+ */
+static void drawCircle() {
+
+    float radius = 1.0f;
+
+    // Um diesen Wert, den Winkel erhoehen, um irgendwann auf 360 zu kommen
+    // je kleiner der Wert, desto runder der Ball
+    float increaseValue = 0.01f;
+
+    glBegin(GL_POLYGON);
+
+    // Winkel immer minimal erhoehen und somit den Kreis zeichnen
+    // 2 * PI entsprechen 360°
+    for (float angle = 0; angle < 2 * M_PI; angle += increaseValue) {
+        glVertex3f(radius * cosf(angle), radius * sinf(angle), 0);
+    }
+
+    glEnd();
+}
+
+/**
+ * Zeichnet den Ball anhand angegebener Koordinaten
+ * @param coords - An dieser Stelle soll der Ball erscheinen
+ */
 static void drawBall(const CGPoint2f coords) {
     GLfloat x = coords[0];
     GLfloat y = coords[1];
@@ -102,75 +127,19 @@ static void drawBall(const CGPoint2f coords) {
     {
         glTranslatef(x, y, ZERO);
         glScalef(BALL_WIDTH, BALL_WIDTH, 1.0f);
-        drawRound();
+        drawCircle();
     }
 
     glPopMatrix();
 }
 
-float *selectColor(int randomNumber) {
-
-    float *colors = malloc(3);
-
-    switch (randomNumber) {
-        // Lila
-        case 1:
-            colors[0] = 0.576f;
-            colors[1] = 0.439f;
-            colors[2] = 0.859f;
-            break;
-
-            // Rot
-        case 2:
-            colors[0] = 0.980f;
-            colors[1] = 0.502f;
-            colors[2] = 0.447f;
-            break;
-
-            // Blau
-        case 3:
-            colors[0] = 0.941f;
-            colors[1] = 0.902f;
-            colors[2] = 0.549f;
-            break;
-
-            // Gruen
-        case 4:
-            colors[0] = 0.596f;
-            colors[1] = 0.984f;
-            colors[2] = 0.596f;
-            break;
-
-            // Gelb
-        case 5:
-            colors[0] = 0.529f;
-            colors[1] = 0.808f;
-            colors[2] = 0.922f;
-            break;
-
-        default:
-            colors[0] = 0.941f;
-            colors[1] = 1.000f;
-            colors[2] = 1.000f;
-            break;
-    }
-
-    return colors;
-}
-
 /**
- * Generiert fuer die Bloecke Nummern, die anhand von selectColor in Farben umgewandelt werden.
- * @param maxNumber hoechste Nummer (standardmaessig 5)
- * @return
+ * Zeichnet einen Block
+ * @param block - enthaelt alle Informationen zu diesem Block (Koordinatien, Farben)
  */
-int genNumber(int maxNumber) {
-    return (rand() % (maxNumber - 1 + 1)) + 1;
-}
-
 static void drawBlock(const Block block) {
     GLfloat x = block.position[0];
     GLfloat y = block.position[1];
-
     glColor3f(block.color[0], block.color[1], block.color[2]);
 
     glPushMatrix();
@@ -183,17 +152,20 @@ static void drawBlock(const Block block) {
     glPopMatrix();
 }
 
+/**
+ * Zeichnet den Stick an uebergebenen Koordinaten
+ * @param coords - Koordnaten des Sticks
+ */
 static void drawStick(const CGPoint2f coords) {
 
     GLfloat x = coords[0];
     GLfloat y = coords[1];
-
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glPushMatrix();
     {
         glTranslatef(x, y, ZERO);
-        glScalef(stick_width, BAR_THICKNESS, 1.0f);
+        glScalef(stickWidth, BAR_THICKNESS, 1.0f);
         drawSquare();
     }
 
@@ -205,10 +177,10 @@ static void drawStick(const CGPoint2f coords) {
  *
  */
 static void drawBorder(GLfloat posX, GLfloat posY, int showTop) {
+    glColor3f(1.0f, 1.0f, 1.0f);
 
     glPushMatrix();
     {
-        glColor3f(1.0f, 1.0f, 1.0f);
         if (showTop) {
             glTranslatef(posX, posY, ZERO);
             glScalef(BAR_WIDTH, BAR_HEIGHT, 1.0f);
@@ -222,14 +194,35 @@ static void drawBorder(GLfloat posX, GLfloat posY, int showTop) {
     glPopMatrix();
 }
 
+/**
+ * Alle Bloecke zeichnen, wenn sie nicht versteckt sind und
+ * der Ball gerade nicht kollidiert
+ */
+void drawBlocks() {
+    for (int i = 0; i < BLOCKS_COUNT; i++) {
+        if (!bloecke[i].hidden && !blockCollided(&bloecke[i])) {
+            drawBlock(bloecke[i]);
+        }
+    }
+}
+
+/**
+ * Generiert alle Bloecke mit Position und Farben
+ * und speichert sie in das uebergebene Blockarray
+ * @param block Blockarray, das gefuellt wird
+ */
 void generateBlocks(Block *block) {
     int count = 0;
+    float width = 0.65f;
+    float height = 0.7f;
+    float gap = 0.2f;
 
-    // TODO: Werte hardcoded, bei Groessenaenderungen, duefte das nicht mehr funktioniernen
-    for (float i = -0.7f; i < 0.8f; i += 0.2f) {
-        for (float j = 0.65f; j > -0.7; j -= 0.2f) {
+    // Spielfeld-Koordinaten - Erst von links nach rechts, dann von oben nach unten
+    for (float j = width; j > -width; j -= gap) {
+        for (float i = -height; i <= height; i += gap) {
 
-            float *colors = selectColor(genNumber(5));
+            // Farben fuer den Block zufaellig generieren
+            float *colors = selectColor(genRandomNumber(5, 1));
 
             block[count].color[0] = colors[0];
             block[count].color[1] = colors[1];
@@ -270,6 +263,10 @@ initScene(void) {
     // srand steht hier, weil es nur einmal aufgerufen werden darf
     srand(time(NULL));
 
+
+    // Ball soll in zufaellige Richtung fliegen
+    setRandomBallAngle();
+
     /* Bloecke generieren */
     generateBlocks(bloecke);
 
@@ -281,8 +278,8 @@ initScene(void) {
  * Schaltet den Wireframe-Modus an oder aus
  */
 void toggleWireframe() {
-    show_wireframe = !show_wireframe;
-    if (show_wireframe) {
+    showWireframe = !showWireframe;
+    if (showWireframe) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     } else {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -290,17 +287,21 @@ void toggleWireframe() {
 }
 
 /**
- * Alle Bloecke zeichnen, wenn sie nicht versteckt sind und
- * der Ball gerade nicht kollidiert
+ * Schaltet den Fullscreen an oder aus
  */
-void drawBlocks() {
-    for (int i = 0; i < NUMBER_OF_BLOCKS; i++) {
-        if (!bloecke[i].hidden && checkBlockCollision(&bloecke[i])) {
-            drawBlock(bloecke[i]);
-        }
+void toggleFullscreen() {
+    showFullscreen = !showFullscreen;
+
+    if (showFullscreen) {
+        glutFullScreen();
+    } else {
+        glutPositionWindow(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
     }
 }
 
+/**
+ * Zeichnet die gesamte Szene (Grenzen, Ball, Stick und evtl. Extras
+ */
 void drawScene(void) {
 
     /* In der Logik berechnet Position beziehen */
@@ -316,11 +317,10 @@ void drawScene(void) {
     drawStick(*stickCenter);
     drawBall(*ballCenter);
 
-    // TODO: Pruefen, dass ein neues Extra gespawnt werden muss?
-    if (show_extra) {
+
+    if (showExtra) {
         drawExtra(*extraCenter);
     }
 
-    // Bloecke zeichnen
     drawBlocks();
 }
