@@ -146,16 +146,10 @@ void rotate(float radiant) {
  * @return gibt die Seite der Kollision aus
  */
 static CGSide checkBorderCollision(void) {
-    // Initial auf nichts setzen
-    // -> wir gehen davon aus, dass wir nicht kollidieren
     CGSide res = sideNone;
 
     // Fuer bessere Uebersicht lokale Variablen erstellen
-    float ballX = ballCenter[0];
-    float ballY = ballCenter[1];
-    float stickX = stickCenter[0];
-    float stickY = stickCenter[1];
-
+    float ballX = ballCenter[0], ballY = ballCenter[1], stickX = stickCenter[0], stickY = stickCenter[1];
     float collisionOffset = 0.005f;
 
     // Ball ist unter dem Stick, also (Punkt) verloren
@@ -164,22 +158,19 @@ static CGSide checkBorderCollision(void) {
         handleLoss();
     }
 
-    // Ball fliegt nach rechts und
-    // die rechte Seite des Balls ueberschreitet den rechten Rand
+    // Ball fliegt nach rechts
     if (ballSpeedVector[0] > 0.0f &&
         ballX + (BALL_WIDTH / 2) + collisionOffset >= BAR_X_OFFSET - BAR_THICKNESS) {
         res = sideRight;
     }
 
-        // Ball fliegt nach links und
-        //  die linke Seite des Balls ueberschreitet den linken Rand
+        // Ball fliegt nach links
     else if (ballSpeedVector[0] < 0.0f &&
              ballX - (BALL_WIDTH / 2) - collisionOffset <= -BAR_X_OFFSET + BAR_THICKNESS) {
         res = sideLeft;
     }
 
         // Ball fliegt nach oben und
-        // die obere Seite des Balls ueberschreitet den oberen Rand
     else if (ballSpeedVector[1] > 0.0f &&
              // zusaetzlich Bar-Breite abziehen, weil ueber die Top-Bar noch der Text steht
              ballY + BALL_WIDTH / 2 + collisionOffset >= BAR_X_OFFSET - BAR_WIDTH - BAR_THICKNESS) {
@@ -187,7 +178,6 @@ static CGSide checkBorderCollision(void) {
     }
 
         // Ball fliegt nach unten und
-        //  die untere Seite des Balls ueberschreitet den unteren Rand
     else if (ballSpeedVector[1] < 0.0f &&
              (ballX >= (stickX - stickWidth / 2)) &&
              (ballX <= (stickX + stickWidth / 2) &&
@@ -431,12 +421,10 @@ void handleHits() {
 GLboolean blockCollided(Block *block) {
 
     // Blockposition
-    GLfloat blockX = block->position[0];
-    GLfloat blockY = block->position[1];
+    GLfloat blockX = block->position[0], blockY = block->position[1];
 
     // Ballposition
-    GLfloat ballX = ballCenter[0];
-    GLfloat ballY = ballCenter[1];
+    GLfloat ballX = ballCenter[0], ballY = ballCenter[1];
 
     // Trefferpunkte
     GLfloat blockRight = (blockX + BLOCK_WIDTH / 2) + BALL_WIDTH;
@@ -455,35 +443,26 @@ GLboolean blockCollided(Block *block) {
         handleHits();
 
         // Werte, um zu pruefen, wo der Block genau getroffen wurde
-        // links
+        //
         float xCheckLeft = fabsf(ballX - blockLeft);
-
-        // rechts
         float xCheckRight = fabsf(ballX - blockRight);
-
-        // unten
         float xCheckBottom = fabsf(ballY - blockBottom);
-
-        // oben
         float xCheckTop = fabsf(ballY - blockTop);
 
         // Beim kleinsten Wert wurde der Block getroffen
         float val = xCheckLeft;
         CGSide side = sideLeft;
 
-        // Rechts
         if (xCheckRight < val) {
             val = xCheckRight;
             side = sideRight;
         }
 
-        // Unten
         if (xCheckBottom < val) {
             val = xCheckBottom;
             side = sideBottom;
         }
 
-        // Oben
         if (xCheckTop < val) {
             side = sideTop;
         }
