@@ -23,7 +23,7 @@
 #define BALL_STEPS_Y 0.5f // Y-Geschwindigkeit
 
 /** Bloecke **/
-#define NUMBER_OF_BLOCKS 56
+#define BLOCKS_COUNT 56
 #define BLOCK_WIDTH  0.15f
 #define BLOCK_HEIGHT 0.075f
 

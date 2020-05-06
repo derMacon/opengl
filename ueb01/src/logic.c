@@ -356,7 +356,7 @@ void handleHits() {
     printf("Punkte: %d | Verbleibende Leben: %d\n", player.points, player.lives);
 
     // Spieler hat gewonnen
-    if (points >= NUMBER_OF_BLOCKS) {
+    if (points >= BLOCKS_COUNT) {
         // Gewonnen
         printf("Sie haben gewonnen!");
 

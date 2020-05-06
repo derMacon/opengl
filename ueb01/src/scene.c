@@ -10,7 +10,7 @@
 #include <time.h>
 
 GLboolean show_wireframe = GL_FALSE;
-static Block bloecke[NUMBER_OF_BLOCKS];
+static Block bloecke[BLOCKS_COUNT];
 int tAngle = 0;
 
 float stick_width = STICK_WIDTH;
@@ -224,10 +224,12 @@ static void drawBorder(GLfloat posX, GLfloat posY, int showTop) {
 
 void generateBlocks(Block *block) {
     int count = 0;
+    float width = 0.65f;
+    float height = 0.7f;
+    float gap = 0.2f;
 
-    // TODO: Werte hardcoded, bei Groessenaenderungen, duefte das nicht mehr funktioniernen
-    for (float i = -0.7f; i < 0.8f; i += 0.2f) {
-        for (float j = 0.65f; j > -0.7; j -= 0.2f) {
+    for (float j = width; j > -width; j -= gap) {
+        for (float i = -height; i <= height; i += gap) {
 
             float *colors = selectColor(genNumber(5));
 
@@ -294,7 +296,7 @@ void toggleWireframe() {
  * der Ball gerade nicht kollidiert
  */
 void drawBlocks() {
-    for (int i = 0; i < NUMBER_OF_BLOCKS; i++) {
+    for (int i = 0; i < BLOCKS_COUNT; i++) {
         if (!bloecke[i].hidden && checkBlockCollision(&bloecke[i])) {
             drawBlock(bloecke[i]);
         }
