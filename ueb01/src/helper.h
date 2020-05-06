@@ -25,4 +25,10 @@ float randomBallXValue();
  * @return Array mit RGB-Farben
  */
 float *selectColor(int randomNumber);
+
+/**
+ * Zeigt die Hilfe fuer den Benutzer an
+ */
+void showHelp();
+
 #endif //UEB01_HELPER_H

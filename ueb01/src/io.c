@@ -5,6 +5,7 @@
 #include "logic.h"
 #include "variables.h"
 #include "types.h"
+#include "helper.h"
 
 GLboolean gamePaused = GL_FALSE;
 GLboolean showExtra = GL_FALSE;
@@ -60,7 +61,7 @@ cbTimer(int lastCallTime) {
     calcStickPosition(interval);
     calcBallPosition(interval);
 
-    if (showExtra){
+    if (showExtra) {
         calcExtraPosition(interval);
     }
 
@@ -144,10 +145,23 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
             /* normale Taste gedrueckt */
         else {
             switch (key) {
+                /* Bewegung des Rechtecks in entsprechende Richtung starten */
+                case 'a':
+                case 'A':
+                    setStickMovement(dirLeft, GL_TRUE);
+                    break;
+                case 'd':
+                case 'D':
+                    setStickMovement(dirRight, GL_TRUE);
+                    break;
                 case 'p':
+                case 'P':
                     gamePaused = !gamePaused;
                     break;
-
+                case 'h':
+                case 'H':
+                    showHelp();
+                    break;
                     /* Programm beenden */
                 case 'q':
                 case 'Q':
@@ -161,6 +175,7 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
         /* Spezialtaste losgelassen */
         if (isSpecialKey) {
             switch (key) {
+
                 /* Bewegung des Rechtecks in entsprechende Richtung beenden */
                 case GLUT_KEY_LEFT:
                     setStickMovement(dirLeft, GL_FALSE);
@@ -170,6 +185,17 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     break;
                 case GLUT_KEY_F1:
                     toggleWireframe();
+                    break;
+            }
+        } else {
+            switch (key) {
+                case 'a':
+                case 'A':
+                    setStickMovement(dirLeft, GL_FALSE);
+                    break;
+                case 'd':
+                case 'D':
+                    setStickMovement(dirRight, GL_FALSE);
                     break;
             }
         }
