@@ -230,6 +230,9 @@ initScene(void) {
     // srand steht hier, weil es nur einmal aufgerufen werden darf
     srand(time(NULL));
 
+    // Ball soll in zufaellige Richtung fliegen
+    setRandomBallAngle();
+
     /* Bloecke generieren */
     generateBlocks(bloecke);
 

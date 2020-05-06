@@ -10,6 +10,7 @@
 /** Punkt im 2D-Raum */
 typedef GLfloat CGPoint2f[2];
 
+
 /** Datentyp fuer Bewegungsrichtungen. */
 typedef enum e_Direction CGDirection;
 

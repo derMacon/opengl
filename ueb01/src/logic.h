@@ -22,6 +22,8 @@ void calcBallPosition(double interval);
 
 void calcExtraPosition(double interval);
 
+void setRandomBallAngle();
+
 void setStickMovement(CGDirection direction, GLboolean status);
 
 #endif

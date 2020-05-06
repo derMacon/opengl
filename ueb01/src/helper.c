@@ -1,7 +1,11 @@
 #include "helper.h"
 
 int genRandomNumber(int highestValue, int minValue) {
-    return (rand() % highestValue) + minValue;
+    return (rand() % (highestValue - minValue + 1)) + minValue;
+}
+
+float randomBallXValue() {
+    return (float) genRandomNumber(50, -50) / 100;
 }
 
 float *selectColor(int randomNumber) {

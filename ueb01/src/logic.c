@@ -9,6 +9,7 @@
 #include <GL/glut.h>
 
 /** der Mittelpunkt des Sticks */
+
 static CGPoint2f g_stickCenter = {0.0f, -BAR_X_OFFSET};
 
 /** der Mittelpunkt des Balls */
@@ -16,7 +17,7 @@ static CGPoint2f g_ballCenter = {BALL_INITIAL_X_POS, BALL_INITIAL_Y_POS};
 static CGPoint2f g_extraCenter = {BALL_INITIAL_X_POS, 0.0f};
 
 /** Geschwindigkeitsvektor des Balls. */
-static CGVector2f g_quadSpeed = {BALL_STEPS_X, BALL_STEPS_Y};
+static CGVector2f ball_speed_vector = {BALL_STEPS_X, BALL_STEPS_Y};
 
 float ball_speed = BALL_SPEED_INITIAL;
 float extra_speed = EXTRA_SPEED;
@@ -46,20 +47,18 @@ static void
 handleBorderCollision(CGSide side) {
     /* Bewegung in X-Richtung umkehren */
     if (side == sideLeft || side == sideRight) {
-        g_quadSpeed[0] *= -1;
+        ball_speed_vector[0] *= -1;
     }
 
     /* Bewegung in Y-Richtung umkehren */
     if (side == sideTop || side == sideBottom) {
-        g_quadSpeed[1] *= -1;
+        ball_speed_vector[1] *= -1;
     }
 }
 
-float randomXValue() {
-    float min = -0.5f;
-    float max = 0.5f;
-    float scale = rand() / (float) RAND_MAX; /* [0, 1.0] */
-    return min + scale * (max - min);      /* [min, max] */
+void setRandomBallAngle(){
+    ball_speed_vector[0] = randomBallXValue();
+    ball_speed_vector[1] = 0.5f;
 }
 
 /**
@@ -82,8 +81,7 @@ void handleLoss() {
         g_ballCenter[0] = g_stickCenter[0];
         g_ballCenter[1] = BALL_INITIAL_Y_POS;
 
-        g_quadSpeed[0] = randomXValue();
-        g_quadSpeed[1] = 0.5f;
+        setRandomBallAngle();
     }
 }
 
@@ -124,8 +122,8 @@ void rotate(float radiant) {
     x = tempX * cos + tempY * sin;
     y = -tempX * sin + tempY * cos;
 
-    g_quadSpeed[0] = x * ball_speed;
-    g_quadSpeed[1] = y * ball_speed;
+    ball_speed_vector[0] = x * ball_speed;
+    ball_speed_vector[1] = y * ball_speed;
 }
 
 static CGSide checkBorderCollision(void) {
@@ -139,7 +137,7 @@ static CGSide checkBorderCollision(void) {
         handleLoss();
     }
 
-    if (g_quadSpeed[0] > 0.0f &&
+    if (ball_speed_vector[0] > 0.0f &&
         g_ballCenter[0] + (BALL_WIDTH / 2) + collisionOffset >= BAR_X_OFFSET - BAR_THICKNESS) {
         // Ball fliegt nach rechts und
         // die rechte Seite des Ball ueberschreitet den rechten Rand
@@ -148,14 +146,14 @@ static CGSide checkBorderCollision(void) {
 
         // Quadrat fliegt nach links und
         //  die linke Seite des Quadrats ueberschreitet den linken Rand
-    else if (g_quadSpeed[0] < 0.0f &&
+    else if (ball_speed_vector[0] < 0.0f &&
              g_ballCenter[0] - (BALL_WIDTH / 2) - collisionOffset <= -BAR_X_OFFSET + BAR_THICKNESS) {
         res = sideLeft;
     }
 
         // Quadrat fliegt nach oben und
         // die obere Seite des Quadrats ueberschreitet den oberen Rand
-    else if (g_quadSpeed[1] > 0.0f &&
+    else if (ball_speed_vector[1] > 0.0f &&
              // zusaetzlich Bar-width abziehen, weil ueber die Top-Bar noch der Text steht
              g_ballCenter[1] + BALL_WIDTH / 2 + collisionOffset >= BAR_X_OFFSET - BAR_WIDTH - BAR_THICKNESS) {
         res = sideTop;
@@ -163,7 +161,7 @@ static CGSide checkBorderCollision(void) {
 
         // Ball fliegt nach unten und
         //  die untere Seite des Balls ueberschreitet den unteren Rand
-    else if (g_quadSpeed[1] < 0.0f &&
+    else if (ball_speed_vector[1] < 0.0f &&
              (g_ballCenter[0] >= (g_stickCenter[0] - stick_width / 2)) &&
              (g_ballCenter[0] <= (g_stickCenter[0] + stick_width / 2) &&
               g_ballCenter[1] + BALL_WIDTH / 2 < g_stickCenter[1] + BAR_THICKNESS)) {
@@ -175,7 +173,7 @@ static CGSide checkBorderCollision(void) {
         float radiant = calculateRadiant(collisionX);
 
         if (radiant == 0) {
-            g_quadSpeed[1] *= -1;
+            ball_speed_vector[1] *= -1;
         } else {
             rotate(radiant);
         }
@@ -210,13 +208,13 @@ void decreaseBallSpeed() {
     float minSpeed = BALL_SPEED_INITIAL;
 
     if (ball_speed > minSpeed) {
-        g_quadSpeed[0] /= ball_speed;
-        g_quadSpeed[1] /= ball_speed;
+        ball_speed_vector[0] /= ball_speed;
+        ball_speed_vector[1] /= ball_speed;
 
         ball_speed -= BALL_SPEED_MODIFIER;
 
-        g_quadSpeed[0] *= ball_speed;
-        g_quadSpeed[1] *= ball_speed;
+        ball_speed_vector[0] *= ball_speed;
+        ball_speed_vector[1] *= ball_speed;
     } else {
         addExtraPoints();
     }
@@ -266,8 +264,8 @@ void calcBallPosition(double interval) {
         if (side != sideNone) {
             handleBorderCollision(side);
         } else {
-            g_ballCenter[0] += g_quadSpeed[0] * (float) interval;
-            g_ballCenter[1] += g_quadSpeed[1] * (float) interval;
+            g_ballCenter[0] += ball_speed_vector[0] * (float) interval;
+            g_ballCenter[1] += ball_speed_vector[1] * (float) interval;
         }
     }
 }
@@ -331,13 +329,13 @@ void handleHits() {
     if (points % 10 == 0) {
         // BAll speed entfernen für Inititalgeschwindigkeit
         // plus richtigem Winkel
-        g_quadSpeed[0] /= ball_speed;
-        g_quadSpeed[1] /= ball_speed;
+        ball_speed_vector[0] /= ball_speed;
+        ball_speed_vector[1] /= ball_speed;
 
         // Ballgeschwindigkeit erhoehen
         ball_speed += BALL_SPEED_MODIFIER;
-        g_quadSpeed[0] *= ball_speed;
-        g_quadSpeed[1] *= ball_speed;
+        ball_speed_vector[0] *= ball_speed;
+        ball_speed_vector[1] *= ball_speed;
         printf("Ballgeschwindigkeit erhoeht!\n");
     }
 
