@@ -13,7 +13,6 @@
 GLboolean show_wireframe = GL_FALSE;
 static Block bloecke[BLOCKS_COUNT];
 int tAngle = 0;
-
 float stick_width = STICK_WIDTH;
 
 static void drawTriangle(void) {
@@ -146,56 +145,6 @@ static void drawStick(const CGPoint2f coords) {
     glPopMatrix();
 }
 
-float *selectColor(int randomNumber) {
-
-    float *colors = malloc(3);
-
-    switch (randomNumber) {
-        // Lila
-        case 1:
-            colors[0] = 0.576f;
-            colors[1] = 0.439f;
-            colors[2] = 0.859f;
-            break;
-
-            // Rot
-        case 2:
-            colors[0] = 0.980f;
-            colors[1] = 0.502f;
-            colors[2] = 0.447f;
-            break;
-
-            // Blau
-        case 3:
-            colors[0] = 0.941f;
-            colors[1] = 0.902f;
-            colors[2] = 0.549f;
-            break;
-
-            // Gruen
-        case 4:
-            colors[0] = 0.596f;
-            colors[1] = 0.984f;
-            colors[2] = 0.596f;
-            break;
-
-            // Gelb
-        case 5:
-            colors[0] = 0.529f;
-            colors[1] = 0.808f;
-            colors[2] = 0.922f;
-            break;
-
-        default:
-            colors[0] = 0.941f;
-            colors[1] = 1.000f;
-            colors[2] = 1.000f;
-            break;
-    }
-
-    return colors;
-}
-
 
 /**
  * Zeichnet einen Teil der Spielfeldbegrenzung.
@@ -217,6 +166,18 @@ static void drawBorder(GLfloat posX, GLfloat posY, int showTop) {
         drawSquare();
     }
     glPopMatrix();
+}
+
+/**
+ * Alle Bloecke zeichnen, wenn sie nicht versteckt sind und
+ * der Ball gerade nicht kollidiert
+ */
+void drawBlocks() {
+    for (int i = 0; i < BLOCKS_COUNT; i++) {
+        if (!bloecke[i].hidden && checkBlockCollision(&bloecke[i])) {
+            drawBlock(bloecke[i]);
+        }
+    }
 }
 
 void generateBlocks(Block *block) {
@@ -288,18 +249,6 @@ void toggleWireframe() {
     }
 }
 
-/**
- * Alle Bloecke zeichnen, wenn sie nicht versteckt sind und
- * der Ball gerade nicht kollidiert
- */
-void drawBlocks() {
-    for (int i = 0; i < BLOCKS_COUNT; i++) {
-        if (!bloecke[i].hidden && checkBlockCollision(&bloecke[i])) {
-            drawBlock(bloecke[i]);
-        }
-    }
-}
-
 void drawScene(void) {
 
     /* In der Logik berechnet Position beziehen */
@@ -315,11 +264,9 @@ void drawScene(void) {
     drawStick(*stickCenter);
     drawBall(*ballCenter);
 
-    // TODO: Pruefen, dass ein neues Extra gespawnt werden muss?
     if (show_extra) {
         drawExtra(*extraCenter);
     }
 
-    // Bloecke zeichnen
     drawBlocks();
 }

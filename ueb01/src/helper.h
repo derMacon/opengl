@@ -5,5 +5,5 @@
 
 int genRandomNumber(int highestValue, int minValue);
 
-
+float *selectColor(int randomNumber);
 #endif //UEB01_HELPER_H
