@@ -33,7 +33,6 @@ struct struct_Block {
 
 typedef struct struct_Block Block;
 
-
 /** Vektor im 2D-Raum */
 typedef GLfloat CGVector2f[2];
 
