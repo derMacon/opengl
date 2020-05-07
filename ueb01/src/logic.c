@@ -445,7 +445,6 @@ GLboolean blockCollided(Block *block) {
         handleHits();
 
         // Werte, um zu pruefen, wo der Block genau getroffen wurde
-        //
         float xCheckLeft = fabsf(ballX - blockLeft);
         float xCheckRight = fabsf(ballX - blockRight);
         float xCheckBottom = fabsf(ballY - blockBottom);

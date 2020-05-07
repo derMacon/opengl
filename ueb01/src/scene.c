@@ -48,7 +48,6 @@ static void drawTriangle() {
 void drawExtra(const CGPoint2f coords) {
     GLfloat x = coords[0];
     GLfloat y = coords[1];
-    glColor3f(0.0f, 1.0f, 0.0f);
 
     glPushMatrix();
     {
