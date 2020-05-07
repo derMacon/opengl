@@ -7,9 +7,12 @@
  */
 
 /* ---- Eigene Header einbinden ---- */
-#include <GL/gl.h>
 #include <stdio.h>
-#include <GL/glu.h>
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 #include "debug.h"
 
 /* ---- Funktionen ---- */

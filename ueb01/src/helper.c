@@ -1,6 +1,5 @@
 #include "helper.h"
 #include <stdio.h>
-#include <GL/glut.h>
 
 /**
  * Generiert eine Zufallszahl

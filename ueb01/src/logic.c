@@ -1,12 +1,15 @@
 
-#include <GL/gl.h>
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 #include "logic.h"
 #include "variables.h"
 #include "math.h"
 #include "types.h"
 #include "helper.h"
 #include <stdio.h>
-#include <GL/glut.h>
 
 /* Initial-Werte setzen */
 static CGPoint2f stickCenter = {0.0f, -BAR_X_OFFSET};

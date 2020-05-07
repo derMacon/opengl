@@ -1,5 +1,9 @@
 
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
 #include <GL/glut.h>
+#endif
 #include "io.h"
 #include "scene.h"
 #include "logic.h"
