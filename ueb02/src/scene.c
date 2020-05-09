@@ -2,14 +2,33 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+
 #include <GL/glut.h>
 #include <time.h>
 #include "debug.h"
 #include "types.h"
+#include "logic.h"
 
 #endif
 
 GLboolean showWireframe = GL_FALSE;
+
+void drawLevel(int levelID) {
+    Levels *test = getLevels();
+
+    for (int i = 0; i < LEVELSIZE; ++i) {
+        for (int j = 0; j < LEVELSIZE; ++j) {
+            printf("x: %d, y: %d :  %d\n", i, j, test[levelID - 1]->field[i][j]);
+        }
+    }
+}
+
+/**
+ * Zeichnet die gesamte Szene (Grenzen, Ball, Stick und evtl. Extras
+ */
+void drawScene(void) {
+    drawLevel(getGame()->levelId);
+}
 
 /**
  * Initialisierung der Szene (inbesondere der OpenGL-Statusmaschine).
@@ -34,6 +53,8 @@ initScene(void) {
     // Zeit fuer Random einbeziehen, um Zufallsfarben zu generieren
     // srand steht hier, weil es nur einmal aufgerufen werden darf
     srand(time(NULL));
+
+    drawScene();
 
     /* Alles in Ordnung? */
     return (GLGETERROR == GL_NO_ERROR);
@@ -64,10 +85,3 @@ void toggleFullscreen() {
     }
 }
 
-/**
- * Zeichnet die gesamte Szene (Grenzen, Ball, Stick und evtl. Extras
- */
-void drawScene(void) {
-
-
-}
