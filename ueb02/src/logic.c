@@ -10,8 +10,8 @@
 Game game = {1, 0, 0, GAME_RUNNING};
 
 // TODO: Aendern
-const Levels levels[3] = {{
-                                  {1, 2, {
+Levels levels[3] = {{
+                                  {0, 2, {
                                                  {P_OUTER, P_WALL, P_WALL, P_WALL, P_OUTER, P_WALL, P_WALL, P_WALL, P_OUTER},
                                                  {P_WALL, P_WALL, P_START, P_WALL, P_WALL, P_WALL, P_TARGET, P_WALL, P_WALL},
                                                  {P_WALL, P_FREE, P_FREE, P_FREE, P_BOX, P_FREE, P_DOOR, P_FREE, P_WALL},
@@ -22,7 +22,7 @@ const Levels levels[3] = {{
                                                  {P_OUTER, P_OUTER, P_OUTER, P_WALL, P_WALL, P_WALL, P_OUTER, P_OUTER, P_OUTER},
                                                  {P_OUTER, P_OUTER, P_OUTER, P_OUTER, P_WALL, P_OUTER, P_OUTER, P_OUTER, P_OUTER}}},
 
-                                  {2, 2, {
+                                  {1, 2, {
                                                  {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL},
                                                  {P_WALL, P_FREE, P_START, P_FREE, P_WALL, P_FREE, P_FREE, P_FREE, P_WALL},
                                                  {P_WALL, P_BOX, P_FREE, P_FREE, P_WALL, P_FREE, P_FREE, P_FREE, P_WALL},
@@ -33,7 +33,7 @@ const Levels levels[3] = {{
                                                  {P_WALL, P_FREE, P_BOX, P_FREE, P_TARGET, P_FREE, P_PORTAL, P_FREE, P_WALL},
                                                  {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL}}},
 
-                                  {3, 2, {
+                                  {2, 2, {
                                                  {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL},
                                                  {P_WALL, P_START, P_FREE, P_FREE, P_FREE, P_BOX, P_DOOR, P_BOX, P_WALL},
                                                  {P_WALL, P_BOX, P_FREE, P_FREE, P_FREE, P_FREE, P_BOX, P_FREE, P_WALL},
@@ -66,7 +66,7 @@ Game *getGame(void) {
     return &game;
 }
 
-Levels *getLevels(void) {
+Levels (*getLevels(void)) {
     return (Levels *) &levels;
 }
 

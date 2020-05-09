@@ -23,10 +23,10 @@ typedef enum {
 } pushyFieldType;
 
 /* Spielfeld */
-typedef pushyFieldType pushyLevel[LEVELSIZE][LEVELSIZE];
+typedef pushyFieldType pushyLevel[LEVEL_SIZE][LEVEL_SIZE];
 
 /* Zeiger auf ein Spielfeld */
-typedef pushyFieldType (*pushyLevelPointer)[LEVELSIZE];
+typedef pushyFieldType (*pushyLevelPointer)[LEVEL_SIZE];
 
 typedef enum {
     GAME_RUNNING,

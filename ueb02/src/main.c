@@ -16,7 +16,7 @@ main(int argc, char **argv) {
     /* Initialisierung des I/O-Sytems
        (inkl. Erzeugung des Fensters und Starten der Ereignisbehandlung). */
     if (!initAndStartIO
-            ("Pushy", 500, 500)) {
+            ("Pushy", 800, 800)) {
         fprintf(stderr, "Initialisierung fehlgeschlagen!\n");
         return 1;
     } else {
