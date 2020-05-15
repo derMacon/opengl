@@ -60,7 +60,7 @@ cbTimer(int lastCallTime) {
     // Spiel pausieren, also Intervall auf 0 setzen
     if (gamePaused) {
         interval = 0.0f;
-    }*/
+    }  */
 
     /* Wieder als Timer-Funktion registrieren */
     glutTimerFunc(1000 / TIMER_CALLS_PS, cbTimer, thisCallTime);

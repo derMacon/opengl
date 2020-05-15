@@ -5,6 +5,7 @@
 
 #include <GL/glut.h>
 #include <time.h>
+#include <math.h>
 #include "debug.h"
 #include "types.h"
 #include "logic.h"
@@ -12,7 +13,8 @@
 #endif
 
 GLboolean showWireframe = GL_FALSE;
-
+float shrinkVal = 0;
+GLboolean isIncreasing = GL_TRUE;
 
 /**
  * Zeichnet ein Rechteck mit der Breite und Hoehe 1.
@@ -53,6 +55,28 @@ static void drawTriangle() {
 
     // oben
     glVertex2f(0, x);
+
+    glEnd();
+}
+
+/**
+ * Zeichnet einen Kreis (fuer den Ball)
+ */
+static void drawCircle() {
+
+    float radius = 1.0f;
+
+    // Um diesen Wert, den Winkel erhoehen, um irgendwann auf 360 zu kommen
+    // je kleiner der Wert, desto runder der Ball
+    float increaseValue = 0.01f;
+
+    glBegin(GL_POLYGON);
+
+    // Winkel immer minimal erhoehen und somit den Kreis zeichnen
+    // 2 * PI entsprechen 360°
+    for (float angle = 0; angle < 2 * M_PI; angle += increaseValue) {
+        glVertex3f(radius * cosf(angle), radius * sinf(angle), 0);
+    }
 
     glEnd();
 }
@@ -294,6 +318,101 @@ void drawDoorSwitch(float xPos, float yPos) {
     glPopMatrix();
 }
 
+/**
+ * Waehlt anhand einer Zufallszahl eine Farbkombination aus.
+ * Wird fuer die Bloecke verwendet, um diese ansehnlicher zu mache
+ * @param index Zahl zwischen 1 - 5
+ * @return Array mit RGB-Farben
+ */
+float *selectColor(int index) {
+
+    float *colors = malloc(3);
+
+    switch (index) {
+        // Rot
+        case 0:
+            colors[0] = 1.0f;
+            colors[1] = 0;
+            colors[2] = 0;
+            break;
+
+        case 1:
+            // Braun
+            colors[0] = 1.0f;
+            colors[1] = 0.647f;
+            colors[2] = 0;
+            break;
+
+            // Gelb
+        case 2:
+            colors[0] = 0.941f;
+            colors[1] = 0.902f;
+            colors[2] = 0.549f;
+            break;
+
+            // Gruen
+        case 3:
+            colors[0] = 0.196f;
+            colors[1] = 0.804f;
+            colors[2] = 0.196f;
+            break;
+
+            // Blau
+        case 4:
+            colors[0] = 0.137f;
+            colors[1] = 0.137f;
+            colors[2] = 0.557f;
+            break;
+    }
+
+    return colors;
+}
+
+void drawPortals(float xPos, float yPos) {
+    drawFreeBlock(xPos, yPos);
+    float size = 0.1f;
+    float portalSize;
+    float shrinkInterval = 15.0f;
+
+    portalSize = 0 + shrinkVal;
+
+    if (isIncreasing) {
+        shrinkVal += 0.1f / shrinkInterval;
+    } else {
+        shrinkVal -= 0.1f / shrinkInterval;
+    }
+
+    if (portalSize <= 0) {
+        isIncreasing = GL_TRUE;
+    } else if (portalSize >= 1) {
+        isIncreasing = GL_FALSE;
+    }
+
+    glPushMatrix();
+    {
+        glTranslatef(xPos, yPos, 0.0f);
+        glScalef(portalSize, portalSize, 0);
+
+        for (int i = 0; i < 5; ++i) {
+            float *colors = selectColor(i);
+            glColor3f(colors[0], colors[1], colors[2]);
+
+            glPushMatrix();
+            {
+                glScalef(size, size, 0);
+                drawCircle();
+                size -= 0.02f;
+            }
+
+            glPopMatrix();
+            free(colors);
+        }
+
+    }
+    glPopMatrix();
+}
+
+
 void drawLevel(int levelID) {
     Levels *levels = getLevels();
 
@@ -322,6 +441,7 @@ void drawLevel(int levelID) {
                 case (P_BOX):
                     drawBox(xPos, yPos);
                     break;
+
                 case (P_DOOR):
                     drawDoor(xPos, yPos);
                     break;
@@ -336,6 +456,9 @@ void drawLevel(int levelID) {
 
                 case (P_OBJECT_TRIANGLE):
                     drawTriangleOject(xPos, yPos);
+                    break;
+                case (P_PORTAL):
+                    drawPortals(xPos, yPos);
                     break;
 
                 default:
