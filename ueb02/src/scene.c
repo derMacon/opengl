@@ -9,6 +9,7 @@
 #include "debug.h"
 #include "types.h"
 #include "logic.h"
+#include "helper.h"
 
 #endif
 
@@ -45,7 +46,6 @@ static void drawTriangle() {
     glBegin(GL_TRIANGLES);
 
     float x = 0.7f;
-    glColor3f(0.137f, 0.137f, 0.557f);
 
     // Links unten
     glVertex2f(-x, -x);
@@ -249,6 +249,8 @@ void drawTriangleOject(float xPos, float yPos) {
         glTranslatef(xPos, yPos, 0.0f);
         glScalef(width, BLOCK_SIZE / 2, 1.0f);
         glRotatef(90, 0.0f, 0.0f, 1.0f);
+
+        glColor3f(0.137f, 0.137f, 0.557f);
         drawTriangle();
     }
     glPopMatrix();
@@ -282,6 +284,7 @@ void drawDoorSwitchArrow() {
         {
             glTranslatef(0, 0.05f, 0);
             glScalef(arrowHeadWidth, arrowHeadHeight, 1.0f);
+            glColor3f(0.137f, 0.137f, 0.557f);
             drawTriangle();
         }
         glPopMatrix();
@@ -318,56 +321,6 @@ void drawDoorSwitch(float xPos, float yPos) {
     glPopMatrix();
 }
 
-/**
- * Waehlt anhand einer Zufallszahl eine Farbkombination aus.
- * Wird fuer die Bloecke verwendet, um diese ansehnlicher zu mache
- * @param index Zahl zwischen 1 - 5
- * @return Array mit RGB-Farben
- */
-float *selectColor(int index) {
-
-    float *colors = malloc(3);
-
-    switch (index) {
-        // Rot
-        case 0:
-            colors[0] = 1.0f;
-            colors[1] = 0;
-            colors[2] = 0;
-            break;
-
-        case 1:
-            // Braun
-            colors[0] = 1.0f;
-            colors[1] = 0.647f;
-            colors[2] = 0;
-            break;
-
-            // Gelb
-        case 2:
-            colors[0] = 0.941f;
-            colors[1] = 0.902f;
-            colors[2] = 0.549f;
-            break;
-
-            // Gruen
-        case 3:
-            colors[0] = 0.196f;
-            colors[1] = 0.804f;
-            colors[2] = 0.196f;
-            break;
-
-            // Blau
-        case 4:
-            colors[0] = 0.137f;
-            colors[1] = 0.137f;
-            colors[2] = 0.557f;
-            break;
-    }
-
-    return colors;
-}
-
 void drawPortals(float xPos, float yPos) {
     drawFreeBlock(xPos, yPos);
     float size = 0.1f;
@@ -375,6 +328,7 @@ void drawPortals(float xPos, float yPos) {
     float shrinkInterval = 15.0f;
 
     portalSize = 0 + shrinkVal;
+
 
     if (isIncreasing) {
         shrinkVal += 0.1f / shrinkInterval;
@@ -412,6 +366,80 @@ void drawPortals(float xPos, float yPos) {
     glPopMatrix();
 }
 
+void drawHouse(float xPos, float yPos) {
+    drawFreeBlock(xPos, yPos);
+    glPushMatrix();
+    {
+        glTranslatef(xPos, yPos - 0.025f, 0.0f);
+        glScalef(1.5f, 1.5f, 0);
+
+        // Hauskoerper
+        glPushMatrix();
+        {
+            glTranslatef(0, -0.015f, 0);
+            glScalef(0.09f, 0.06f, 1.0f);
+            glColor3f(1.0f, 1.0f, 1.0f);
+            drawSquare();
+            glPopMatrix();
+        }
+
+        // Dach
+        glPushMatrix();
+        {
+            glTranslatef(0, 0.05f, 0);
+            glScalef(0.08f, 0.05f, 1.0f);
+            glColor3f(1.0f, 0.0f, 1.0f);
+            drawTriangle();
+        }
+        glPopMatrix();
+
+        // Tuer
+        glPushMatrix();
+        {
+            glTranslatef(0, -0.03f, 0);
+            glScalef(0.018f, 0.03f, 1.0f);
+            glColor3f(1.0f, 0.0f, 1.0f);
+            drawSquare();
+        }
+        glPopMatrix();
+
+        // Fenster links
+        glPushMatrix();
+        {
+            glTranslatef(-0.015f, 0.003, 0);
+            glScalef(0.02f, 0.015f, 1.0f);
+            glColor3f(0.529f, 0.808f, 0.922f);
+            drawSquare();
+        }
+        glPopMatrix();
+
+
+        // Fenster rechts
+        glPushMatrix();
+        {
+            glTranslatef(0.015f, 0.003, 0);
+            glScalef(0.02f, 0.015f, 1.0f);
+            glColor3f(0.529f, 0.808f, 0.922f);
+            drawSquare();
+        }
+        glPopMatrix();
+
+        // Tuerknauf
+        glPushMatrix();
+        {
+            glTranslatef(-0.0055f, -0.035f, 0);
+            glScalef(0.005f, 0.005, 1.0f);
+
+            glColor3f(0.663f, 0.663f, 0.663f);
+            drawSquare();
+        }
+        glPopMatrix();
+
+
+    }
+    glPopMatrix();
+
+}
 
 void drawLevel(int levelID) {
     Levels *levels = getLevels();
@@ -459,6 +487,10 @@ void drawLevel(int levelID) {
                     break;
                 case (P_PORTAL):
                     drawPortals(xPos, yPos);
+                    break;
+
+                case (P_HOUSE):
+                    drawHouse(xPos, yPos);
                     break;
 
                 default:
