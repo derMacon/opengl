@@ -223,7 +223,7 @@ void drawTriangleOject(float xPos, float yPos) {
     glPushMatrix();
     {
         glTranslatef(xPos, yPos, 0.0f);
-        glScalef(width, BLOCK_SIZE  / 2, 1.0f);
+        glScalef(width, BLOCK_SIZE / 2, 1.0f);
         glRotatef(90, 0.0f, 0.0f, 1.0f);
         drawTriangle();
     }
@@ -240,6 +240,57 @@ void drawFinish(float xPos, float yPos) {
         drawSquare();
     }
 
+    glPopMatrix();
+}
+
+void drawDoorSwitchArrow() {
+    float width = BLOCK_SIZE - 0.3f;
+
+    double arrowHeadWidth = width / 1.5;
+    double arrowHeadHeight = BLOCK_SIZE / 4;
+    double arrowBodyWidth = arrowHeadWidth / 2;
+    double arrowBodyHeight = arrowHeadHeight / 2;
+
+    glPushMatrix();
+    {
+        // Arrow Head
+        glPushMatrix();
+        {
+            glTranslatef(0, 0.05f, 0);
+            glScalef(arrowHeadWidth, arrowHeadHeight, 1.0f);
+            drawTriangle();
+        }
+        glPopMatrix();
+
+        // Arrow Body
+        glPushMatrix();
+        {
+            glTranslatef(0.0, -0.009f, 0);
+            glScalef(arrowBodyWidth, arrowBodyHeight * 1.5f, 1.0f);
+            drawSquare();
+        }
+        glPopMatrix();
+    }
+    glPopMatrix();
+}
+
+void drawDoorSwitch(float xPos, float yPos) {
+    drawFreeBlock(xPos, yPos);
+
+    glPushMatrix();
+    {
+        glTranslatef(xPos + 0.03f, yPos + 0.03f, 0.0f);
+        glRotatef(-45, 0, 0, 1);
+        drawDoorSwitchArrow();
+    }
+    glPopMatrix();
+
+    glPushMatrix();
+    {
+        glTranslatef(xPos - 0.03f, yPos - 0.03f, 0.0f);
+        glRotatef(-225, 0, 0, 1);
+        drawDoorSwitchArrow();
+    }
     glPopMatrix();
 }
 
@@ -275,6 +326,10 @@ void drawLevel(int levelID) {
                     drawDoor(xPos, yPos);
                     break;
 
+                case (P_DOOR_SWITCH):
+                    drawDoorSwitch(xPos, yPos);
+                    break;
+
                 case (P_FINISH):
                     drawFinish(xPos, yPos);
                     break;
@@ -304,7 +359,6 @@ void drawGame(int levelId) {
     }
     glPopMatrix();
 }
-
 
 /**
  * Zeichnet die gesamte Szene (Grenzen, Ball, Stick und evtl. Extras
