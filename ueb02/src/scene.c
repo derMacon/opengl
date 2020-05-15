@@ -39,16 +39,16 @@ static void drawSquare() {
     glEnd();
 }
 
-void drawHorizontalFuge() {
+void drawHorizontalDash() {
     glPushMatrix();
     {
-        glScalef(1, FUGE_WIDTH, 1.0f);
+        glScalef(1, FUGUE_WIDTH, 1.0f);
         drawSquare();
     }
     glPopMatrix();
 }
 
-void drawVerticaLFuge(float width, float height) {
+void drawVerticalDash(float width, float height) {
     glPushMatrix();
     {
         glScalef(width, height, 1.0f);
@@ -75,11 +75,11 @@ void drawWall(float xPos, float yPos) {
         // Horizontal
         glPushMatrix();
         {
-            glTranslatef(0.0f, -FUGE_HEIGHT * 2, 0.0f);
+            glTranslatef(0.0f, -FUGUE_HEIGHT * 2, 0.0f);
             // Horizontale Striche
             for (int i = 0; i < 3; i++) {
-                glTranslatef(0.0f, FUGE_HEIGHT, 0.0f);
-                drawHorizontalFuge();
+                glTranslatef(0.0f, FUGUE_HEIGHT, 0.0f);
+                drawHorizontalDash();
             }
         }
         glPopMatrix();
@@ -89,22 +89,22 @@ void drawWall(float xPos, float yPos) {
         {
             // TODO: KOMMENTARE, kp mehr was hier abgeht :D
             // TODO: Wieso 2.5? :P
-            glTranslatef(0.0f, -FUGE_HEIGHT * 2.5f, 0);
+            glTranslatef(0.0f, -FUGUE_HEIGHT * 2.5f, 0);
             for (int i = 0; i < 4; i++) {
 
-                glTranslatef(0.0, FUGE_HEIGHT, 0);
+                glTranslatef(0.0, FUGUE_HEIGHT, 0);
                 int max = i % 2 == 0 ? 3 : 2;
 
                 glPushMatrix();
                 {
-                    glTranslatef(-FUGE_HEIGHT * 2, 0, 0);
+                    glTranslatef(-FUGUE_HEIGHT * 2, 0, 0);
                     for (int j = 0; j < max; ++j) {
-                        float xVal = FUGE_HEIGHT;
+                        float xVal = FUGUE_HEIGHT;
                         if (max == 2) {
-                            xVal = FUGE_HEIGHT + 0.1f;
+                            xVal = FUGUE_HEIGHT + 0.1f;
                         }
                         glTranslatef(xVal, 0, 0);
-                        drawVerticaLFuge(FUGE_WIDTH, FUGE_HEIGHT);
+                        drawVerticalDash(FUGUE_WIDTH, FUGUE_HEIGHT);
                     }
                 }
                 glPopMatrix();
@@ -122,9 +122,6 @@ void drawBox(float xPos, float yPos) {
 
     float bottom = -0.5f;
     float offset = 0.15f;
-    float dashHeight = 0.7f;
-    float dashWidth = 0.03f;
-    int numberOfDashes = 7;
 
     glPushMatrix();
     {
@@ -133,7 +130,7 @@ void drawBox(float xPos, float yPos) {
         drawSquare();
 
         // Fugenfarbe
-        glColor3f(0.0f, 0.0f, 0.0f);
+        glColor3f(0.1f, 0.1f, 0.1f);
 
         // Horizontal
         glPushMatrix();
@@ -141,7 +138,7 @@ void drawBox(float xPos, float yPos) {
             glTranslatef(0.0f, bottom + offset, 0.0f);
             // Horizontale Striche
             for (int i = 0; i < 2; i++) {
-                drawHorizontalFuge();
+                drawHorizontalDash();
                 glTranslatef(0.0f, -(bottom + offset) * 2, 0.0f);
             }
         }
@@ -151,10 +148,9 @@ void drawBox(float xPos, float yPos) {
         glPushMatrix();
         {
             glTranslatef(-0.4f, 0.0f, 0.0f);
-            // Horizontale Striche
-            for (int i = 0; i < numberOfDashes; i++) {
-                drawVerticaLFuge(dashWidth, dashHeight);
-                glTranslatef(1.0f / (float) numberOfDashes - (dashWidth / 2), 0.0, 0.0f);
+            for (int i = 0; i < BOX_NUMBER_OF_COLS; i++) {
+                drawVerticalDash(BOX_DASH_WIDTH, BOX_DASH_HEIGHT);
+                glTranslatef(1.0f / (float) BOX_NUMBER_OF_COLS - (BOX_DASH_WIDTH / 2), 0.0, 0.0f);
             }
         }
         glPopMatrix();

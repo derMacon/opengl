@@ -7,6 +7,14 @@
 #define LEVEL_SIZE (9)
 #define BLOCK_SIZE (2.f / LEVEL_SIZE)
 
-#define FUGE_HEIGHT 0.25f
-#define FUGE_WIDTH 0.05f
+#define FUGUE_HEIGHT 0.25f
+#define FUGUE_WIDTH 0.05f
+
+
+/* BOXES */
+#define BOX_NUMBER_OF_COLS 7
+#define BOX_DASH_WIDTH 0.03f
+#define BOX_DASH_HEIGHT 0.7f
+
+
 #endif //UEB02_VARIABLES_H
