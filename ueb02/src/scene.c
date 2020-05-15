@@ -39,6 +39,24 @@ static void drawSquare() {
     glEnd();
 }
 
+static void drawTriangle() {
+    glBegin(GL_TRIANGLES);
+
+    float x = 0.7f;
+    glColor3f(0.137f, 0.137f, 0.557f);
+
+    // Links unten
+    glVertex2f(-x, -x);
+
+    // Rechts unten
+    glVertex2f(x, -x);
+
+    // oben
+    glVertex2f(0, x);
+
+    glEnd();
+}
+
 void drawHorizontalDash() {
     glPushMatrix();
     {
@@ -198,8 +216,22 @@ void drawDoor(float xPos, float yPos) {
     glPopMatrix();
 }
 
+void drawTriangleOject(float xPos, float yPos) {
+    float width = BLOCK_SIZE - 0.3f;
+    drawFreeBlock(xPos, yPos);
+
+    glPushMatrix();
+    {
+        glTranslatef(xPos, yPos, 0.0f);
+        glScalef(width, BLOCK_SIZE  / 2, 1.0f);
+        glRotatef(90, 0.0f, 0.0f, 1.0f);
+        drawTriangle();
+    }
+    glPopMatrix();
+}
+
 void drawFinish(float xPos, float yPos) {
-    glColor3f(0.392f, 0.584f, 0.929f);
+    glColor3f(0.137f, 0.137f, 0.557f);
 
     glPushMatrix();
     {
@@ -228,6 +260,7 @@ void drawLevel(int levelID) {
 
             switch (level) {
                 case (P_FREE):
+                case (P_START):
                     drawFreeBlock(xPos, yPos);
                     break;
 
@@ -244,6 +277,10 @@ void drawLevel(int levelID) {
 
                 case (P_FINISH):
                     drawFinish(xPos, yPos);
+                    break;
+
+                case (P_OBJECT_TRIANGLE):
+                    drawTriangleOject(xPos, yPos);
                     break;
 
                 default:
