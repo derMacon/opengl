@@ -329,7 +329,6 @@ void drawPortals(float xPos, float yPos) {
 
     portalSize = 0 + shrinkVal;
 
-
     if (isIncreasing) {
         shrinkVal += 0.1f / shrinkInterval;
     } else {
@@ -413,7 +412,7 @@ void drawHouse(float xPos, float yPos) {
         }
         glPopMatrix();
 
-
+        // TODO: Fenster doppelter Code
         // Fenster rechts
         glPushMatrix();
         {
@@ -438,7 +437,99 @@ void drawHouse(float xPos, float yPos) {
 
     }
     glPopMatrix();
+}
 
+void drawPlayer(float xPos, float yPos) {
+    drawFreeBlock(xPos, yPos);
+
+    glPushMatrix();
+    {
+        glTranslatef(xPos, yPos + 0.05f, 0.0f);
+        glScalef(0.05f, 0.05f, 0);
+
+        // Kopf
+        glPushMatrix();
+        {
+            glColor3f(0.824f, 0.706f, 0.549f);
+            glScalef(0.5f, 0.5f, 0);
+            drawCircle();
+        }
+        glPopMatrix();
+
+
+        // Augenbrauen
+        for (int i = 0; i < 2; ++i) {
+            glPushMatrix();
+            {
+                float xEyebrow = i == 0 ? -0.15f : 0.15f;
+                int xEyebrowAngle = i == 0 ? 10 : -10;
+                glTranslatef(xEyebrow, 0.3f, 0.0f);
+                glRotatef(xEyebrowAngle, 0.0f, 0.0f, 1.0f);
+                glColor3f(0, 0, 0);
+                glScalef(0.16f, 0.05f, 0);
+                drawSquare();
+            }
+            glPopMatrix();
+        }
+
+        // Augen
+        for (int i = 0; i < 2; ++i) {
+            glPushMatrix();
+            {
+                float x = i == 0 ? -0.15f : 0.15f;
+                glTranslatef(x, 0.15f, 0.0f);
+                glColor3f(1, 1, 1);
+                glScalef(0.07f, 0.07f, 0);
+                drawCircle();
+            }
+            glPopMatrix();
+        }
+
+        // Iris
+        for (int j = 0; j < 2; ++j) {
+            glPushMatrix();
+            {
+                float x = j == 0 ? -0.15f : 0.15f;
+                glTranslatef(x, 0.15f, 0.0f);
+                glColor3f(0, 0, 0);
+                glScalef(0.03f, 0.03f, 0);
+                drawCircle();
+            }
+            glPopMatrix();
+        }
+
+        // Mund
+        glPushMatrix();
+        {
+            glTranslatef(0, -0.15f, 0.0f);
+            glColor3f(1, 1, 1);
+            glScalef(0.5f, 0.05f, 0);
+            drawSquare();
+        }
+        glPopMatrix();
+
+        // Hutdeckel
+        glPushMatrix();
+        {
+            glTranslatef(0, 0.65f, 0.0f);
+            glColor3f(0, 0, 0);
+            glScalef(0.5f, 0.4f, 0);
+            drawSquare();
+        }
+        glPopMatrix();
+
+        // Hutkoerper
+        glPushMatrix();
+        {
+            glTranslatef(0, 0.45f, 0.0f);
+            glColor3f(0, 0, 0);
+            glScalef(1.0f, 0.05f, 0);
+            drawSquare();
+        }
+        glPopMatrix();
+
+    }
+    glPopMatrix();
 }
 
 void drawLevel(int levelID) {
@@ -493,11 +584,16 @@ void drawLevel(int levelID) {
                     drawHouse(xPos, yPos);
                     break;
 
+                case (PLAYER_TEST) :
+                    drawPlayer(xPos, yPos);
+                    break;
+
                 default:
                     break;
             }
         }
     }
+
 }
 
 void drawGame(int levelId) {

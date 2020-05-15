@@ -14,9 +14,9 @@ Levels levels[3] = {{
                             {0, 2, {
                                            {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL},
                                            {P_WALL, P_START, P_FREE, P_BOX, P_OBJECT_TRIANGLE, P_FREE, P_DOOR, P_DOOR_SWITCH, P_WALL},
-                                           {P_WALL, P_PORTAL, P_HOUSE, P_FREE, P_FREE, P_FREE, P_BOX, P_FREE, P_WALL},
+                                           {P_WALL, P_PORTAL, P_HOUSE, PLAYER_TEST, P_FREE, P_FREE, P_BOX, P_FREE, P_WALL},
                                            {P_WALL, P_FREE, P_BOX, P_FREE, P_FREE, P_BOX, P_FREE, P_FREE, P_WALL},
-                                           {P_WALL, P_BOX, P_FREE, P_BOX, P_FREE, P_BOX, P_PORTAL, P_PORTAL, P_WALL},
+                                           {P_WALL, P_BOX, P_FREE, P_BOX, PLAYER_TEST, P_BOX, P_PORTAL, P_PORTAL, P_WALL},
                                            {P_WALL, P_FREE, P_BOX, P_FREE, P_BOX, P_BOX, P_FREE, P_FREE, P_WALL},
                                            {P_WALL, P_BOX, P_FREE, P_BOX, P_FREE, P_BOX, P_FREE, P_PORTAL, P_WALL},
                                            {P_WALL, P_FREE, P_BOX, P_FREE, P_BOX, P_BOX, P_PORTAL, P_TARGET, P_WALL},
