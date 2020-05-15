@@ -48,10 +48,10 @@ void drawHorizontalFuge() {
     glPopMatrix();
 }
 
-void drawVerticaLFuge() {
+void drawVerticaLFuge(float width, float height) {
     glPushMatrix();
     {
-        glScalef(FUGE_WIDTH, FUGE_HEIGHT, 1.0f);
+        glScalef(width, height, 1.0f);
         drawSquare();
     }
     glPopMatrix();
@@ -73,7 +73,7 @@ void drawWall(float xPos, float yPos) {
         glColor3f(0.663f, 0.663f, 0.663f);
 
         // Horizontal
-         glPushMatrix();
+        glPushMatrix();
         {
             glTranslatef(0.0f, -FUGE_HEIGHT * 2, 0.0f);
             // Horizontale Striche
@@ -100,11 +100,11 @@ void drawWall(float xPos, float yPos) {
                     glTranslatef(-FUGE_HEIGHT * 2, 0, 0);
                     for (int j = 0; j < max; ++j) {
                         float xVal = FUGE_HEIGHT;
-                        if (max == 2){
+                        if (max == 2) {
                             xVal = FUGE_HEIGHT + 0.1f;
                         }
                         glTranslatef(xVal, 0, 0);
-                        drawVerticaLFuge();
+                        drawVerticaLFuge(FUGE_WIDTH, FUGE_HEIGHT);
                     }
                 }
                 glPopMatrix();
@@ -114,6 +114,54 @@ void drawWall(float xPos, float yPos) {
     }
 
     glPopMatrix();
+}
+
+void drawBox(float xPos, float yPos) {
+    glColor3f(0.600f, 0.240f, 0.100f);
+    float width = BLOCK_SIZE - 0.01f;
+
+    float bottom = -0.5f;
+    float offset = 0.15f;
+    float dashHeight = 0.7f;
+    float dashWidth = 0.03f;
+    int numberOfDashes = 7;
+
+    glPushMatrix();
+    {
+        glTranslatef(xPos, yPos, 0.0f);
+        glScalef(width, BLOCK_SIZE - 0.01f, 1.0f);
+        drawSquare();
+
+        // Fugenfarbe
+        glColor3f(0.0f, 0.0f, 0.0f);
+
+        // Horizontal
+        glPushMatrix();
+        {
+            glTranslatef(0.0f, bottom + offset, 0.0f);
+            // Horizontale Striche
+            for (int i = 0; i < 2; i++) {
+                drawHorizontalFuge();
+                glTranslatef(0.0f, -(bottom + offset) * 2, 0.0f);
+            }
+        }
+        glPopMatrix();
+
+        // Vertikal
+        glPushMatrix();
+        {
+            glTranslatef(-0.4f, 0.0f, 0.0f);
+            // Horizontale Striche
+            for (int i = 0; i < numberOfDashes; i++) {
+                drawVerticaLFuge(dashWidth, dashHeight);
+                glTranslatef(1.0f / (float) numberOfDashes - (dashWidth / 2), 0.0, 0.0f);
+            }
+        }
+        glPopMatrix();
+
+    }
+    glPopMatrix();
+
 }
 
 void drawFreeBlock(float xPos, float yPos) {
@@ -146,11 +194,15 @@ void drawLevel(int levelID) {
 
             switch (level) {
                 case (P_FREE):
-                      drawFreeBlock(xPos, yPos);
+                    drawFreeBlock(xPos, yPos);
                     break;
 
                 case (P_WALL):
                     drawWall(xPos, yPos);
+                    break;
+
+                case (P_BOX):
+                    drawBox(xPos, yPos);
                     break;
 
                 default:
