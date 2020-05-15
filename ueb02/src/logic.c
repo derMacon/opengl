@@ -12,9 +12,9 @@ Game game = {0, 0, 0, GAME_RUNNING};
 // TODO: Aendern
 Levels levels[3] = {{
                             {0, 2, {
-                                           {P_OUTER, P_WALL, P_WALL, P_WALL, P_OUTER, P_WALL, P_WALL, P_WALL, P_OUTER},
-                                           {P_WALL, P_WALL, P_START, P_WALL, P_WALL, P_WALL, P_TARGET, P_WALL, P_WALL},
-                                           {P_WALL, P_FREE, P_FREE, P_FREE, P_BOX, P_FREE, P_DOOR, P_FREE, P_WALL},
+                                           {P_DOOR, P_WALL, P_WALL, P_WALL, P_OUTER, P_WALL, P_WALL, P_WALL, P_OUTER},
+                                           {P_WALL, P_DOOR, P_START, P_WALL, P_WALL, P_WALL, P_TARGET, P_WALL, P_WALL},
+                                           {P_WALL, P_DOOR, P_DOOR, P_FREE, P_BOX, P_FREE, P_DOOR, P_FREE, P_WALL},
                                            {P_WALL, P_FREE, P_FREE, P_FREE, P_BOX, P_FREE, P_DOOR, P_FREE, P_WALL},
                                            {P_WALL, P_WALL, P_FREE, P_FREE, P_BOX, P_FREE, P_FREE, P_WALL, P_WALL},
                                            {P_OUTER, P_WALL, P_WALL, P_FREE, P_BOX, P_FREE, P_WALL, P_WALL, P_OUTER},

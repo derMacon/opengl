@@ -160,6 +160,9 @@ void drawBox(float xPos, float yPos) {
 
 }
 
+
+
+
 void drawFreeBlock(float xPos, float yPos) {
     glColor3f(0.663f, 0.663f, 0.663f);
 
@@ -170,6 +173,32 @@ void drawFreeBlock(float xPos, float yPos) {
         drawSquare();
     }
 
+    glPopMatrix();
+}
+
+void drawDoor(float xPos, float yPos) {
+    float width = BLOCK_SIZE - 0.3f;
+    drawFreeBlock(xPos, yPos);
+    glColor3f(0.600f, 0.240f, 0.100f);
+
+    glPushMatrix();
+    {
+        glTranslatef(xPos, yPos, 0.0f);
+        glScalef(width, BLOCK_SIZE - 0.01f, 1.0f);
+        drawSquare();
+
+        // Fugenfarbe
+        glColor3f(0.1f, 0.1f, 0.1f);
+
+        // Horizontal
+        glPushMatrix();
+        {
+            glTranslatef(0.0f, 0.0, 0.0f);
+            drawHorizontalDash();
+
+        }
+        glPopMatrix();
+    }
     glPopMatrix();
 }
 
@@ -199,6 +228,9 @@ void drawLevel(int levelID) {
 
                 case (P_BOX):
                     drawBox(xPos, yPos);
+                    break;
+                case (P_DOOR):
+                    drawDoor(xPos, yPos);
                     break;
 
                 default:
