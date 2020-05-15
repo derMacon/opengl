@@ -157,11 +157,7 @@ void drawBox(float xPos, float yPos) {
 
     }
     glPopMatrix();
-
 }
-
-
-
 
 void drawFreeBlock(float xPos, float yPos) {
     glColor3f(0.663f, 0.663f, 0.663f);
@@ -202,6 +198,19 @@ void drawDoor(float xPos, float yPos) {
     glPopMatrix();
 }
 
+void drawFinish(float xPos, float yPos) {
+    glColor3f(0.392f, 0.584f, 0.929f);
+
+    glPushMatrix();
+    {
+        glTranslatef(xPos, yPos, 0.0f);
+        glScalef(BLOCK_SIZE - 0.01f, BLOCK_SIZE - 0.01f, 1.0f);
+        drawSquare();
+    }
+
+    glPopMatrix();
+}
+
 void drawLevel(int levelID) {
     Levels *levels = getLevels();
 
@@ -231,6 +240,10 @@ void drawLevel(int levelID) {
                     break;
                 case (P_DOOR):
                     drawDoor(xPos, yPos);
+                    break;
+
+                case (P_FINISH):
+                    drawFinish(xPos, yPos);
                     break;
 
                 default:
