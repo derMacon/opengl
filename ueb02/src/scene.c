@@ -276,6 +276,7 @@ void drawDoorSwitchArrow() {
     double arrowHeadHeight = BLOCK_SIZE / 4;
     double arrowBodyWidth = arrowHeadWidth / 2;
     double arrowBodyHeight = arrowHeadHeight / 2;
+    glColor3f(0.498f, 1.000f, 0.831f);
 
     glPushMatrix();
     {
@@ -284,7 +285,6 @@ void drawDoorSwitchArrow() {
         {
             glTranslatef(0, 0.05f, 0);
             glScalef(arrowHeadWidth, arrowHeadHeight, 1.0f);
-            glColor3f(0.137f, 0.137f, 0.557f);
             drawTriangle();
         }
         glPopMatrix();
@@ -478,7 +478,7 @@ void drawLevel(int levelID) {
                     drawDoorSwitch(xPos, yPos);
                     break;
 
-                case (P_FINISH):
+                case (P_TARGET):
                     drawFinish(xPos, yPos);
                     break;
 
