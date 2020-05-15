@@ -439,6 +439,159 @@ void drawHouse(float xPos, float yPos) {
     glPopMatrix();
 }
 
+void drawPlayerHead() {
+    // Kopf
+    glPushMatrix();
+    {
+        glColor3f(0.824f, 0.706f, 0.549f);
+        glScalef(0.5f, 0.5f, 0);
+        drawCircle();
+    }
+    glPopMatrix();
+
+    // Augenbrauen
+    for (int i = 0; i < 2; ++i) {
+        glPushMatrix();
+        {
+            float xEyebrow = i == 0 ? -0.15f : 0.15f;
+            int xEyebrowAngle = i == 0 ? 10 : -10;
+            glTranslatef(xEyebrow, 0.3f, 0.0f);
+            glRotatef(xEyebrowAngle, 0.0f, 0.0f, 1.0f);
+            glColor3f(0, 0, 0);
+            glScalef(0.16f, 0.05f, 0);
+            drawSquare();
+        }
+        glPopMatrix();
+    }
+
+    // Augen
+    for (int i = 0; i < 2; ++i) {
+        glPushMatrix();
+        {
+            float x = i == 0 ? -0.15f : 0.15f;
+            glTranslatef(x, 0.15f, 0.0f);
+            glColor3f(1, 1, 1);
+            glScalef(0.07f, 0.07f, 0);
+            drawCircle();
+        }
+        glPopMatrix();
+    }
+
+    // Iris
+    for (int j = 0; j < 2; ++j) {
+        glPushMatrix();
+        {
+            float x = j == 0 ? -0.15f : 0.15f;
+            glTranslatef(x, 0.15f, 0.0f);
+            glColor3f(0, 0, 0);
+            glScalef(0.03f, 0.03f, 0);
+            drawCircle();
+        }
+        glPopMatrix();
+    }
+
+    // Mund
+    glPushMatrix();
+    {
+        glTranslatef(0, -0.15f, 0.0f);
+        glColor3f(1, 1, 1);
+        glScalef(0.5f, 0.05f, 0);
+        drawSquare();
+    }
+    glPopMatrix();
+
+    // Hutdeckel
+    glPushMatrix();
+    {
+        glTranslatef(0, 0.65f, 0.0f);
+        glColor3f(0, 0, 0);
+        glScalef(0.5f, 0.4f, 0);
+        drawSquare();
+    }
+    glPopMatrix();
+
+    // Hutkoerper
+    glPushMatrix();
+    {
+        glTranslatef(0, 0.45f, 0.0f);
+        glColor3f(0, 0, 0);
+        glScalef(1.0f, 0.05f, 0);
+        drawSquare();
+    }
+    glPopMatrix();
+}
+
+void drawPlayerBody() {
+    // Korpus
+    glPushMatrix();
+    {
+        glTranslatef(0, -1.1f, 0.0f);
+        glColor3f(0, 0, 0);
+        glScalef(0.8f, 0.9f, 0);
+        drawCircle();
+    }
+    glPopMatrix();
+
+    // Beine
+    for (int i = 0; i < 2; ++i) {
+        glPushMatrix();
+        {
+            float xLegPos = i == 0 ? -0.3f : 0.3f;
+            glTranslatef(xLegPos, -2.3f, 0.0f);
+            glColor3f(0, 0, 0);
+            glScalef(0.3f, 0.9f, 0);
+            drawSquare();
+        }
+        glPopMatrix();
+    }
+
+    // Schuhe
+    for (int i = 0; i < 2; ++i) {
+        glPushMatrix();
+        {
+            float xLegPos = i == 0 ? -0.5f : 0.5f;
+
+            glTranslatef(xLegPos, -2.7f, 0.0f);
+            glColor3f(0, 0, 0);
+            glScalef(0.7f, 0.2f, 0);
+            drawTriangle();
+        }
+        glPopMatrix();
+    }
+
+    // Arme
+    for (int i = 0; i < 2; ++i) {
+        glColor3f(0, 0, 0);
+        glPushMatrix();
+        {
+            float xArmPos = i == 0 ? -0.9f : 0.9f;
+            int angle = i == 0 ? -60 : 60;
+
+            glTranslatef(xArmPos, -0.9f, 0.0f);
+            glRotatef(angle, 0, 0, 1);
+            glScalef(0.3f, 0.9f, 0);
+            drawSquare();
+        }
+        glPopMatrix();
+    }
+
+    // "Haende"
+    for (int i = 0; i < 2; ++i) {
+        glColor3f(0.824f, 0.706f, 0.549f);
+        glPushMatrix();
+        {
+            float xHandPos = i == 0 ? -1.4f : 1.4f;
+            int angle = i == 0 ? -60 : 60;
+
+            glTranslatef(xHandPos, -1.15f, 0.0f);
+            glRotatef(angle, 0, 0, 1);
+            glScalef(0.2f, 0.2f, 0);
+            drawCircle();
+        }
+        glPopMatrix();
+    }
+}
+
 void drawPlayer(float xPos, float yPos) {
     drawFreeBlock(xPos, yPos);
 
@@ -447,86 +600,21 @@ void drawPlayer(float xPos, float yPos) {
         glTranslatef(xPos, yPos + 0.05f, 0.0f);
         glScalef(0.05f, 0.05f, 0);
 
-        // Kopf
+        drawPlayerBody();
+
+        // Weisses Ding
         glPushMatrix();
         {
-            glColor3f(0.824f, 0.706f, 0.549f);
-            glScalef(0.5f, 0.5f, 0);
-            drawCircle();
-        }
-        glPopMatrix();
+            glTranslatef(0, -0.8f, 0);
+            glScalef(0.08f, 0.3, 0);
 
-
-        // Augenbrauen
-        for (int i = 0; i < 2; ++i) {
-            glPushMatrix();
-            {
-                float xEyebrow = i == 0 ? -0.15f : 0.15f;
-                int xEyebrowAngle = i == 0 ? 10 : -10;
-                glTranslatef(xEyebrow, 0.3f, 0.0f);
-                glRotatef(xEyebrowAngle, 0.0f, 0.0f, 1.0f);
-                glColor3f(0, 0, 0);
-                glScalef(0.16f, 0.05f, 0);
-                drawSquare();
-            }
-            glPopMatrix();
-        }
-
-        // Augen
-        for (int i = 0; i < 2; ++i) {
-            glPushMatrix();
-            {
-                float x = i == 0 ? -0.15f : 0.15f;
-                glTranslatef(x, 0.15f, 0.0f);
-                glColor3f(1, 1, 1);
-                glScalef(0.07f, 0.07f, 0);
-                drawCircle();
-            }
-            glPopMatrix();
-        }
-
-        // Iris
-        for (int j = 0; j < 2; ++j) {
-            glPushMatrix();
-            {
-                float x = j == 0 ? -0.15f : 0.15f;
-                glTranslatef(x, 0.15f, 0.0f);
-                glColor3f(0, 0, 0);
-                glScalef(0.03f, 0.03f, 0);
-                drawCircle();
-            }
-            glPopMatrix();
-        }
-
-        // Mund
-        glPushMatrix();
-        {
-            glTranslatef(0, -0.15f, 0.0f);
             glColor3f(1, 1, 1);
-            glScalef(0.5f, 0.05f, 0);
-            drawSquare();
+            drawTriangle();
         }
         glPopMatrix();
 
-        // Hutdeckel
-        glPushMatrix();
-        {
-            glTranslatef(0, 0.65f, 0.0f);
-            glColor3f(0, 0, 0);
-            glScalef(0.5f, 0.4f, 0);
-            drawSquare();
-        }
-        glPopMatrix();
 
-        // Hutkoerper
-        glPushMatrix();
-        {
-            glTranslatef(0, 0.45f, 0.0f);
-            glColor3f(0, 0, 0);
-            glScalef(1.0f, 0.05f, 0);
-            drawSquare();
-        }
-        glPopMatrix();
+        drawPlayerHead();
 
     }
     glPopMatrix();
@@ -593,14 +681,15 @@ void drawLevel(int levelID) {
             }
         }
     }
-
 }
 
 void drawGame(int levelId) {
     glPushMatrix();
     {
         // Spielfeld ist ein wenig zu groß, also um 20% kleiner machen
-        glScalef(0.8f, 0.8f, 1.0f);
+        // TODO: WIEDER NORMAL
+       // glScalef(3.8f, 3.8f, 1.0f);
+          glScalef(0.8f, 0.8f, 1.0f);
 
         // Spielfeld ist ein wenig zu hoch, also bisschen tiefer setzen
         glTranslatef(0.0f, -0.1f, 0.0f);
