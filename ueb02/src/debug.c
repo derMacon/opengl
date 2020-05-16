@@ -56,9 +56,7 @@ dbgPrintGLState(GLenum state) {
 int
 dbgGetGLError(void) {
     GLenum errorCode = glGetError();
-
     dbgPrintGLState(errorCode);
-
     return errorCode;
 }
 

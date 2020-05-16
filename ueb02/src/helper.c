@@ -51,8 +51,6 @@ float *selectColor(int index) {
     return colors;
 }
 
-
-
 /**
  * Zeigt die Hilfe fuer den Benutzer an
  */

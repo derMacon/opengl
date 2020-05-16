@@ -1,5 +1,6 @@
 #ifndef UEB02_VARIABLES_H
 #define UEB02_VARIABLES_H
+
 /** Globale Einstellungen **/
 #define TIMER_CALLS_PS 144
 

@@ -8,11 +8,9 @@
 #include "scene.h"
 #include "logic.h"
 #include "variables.h"
-#include "types.h"
 #include "helper.h"
 
 GLboolean gamePaused = GL_FALSE;
-GLboolean showExtra = GL_FALSE;
 GLboolean showFullscreen = GL_FALSE;
 
 /**
