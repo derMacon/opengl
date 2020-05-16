@@ -4,9 +4,12 @@
 
 #include "types.h"
 
-void setPlayerMovement();
+void setPlayerMovement(enum e_Direction direction);
 
-Game* getGame();
-Levels* getLevels();
+Game *getGame();
+
+Levels *getLevels();
+
 void generateLevel();
+
 #endif

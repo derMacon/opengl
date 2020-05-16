@@ -2,7 +2,9 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+
 #include <GL/glut.h>
+
 #endif
 
 #include <time.h>
@@ -57,8 +59,7 @@ void initDisplayList() {
                 case (P_HOUSE):
                     drawHouse();
                     break;
-
-                case (PLAYER_TEST) :
+                case (P_PLAYER):
                     drawPlayer();
                     break;
 
@@ -70,6 +71,12 @@ void initDisplayList() {
         }
     } else {
         CG_ERROR(("Konnte Displaylisten nicht erzeugen\n"));
+    }
+}
+
+void showPlayer(int x, int y) {
+    if (getGame()->playerPosX == x && getGame()->playerPosY == y) {
+        glCallList(g_renderObjects + P_PLAYER);
     }
 }
 
@@ -106,7 +113,6 @@ void drawLevel(int levelID) {
 
                         case (P_WALL):
                             glCallList(g_renderObjects + P_WALL);
-
                             break;
 
                         case (P_BOX):
@@ -136,13 +142,11 @@ void drawLevel(int levelID) {
                             glCallList(g_renderObjects + P_HOUSE);
                             break;
 
-                        case (PLAYER_TEST) :
-                            glCallList(g_renderObjects + PLAYER_TEST);
-                            break;
-
                         default:
                             break;
                     }
+
+                    showPlayer(x, y);
                 }
                 glPopMatrix();
             }

@@ -2,8 +2,11 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+
 #include <GL/glut.h>
+
 #endif
+
 #include "io.h"
 #include "scene.h"
 #include "logic.h"
@@ -127,15 +130,7 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
     if (status == GLUT_DOWN) {
         /* Spezialtaste gedrueckt */
         if (isSpecialKey) {
-            switch (key) {
-                /* Bewegung des Rechtecks in entsprechende Richtung starten */
-                case GLUT_KEY_LEFT:
-                    setPlayerMovement();
-                    break;
-                case GLUT_KEY_RIGHT:
-                    setPlayerMovement();
-                    break;
-            }
+            // TODO: Marcel meint, wir brauchen das hier :D
         }
             /* normale Taste gedrueckt */
         else {
@@ -170,10 +165,16 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
 
                 /* Bewegung des Rechtecks in entsprechende Richtung beenden */
                 case GLUT_KEY_LEFT:
-                    setPlayerMovement();
+                    setPlayerMovement(dirLeft);
                     break;
                 case GLUT_KEY_RIGHT:
-                    setPlayerMovement();
+                    setPlayerMovement(dirRight);
+                    break;
+                case GLUT_KEY_UP:
+                    setPlayerMovement(dirUp);
+                    break;
+                case GLUT_KEY_DOWN:
+                    setPlayerMovement(dirDown);
                     break;
                 case GLUT_KEY_F1:
                     toggleWireframe();
@@ -183,11 +184,20 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
             switch (key) {
                 case 'a':
                 case 'A':
-                    setPlayerMovement();
+                    setPlayerMovement(dirLeft);
                     break;
                 case 'd':
                 case 'D':
-                    setPlayerMovement();
+                    setPlayerMovement(dirRight);
+                    break;
+                case 'w':
+                case 'W':
+                    setPlayerMovement(dirUp);
+                    break;
+
+                case 's':
+                case 'S':
+                    setPlayerMovement(dirDown);
                     break;
             }
         }

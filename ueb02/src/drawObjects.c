@@ -576,8 +576,6 @@ void drawPlayerBody() {
 }
 
 void drawPlayer() {
-    drawFreeBlock();
-
     glPushMatrix();
     {
         glTranslatef(0, 0.05f, 0.0f);
@@ -595,7 +593,6 @@ void drawPlayer() {
             drawTriangle();
         }
         glPopMatrix();
-
 
         drawPlayerHead();
 
