@@ -1,14 +1,7 @@
-
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-
 #include <math.h>
 #include "debug.h"
 #include "types.h"
 #include "helper.h"
-
-#endif
 
 float shrinkVal = 0;
 GLboolean isIncreasing = GL_TRUE;

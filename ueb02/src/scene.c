@@ -2,16 +2,15 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
-
 #include <GL/glut.h>
+#endif
+
 #include <time.h>
 #include "debug.h"
 #include "types.h"
 #include "logic.h"
 #include "helper.h"
 #include "drawObjects.h"
-
-#endif
 
 GLuint g_renderObjects;
 GLboolean showWireframe = GL_FALSE;

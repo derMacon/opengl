@@ -1,11 +1,15 @@
 
+
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
 
 #include <GL/glut.h>
+#endif
+
 #include "variables.h"
 #include "types.h"
+
 
 Game game = {0, 0, 0, GAME_RUNNING};
 
@@ -69,5 +73,3 @@ Game *getGame(void) {
 Levels (*getLevels(void)) {
     return (Levels *) &levels;
 }
-
-#endif
