@@ -55,50 +55,33 @@ pushyFieldType getBlockOfPos(int x, int y) {
     return levels[game.levelId]->field[y][x];
 }
 
-// TODO: 4x das gleiche in 1 machen
 int moveBox(enum e_Direction direction, int x, int y) {
+    int newX = x;
+    int newY = y;
 
+    //todo auslagern?
     switch (direction) {
-        case dirUp:
-            if (y > 0
-                && (getBlockOfPos(x, y - 1) == P_FREE
-                    || getBlockOfPos(x, y - 1) == P_DOOR_SWITCH)) {
-                //TODO P_BOX_DOOR_SWITCH einbauen
-                levels[game.levelId]->field[y][x] = P_FREE;
-                levels[game.levelId]->field[y - 1][x] = P_BOX;
-                return GL_TRUE;
-            }
-            break;
-        case dirDown:
-            if (y < LEVEL_SIZE
-                && (getBlockOfPos(x, y + 1) == P_FREE
-                    || getBlockOfPos(x, y + 1) == P_DOOR_SWITCH)) {
-                //TODO P_BOX_DOOR_SWITCH einbauen
-                levels[game.levelId]->field[y][x] = P_FREE;
-                levels[game.levelId]->field[y + 1][x] = P_BOX;
-                return GL_TRUE;
-            }
-            break;
         case dirLeft:
-            if (x > 0
-                && (getBlockOfPos(x - 1, y) == P_FREE
-                    || getBlockOfPos(x - 1, y ) == P_DOOR_SWITCH)) {
-                //TODO P_BOX_DOOR_SWITCH einbauen
-                levels[game.levelId]->field[y][x] = P_FREE;
-                levels[game.levelId]->field[y][x - 1] = P_BOX;
-                return GL_TRUE;
-            }
+            newX = x - 1;
             break;
         case dirRight:
-            if (x < LEVEL_SIZE
-                && (getBlockOfPos(x + 1, y) == P_FREE
-                    || getBlockOfPos(x + 1, y) == P_DOOR_SWITCH)) {
-                //TODO P_BOX_DOOR_SWITCH einbauen
-                levels[game.levelId]->field[y][x] = P_FREE;
-                levels[game.levelId]->field[y][x + 1] = P_BOX;
-                return GL_TRUE;
-            }
+            newX = x + 1;
             break;
+        case dirUp:
+            newY = y - 1;
+            break;
+        case dirDown:
+            newY = y + 1;
+            break;
+    }
+
+    if (y > 0
+        && (getBlockOfPos(newX, newY) == P_FREE
+            || getBlockOfPos(newX, newY) == P_DOOR_SWITCH)) {
+        //TODO P_BOX_DOOR_SWITCH einbauen
+        levels[game.levelId]->field[y][x] = P_FREE;
+        levels[game.levelId]->field[newY][newX] = P_BOX;
+        return GL_TRUE;
     }
     return GL_FALSE;
 }
@@ -107,80 +90,47 @@ GLboolean playerMovementAllowed(enum e_Direction direction) {
 
     int pX = game.playerPosX;
     int pY = game.playerPosY;
+    int pXNew = pX;
+    int pYNew = pY;
 
-    int bottomTile;
-    int topTile;
-    // TODO positions in Variable und zusammenfassen 4x das gleiche unnötig
+    //todo auslagern?
     switch (direction) {
-        case dirUp:
-            if (pY >= 1) {
-                topTile = getBlockOfPos(pX, pY - 1);
-
-                if (topTile == P_BOX) {
-                    return moveBox(direction, pX, pY - 1);
-                } else if (topTile == P_OBJECT_TRIANGLE) {
-
-                } else if (topTile == P_HOUSE) {
-
-                } else if (topTile == P_WALL) {
-                    return GL_FALSE;
-                }
-                return GL_TRUE;
-            }
-
-            break;
-        case dirDown:
-            if (pY < LEVEL_SIZE) {
-                topTile = getBlockOfPos(pX, pY + 1);
-
-                if (topTile == P_BOX) {
-                    return moveBox(direction, pX, pY + 1);
-                } else if (topTile == P_OBJECT_TRIANGLE) {
-
-                } else if (topTile == P_HOUSE) {
-
-                } else if (topTile == P_WALL) {
-                    return GL_FALSE;
-                }
-                return GL_TRUE;
-            }
-            break;
         case dirLeft:
-            if (pX >= 1) {
-                topTile = getBlockOfPos(pX - 1, pY);
-
-                if (topTile == P_BOX) {
-                    return moveBox(direction, pX - 1, pY);
-                } else if (topTile == P_OBJECT_TRIANGLE) {
-
-                } else if (topTile == P_HOUSE) {
-
-                } else if (topTile == P_WALL) {
-                    return GL_FALSE;
-                }
-                return GL_TRUE;
-            }
+            pXNew = pX - 1;
             break;
         case dirRight:
-            if (pX < LEVEL_SIZE) {
-                topTile = getBlockOfPos(pX + 1, pY);
-
-                if (topTile == P_BOX) {
-                    return moveBox(direction, pX + 1, pY);
-                } else if (topTile == P_OBJECT_TRIANGLE) {
-
-                } else if (topTile == P_HOUSE) {
-
-                } else if (topTile == P_WALL) {
-                    return GL_FALSE;
-                }
-                return GL_TRUE;
-            }
+            pXNew = pX + 1;
+            break;
+        case dirUp:
+            pYNew = pY - 1;
+            break;
+        case dirDown:
+            pYNew = pY + 1;
             break;
     }
+    int checkTile;
+    // TODO positions in Variable und zusammenfassen 4x das gleiche unnötig
 
+    if(direction == dirUp && pY >= 1
+    || direction == dirDown && pY < LEVEL_SIZE
+    ||direction == dirLeft && pX >= 1
+    ||direction == dirRight && pX < LEVEL_SIZE ){
 
+        checkTile = getBlockOfPos(pXNew, pYNew);
+
+        if (checkTile == P_BOX) {
+            return moveBox(direction, pXNew, pYNew);
+        } else if (checkTile == P_OBJECT_TRIANGLE) {
+
+        } else if (checkTile == P_HOUSE) {
+
+        } else if (checkTile == P_WALL) {
+            return GL_FALSE;
+        }
+        return GL_TRUE;
+    }
     return GL_FALSE;
+
 }
 
 /**
