@@ -87,7 +87,6 @@ int moveBox(enum e_Direction direction, int x, int y) {
 }
 
 GLboolean playerMovementAllowed(enum e_Direction direction) {
-
     int pX = game.playerPosX;
     int pY = game.playerPosY;
     int pXNew = pX;
@@ -109,7 +108,6 @@ GLboolean playerMovementAllowed(enum e_Direction direction) {
             break;
     }
     int checkTile;
-    // TODO positions in Variable und zusammenfassen 4x das gleiche unnötig
 
     if(direction == dirUp && pY >= 1
     || direction == dirDown && pY < LEVEL_SIZE
