@@ -18,13 +18,15 @@ Game game;
 Levels levels[3] = {{
                             {2, {
                                         {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL},
-                                        {P_WALL, P_START, P_FREE, P_FREE, P_FREE, P_FREE, P_DOOR, P_DOOR_SWITCH, P_WALL},
-                                        {P_WALL, P_FREE, P_HOUSE, P_BOX, P_FREE, P_FREE, P_BOX, P_FREE, P_WALL},
-                                        {P_WALL, P_FREE, P_BOX, P_WALL, P_FREE, P_BOX, P_FREE, P_FREE, P_WALL},
-                                        {P_WALL, P_BOX, P_FREE, P_BOX, P_FREE, P_BOX, P_FREE, P_FREE, P_WALL},
-                                        {P_WALL, P_FREE, P_BOX, P_FREE, P_BOX, P_FREE, P_FREE, P_FREE, P_WALL},
-                                        {P_WALL, P_BOX, P_FREE, P_BOX, P_PORTAL, P_BOX, P_FREE, P_OBJECT_TRIANGLE, P_WALL},
-                                        {P_WALL, P_PORTAL, P_BOX, P_FREE, P_BOX, P_BOX, P_FREE, P_TARGET, P_WALL},
+
+                                        {P_WALL, P_START, P_WALL, P_FREE, P_FREE, P_WALL, P_FREE, P_TARGET, P_WALL},
+                                        {P_WALL, P_FREE, P_WALL, P_FREE, P_DOOR_SWITCH, P_WALL, P_FREE, P_FREE, P_WALL},
+                                        {P_WALL, P_BOX, P_WALL, P_FREE, P_BOX, P_DOOR, P_FREE, P_FREE, P_WALL},
+                                        {P_WALL, P_FREE, P_FREE, P_FREE, P_FREE, P_WALL, P_FREE, P_FREE, P_WALL},
+                                        {P_WALL, P_FREE, P_FREE, P_OBJECT_TRIANGLE, P_FREE, P_WALL, P_WALL, P_WALL, P_WALL},
+                                        {P_WALL, P_FREE, P_FREE, P_FREE, P_WALL, P_FREE, P_FREE, P_FREE, P_WALL},
+                                        {P_WALL, P_BOX, P_FREE, P_PORTAL, P_WALL, P_PORTAL, P_FREE, P_HOUSE, P_WALL},
+
                                         {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL}}},
 
                             {2, {
@@ -168,13 +170,14 @@ setPlayerMovement(enum e_Direction direction) {
     }
 }
 
-void setPortals() {
+void setObjectCoords(GLboolean setPortals) {
 
     GLboolean foundPortal = GL_FALSE;
+
     for (int y = 0; y < LEVEL_SIZE; y++) {
         for (int x = 0; x < LEVEL_SIZE; x++) {
 
-            if (getBlockOfPos(x, y) == P_PORTAL) {
+            if (setPortals && getBlockOfPos(x, y) == P_PORTAL) {
 
                 if (!foundPortal) {
                     foundPortal = GL_TRUE;
@@ -185,16 +188,25 @@ void setPortals() {
                     game.levelSettings.portal2PosY = y;
                     return;
                 }
+            } else if (!setPortals && getBlockOfPos(x, y) == P_DOOR) {
+                game.levelSettings.doorPosX = x;
+                game.levelSettings.doorPosY = y;
+                return;
             }
 
         }
     }
 
-    // Keine Portale vorhanden
-    game.levelSettings.portal1PosX = -1;
-    game.levelSettings.portal1PosY = -1;
-    game.levelSettings.portal2PosX = -1;
-    game.levelSettings.portal2PosY = -1;
+    if (setPortals) {
+        // Keine Portale vorhanden
+        game.levelSettings.portal1PosX = -1;
+        game.levelSettings.portal1PosY = -1;
+        game.levelSettings.portal2PosX = -1;
+        game.levelSettings.portal2PosY = -1;
+    } else {
+        game.levelSettings.doorPosX = -1;
+        game.levelSettings.doorPosY = -1;
+    }
 }
 
 void initLevel(int levelId) {
@@ -203,7 +215,11 @@ void initLevel(int levelId) {
     game.levelSettings.playerPosX = 1;
     game.levelSettings.playerPosY = 1;
 
-    setPortals();
+    // Positionen der Portale setzen
+    setObjectCoords(GL_TRUE);
+
+    // Postion der Tuer setzen
+    setObjectCoords(GL_FALSE);
 }
 
 Game *getGame(void) {
