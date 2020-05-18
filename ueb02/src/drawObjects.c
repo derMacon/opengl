@@ -6,6 +6,20 @@
 float shrinkVal = 0;
 GLboolean isIncreasing = GL_TRUE;
 
+GLfloat houseColors[3] = {1.0f, 0.0f, 1.0f};
+
+void changeColor(GLboolean isGreenHouse) {
+    if (isGreenHouse) {
+        houseColors[0] = 0.196f;
+        houseColors[1] = 0.804f;
+        houseColors[2] = 0.196f;
+    } else {
+        houseColors[0] = 1.0f;
+        houseColors[1] = 0.0f;
+        houseColors[2] = 1.0f;
+    }
+}
+
 /**
  * Zeichnet ein Rechteck mit der Breite und Hoehe 1.
  */
@@ -363,6 +377,7 @@ void drawHouse() {
         {
             glTranslatef(0, -0.015f, 0);
             glScalef(0.09f, 0.06f, 1.0f);
+
             glColor3f(1.0f, 1.0f, 1.0f);
             drawSquare();
             glPopMatrix();
@@ -373,7 +388,7 @@ void drawHouse() {
         {
             glTranslatef(0, 0.05f, 0);
             glScalef(0.08f, 0.05f, 1.0f);
-            glColor3f(1.0f, 0.0f, 1.0f);
+            glColor3f(houseColors[0], houseColors[1], houseColors[2]);
             drawTriangle();
         }
         glPopMatrix();
@@ -383,7 +398,7 @@ void drawHouse() {
         {
             glTranslatef(0, -0.03f, 0);
             glScalef(0.018f, 0.03f, 1.0f);
-            glColor3f(1.0f, 0.0f, 1.0f);
+            glColor3f(houseColors[0], houseColors[1], houseColors[2]);
             drawSquare();
         }
         glPopMatrix();

@@ -21,4 +21,6 @@ void drawHouse();
 
 void drawPlayer();
 
+void changeColor(GLboolean isGreenHouse);
+
 #endif //UEB02_DRAWOBJECTS_H

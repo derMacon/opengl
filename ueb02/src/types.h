@@ -45,6 +45,7 @@ typedef struct {
     int portal1PosX, portal1PosY, portal2PosX, portal2PosY;
     int playerPosX, playerPosY;
     int doorPosX, doorPosY;
+    int numberOfTriangles;
 
 } LevelSettings;
 

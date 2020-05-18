@@ -11,6 +11,7 @@
 
 #include "variables.h"
 #include "types.h"
+#include "drawObjects.h"
 
 Game game;
 
@@ -20,7 +21,7 @@ Levels levels[3] = {{
                                         {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL},
 
                                         {P_WALL, P_START, P_WALL, P_FREE, P_FREE, P_WALL, P_FREE, P_TARGET, P_WALL},
-                                        {P_WALL, P_FREE, P_WALL, P_FREE, P_DOOR_SWITCH, P_WALL, P_FREE, P_FREE, P_WALL},
+                                        {P_WALL, P_FREE, P_WALL, P_FREE, P_DOOR_SWITCH, P_WALL, P_FREE, P_OBJECT_TRIANGLE, P_WALL},
                                         {P_WALL, P_BOX, P_WALL, P_FREE, P_BOX, P_DOOR, P_FREE, P_FREE, P_WALL},
                                         {P_WALL, P_FREE, P_FREE, P_FREE, P_FREE, P_WALL, P_FREE, P_FREE, P_WALL},
                                         {P_WALL, P_FREE, P_FREE, P_OBJECT_TRIANGLE, P_FREE, P_WALL, P_WALL, P_WALL, P_WALL},
@@ -73,22 +74,44 @@ int newPos(int val, enum e_Direction direction, GLboolean isX) {
     return val;
 }
 
+void checkTriangles() {
+    game.levelSettings.numberOfTriangles--;
+
+    // TODO: Bei Levelneustart / levelÄnderung Haus wieder pink faerben
+    if (game.levelSettings.numberOfTriangles == 0) {
+        // MAKE HAUS GRUEN
+        changeColor(GL_TRUE);
+    }
+}
+
 int moveObject(enum e_Direction direction, int x, int y, pushyFieldType fieldType) {
     int newX = newPos(x, direction, GL_TRUE);
     int newY = newPos(y, direction, GL_FALSE);
+    GLboolean hasMoved = GL_FALSE;
     pushyFieldType blockOfPos = getBlockOfPos(newX, newY);
 
-    if (blockOfPos == P_FREE || (blockOfPos == P_DOOR_SWITCH && fieldType == P_BOX) ||
-        (blockOfPos == P_TARGET && fieldType == P_OBJECT_TRIANGLE)) {
-        //TODO P_BOX_DOOR_SWITCH einbauen
-
-        if (fieldType != P_OBJECT_TRIANGLE || blockOfPos != P_TARGET) {
-            levels[game.levelId]->field[newY][newX] = fieldType;
-        }
+    if (blockOfPos == P_FREE && fieldType != P_BOX_DOOR_SWITCH) {
         levels[game.levelId]->field[y][x] = P_FREE;
-        return GL_TRUE;
+        levels[game.levelId]->field[newY][newX] = fieldType;
+        hasMoved = GL_TRUE;
+    } else if (blockOfPos == P_DOOR_SWITCH && fieldType == P_BOX) {
+        levels[game.levelId]->field[y][x] = P_FREE;
+        levels[game.levelId]->field[newY][newX] = P_BOX_DOOR_SWITCH;
+        levels[game.levelId]->field[game.levelSettings.doorPosY][game.levelSettings.doorPosX] = P_FREE;
+
+        hasMoved = GL_TRUE;
+    } else if (blockOfPos == P_TARGET && fieldType == P_OBJECT_TRIANGLE) {
+        levels[game.levelId]->field[y][x] = P_FREE;
+        checkTriangles();
+        hasMoved = GL_TRUE;
+    } else if (blockOfPos == P_FREE && fieldType == P_BOX_DOOR_SWITCH) {
+        levels[game.levelId]->field[y][x] = P_DOOR_SWITCH;
+        levels[game.levelId]->field[newY][newX] = P_BOX;
+        levels[game.levelId]->field[game.levelSettings.doorPosY][game.levelSettings.doorPosX] = P_DOOR;
+        hasMoved = GL_TRUE;
     }
-    return GL_FALSE;
+
+    return hasMoved;
 }
 
 void setPlayerPos(int x, int y) {
@@ -102,10 +125,14 @@ void teleportPlayer(int portalX, int portalY) {
     int lpX2 = game.levelSettings.portal2PosX;
     int lpY2 = game.levelSettings.portal2PosY;
 
-    if (portalX == lpX1 && portalY == lpY1) {
-        setPlayerPos(lpX2, lpY2);
-    } else if (portalX == lpX2 && portalY == lpY2) {
-        setPlayerPos(lpX1, lpY1);
+    // Nur ausfuehren, wenn korrekte Anzahl an Portalen vorhanden
+    // -1 wird gesetzt, wenn zuviele Portale vorhanden sind.
+    if (lpX1 != -1) {
+        if (portalX == lpX1 && portalY == lpY1) {
+            setPlayerPos(lpX2, lpY2);
+        } else if (portalX == lpX2 && portalY == lpY2) {
+            setPlayerPos(lpX1, lpY1);
+        }
     }
 }
 
@@ -126,6 +153,7 @@ GLboolean playerMovementAllowed(enum e_Direction direction) {
 
         switch (checkTile) {
             case P_BOX:
+            case P_BOX_DOOR_SWITCH:
             case P_OBJECT_TRIANGLE:
                 return moveObject(direction, pXNew, pYNew, checkTile);
 
@@ -133,6 +161,7 @@ GLboolean playerMovementAllowed(enum e_Direction direction) {
                 break;
 
             case P_FREE:
+            case P_DOOR_SWITCH:
                 return GL_TRUE;
 
             case P_PORTAL:
@@ -142,7 +171,6 @@ GLboolean playerMovementAllowed(enum e_Direction direction) {
             case P_TARGET:
             default:
                 return GL_FALSE;
-
         }
     }
 
@@ -170,43 +198,63 @@ setPlayerMovement(enum e_Direction direction) {
     }
 }
 
-void setObjectCoords(GLboolean setPortals) {
+void checkForInvalidPortals(int numberOfPortals) {
+    if (numberOfPortals != 2) {
+        game.levelSettings.portal1PosX = -1;
+        game.levelSettings.portal1PosY = -1;
+        game.levelSettings.portal2PosX = -1;
+        game.levelSettings.portal2PosY = -1;
+    }
+}
 
-    GLboolean foundPortal = GL_FALSE;
+void checkForInvalidDoor(int numberOfDoors) {
+    if (numberOfDoors != 1) {
+        game.levelSettings.doorPosX = -1;
+        game.levelSettings.doorPosY = -1;
+    }
+}
+
+void setObjectCoords() {
+
+    int alreadyCountedPortals = 0;
+    int numberOfTriangles = 0;
+    int numberOfDoors = 0;
 
     for (int y = 0; y < LEVEL_SIZE; y++) {
         for (int x = 0; x < LEVEL_SIZE; x++) {
 
-            if (setPortals && getBlockOfPos(x, y) == P_PORTAL) {
+            // Dreiecke
+            if (getBlockOfPos(x, y) == P_OBJECT_TRIANGLE) {
+                numberOfTriangles++;
+            }
 
-                if (!foundPortal) {
-                    foundPortal = GL_TRUE;
+            // Portale
+            if (getBlockOfPos(x, y) == P_PORTAL) {
+
+                if (alreadyCountedPortals < 1) {
                     game.levelSettings.portal1PosX = x;
                     game.levelSettings.portal1PosY = y;
                 } else {
                     game.levelSettings.portal2PosX = x;
                     game.levelSettings.portal2PosY = y;
-                    return;
                 }
-            } else if (!setPortals && getBlockOfPos(x, y) == P_DOOR) {
+                alreadyCountedPortals++;
+            }
+
+            // Tuer
+            if (getBlockOfPos(x, y) == P_DOOR) {
                 game.levelSettings.doorPosX = x;
                 game.levelSettings.doorPosY = y;
-                return;
+                numberOfDoors++;
             }
 
         }
     }
 
-    if (setPortals) {
-        // Keine Portale vorhanden
-        game.levelSettings.portal1PosX = -1;
-        game.levelSettings.portal1PosY = -1;
-        game.levelSettings.portal2PosX = -1;
-        game.levelSettings.portal2PosY = -1;
-    } else {
-        game.levelSettings.doorPosX = -1;
-        game.levelSettings.doorPosY = -1;
-    }
+    game.levelSettings.numberOfTriangles = numberOfTriangles;
+
+    checkForInvalidPortals(alreadyCountedPortals);
+    checkForInvalidDoor(numberOfDoors);
 }
 
 void initLevel(int levelId) {
@@ -216,10 +264,8 @@ void initLevel(int levelId) {
     game.levelSettings.playerPosY = 1;
 
     // Positionen der Portale setzen
-    setObjectCoords(GL_TRUE);
-
-    // Postion der Tuer setzen
-    setObjectCoords(GL_FALSE);
+    setObjectCoords();
+    printf("afa");
 }
 
 Game *getGame(void) {

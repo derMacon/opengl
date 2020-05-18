@@ -57,9 +57,6 @@ void initDisplayList() {
                     drawTriangleOject();
                     break;
 
-                case (P_HOUSE):
-                    drawHouse();
-                    break;
                 case (P_PLAYER):
                     drawPlayer();
                     break;
@@ -117,6 +114,7 @@ void drawLevel(int levelID) {
                             break;
 
                         case (P_BOX):
+                        case (P_BOX_DOOR_SWITCH):
                             glCallList(g_renderObjects + P_BOX);
                             break;
 
@@ -140,7 +138,7 @@ void drawLevel(int levelID) {
                             break;
 
                         case (P_HOUSE):
-                            glCallList(g_renderObjects + P_HOUSE);
+                            drawHouse();
                             break;
 
                         default:
