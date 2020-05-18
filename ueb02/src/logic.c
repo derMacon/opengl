@@ -12,7 +12,6 @@
 #include "variables.h"
 #include "types.h"
 
-
 Game game = {0, 1, 1, GAME_RUNNING};
 
 // TODO: Aendern + P_START entfernen und dafuer Startkoordinaten einfuegen
@@ -81,7 +80,7 @@ int moveObject(enum e_Direction direction, int x, int y, pushyFieldType fieldTyp
         (blockOfPos == P_TARGET && fieldType == P_OBJECT_TRIANGLE)) {
         //TODO P_BOX_DOOR_SWITCH einbauen
 
-        if (fieldType != P_OBJECT_TRIANGLE) {
+        if (fieldType != P_OBJECT_TRIANGLE || blockOfPos != P_TARGET) {
             levels[game.levelId]->field[newY][newX] = fieldType;
         }
         levels[game.levelId]->field[y][x] = P_FREE;
