@@ -89,9 +89,27 @@ int moveObject(enum e_Direction direction, int x, int y, pushyFieldType fieldTyp
     return GL_FALSE;
 }
 
+void setPlayerPos(int x, int y) {
+    game.levelSettings.playerPosX = x;
+    game.levelSettings.playerPosY = y;
+}
+
+void teleportPlayer(int portalX, int portalY) {
+    int lpX1 = game.levelSettings.portal1PosX;
+    int lpY1 = game.levelSettings.portal1PosY;
+    int lpX2 = game.levelSettings.portal2PosX;
+    int lpY2 = game.levelSettings.portal2PosY;
+
+    if (portalX == lpX1 && portalY == lpY1) {
+        setPlayerPos(lpX2, lpY2);
+    } else if (portalX == lpX2 && portalY == lpY2) {
+        setPlayerPos(lpX1, lpY1);
+    }
+}
+
 GLboolean playerMovementAllowed(enum e_Direction direction) {
-    int pX = game.playerPosX;
-    int pY = game.playerPosY;
+    int pX = game.levelSettings.playerPosX;
+    int pY = game.levelSettings.playerPosY;
 
     int pXNew = newPos(pX, direction, GL_TRUE);
     int pYNew = newPos(pY, direction, GL_FALSE);
@@ -115,6 +133,9 @@ GLboolean playerMovementAllowed(enum e_Direction direction) {
             case P_FREE:
                 return GL_TRUE;
 
+            case P_PORTAL:
+                teleportPlayer(pXNew, pYNew);
+
             case P_WALL:
             case P_TARGET:
             default:
@@ -136,22 +157,53 @@ void
 setPlayerMovement(enum e_Direction direction) {
     if (playerMovementAllowed(direction)) {
         if (direction == dirLeft) {
-            game.playerPosX -= 1;
+            game.levelSettings.playerPosX -= 1;
         } else if (direction == dirRight) {
-            game.playerPosX += 1;
+            game.levelSettings.playerPosX += 1;
         } else if (direction == dirUp) {
-            game.playerPosY -= 1;
+            game.levelSettings.playerPosY -= 1;
         } else if (direction == dirDown) {
-            game.playerPosY += 1;
+            game.levelSettings.playerPosY += 1;
         }
     }
 }
 
-void generateLevel(int levelId) {
+void setPortals() {
+
+    GLboolean foundPortal = GL_FALSE;
+    for (int y = 0; y < LEVEL_SIZE; y++) {
+        for (int x = 0; x < LEVEL_SIZE; x++) {
+
+            if (getBlockOfPos(x, y) == P_PORTAL) {
+
+                if (!foundPortal) {
+                    foundPortal = GL_TRUE;
+                    game.levelSettings.portal1PosX = x;
+                    game.levelSettings.portal1PosY = y;
+                } else {
+                    game.levelSettings.portal2PosX = x;
+                    game.levelSettings.portal2PosY = y;
+                    return;
+                }
+            }
+
+        }
+    }
+
+    // Keine Portale vorhanden
+    game.levelSettings.portal1PosX = -1;
+    game.levelSettings.portal1PosY = -1;
+    game.levelSettings.portal2PosX = -1;
+    game.levelSettings.portal2PosY = -1;
+}
+
+void initLevel(int levelId) {
     game.gameStatus = GAME_RUNNING;
     game.levelId = levelId;
-    game.playerPosX = 1;
-    game.playerPosY = 1;
+    game.levelSettings.playerPosX = 1;
+    game.levelSettings.playerPosY = 1;
+
+    setPortals();
 }
 
 Game *getGame(void) {
