@@ -12,7 +12,7 @@
 #include "variables.h"
 #include "types.h"
 
-Game game = {0, 1, 1, GAME_RUNNING};
+Game game;
 
 // TODO: Aendern + P_START entfernen und dafuer Startkoordinaten einfuegen
 Levels levels[3] = {{

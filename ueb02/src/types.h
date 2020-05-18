@@ -5,7 +5,9 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+
 #include <GL/glut.h>
+
 #endif
 
 #include "variables.h"
@@ -40,9 +42,16 @@ enum e_Direction {
 };
 
 typedef struct {
-    int levelId;
+    int portal1PosX, portal1PosY, portal2PosX, portal2PosY;
     int playerPosX, playerPosY;
+    int doorPosX, doorPosY;
+
+} LevelSettings;
+
+typedef struct {
+    int levelId;
     Gamestatus gameStatus;
+    LevelSettings levelSettings;
 } Game;
 
 typedef struct {

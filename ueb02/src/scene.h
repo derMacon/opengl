@@ -17,6 +17,7 @@ int initScene(void);
  */
 void toggleWireframe();
 
+
 /**
  * Schaltet den Fullscreen-Modus an oder aus
  */

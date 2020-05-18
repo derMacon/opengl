@@ -13,6 +13,7 @@
 #include "logic.h"
 #include "helper.h"
 #include "drawObjects.h"
+#include "scene.h"
 
 GLuint g_renderObjects;
 GLboolean showWireframe = GL_FALSE;
@@ -75,7 +76,7 @@ void initDisplayList() {
 }
 
 void showPlayer(int x, int y) {
-    if (getGame()->playerPosX == x && getGame()->playerPosY == y) {
+    if (getGame()->levelSettings.playerPosX == x && getGame()->levelSettings.playerPosY == y) {
         glCallList(g_renderObjects + P_PLAYER);
     }
 }
@@ -200,6 +201,8 @@ initScene(void) {
     glLineWidth(2.0f);
 
     initDisplayList();
+
+    initLevel(0);
 
     // Zeit fuer Random einbeziehen, um Zufallsfarben zu generieren
     // srand steht hier, weil es nur einmal aufgerufen werden darf

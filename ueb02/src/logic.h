@@ -10,6 +10,6 @@ Game *getGame();
 
 Levels *getLevels();
 
-void generateLevel();
+void initLevel(int levelId);
 
 #endif
