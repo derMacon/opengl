@@ -158,6 +158,10 @@ GLboolean playerMovementAllowed(enum e_Direction direction) {
                 return moveObject(direction, pXNew, pYNew, checkTile);
 
             case P_HOUSE:
+                if (game.levelSettings.numberOfTriangles == 0) {
+                    return GL_TRUE;
+                    // TODO: Gewonnen juhu
+                }
                 break;
 
             case P_FREE:
