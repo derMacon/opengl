@@ -203,7 +203,7 @@ initScene(void) {
 
     initDisplayList();
 
-    initLevel(0);
+    initLevel(1);
 
     // Zeit fuer Random einbeziehen, um Zufallsfarben zu generieren
     // srand steht hier, weil es nur einmal aufgerufen werden darf

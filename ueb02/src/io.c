@@ -149,6 +149,23 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     toggleFullscreen();
                     break;
 
+                case '1':
+                    initLevel(1);
+                    break;
+
+                case '2':
+                    initLevel(2);
+                    break;
+
+                case '3':
+                    initLevel(3);
+                    break;
+
+                case 'r':
+                case 'R':
+                    initLevel(getGame()->levelId);
+                    break;
+
                     /* Programm beenden */
                 case 'q':
                 case 'Q':
