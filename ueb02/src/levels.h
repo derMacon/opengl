@@ -9,5 +9,6 @@ extern pushyLevel level1;
 extern pushyLevel level2;
 extern pushyLevel level3;
 extern int levelTime;
+extern int startPosLevels[3][2];
 
 #endif //UEB02_LEVELS_H

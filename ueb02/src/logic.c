@@ -295,8 +295,8 @@ void loadLevel(int levelId) {
 void initLevel(int levelId) {
     game.gameStatus = GAME_RUNNING;
     game.levelId = levelId;
-    game.levelSettings.playerPosX = 1;
-    game.levelSettings.playerPosY = 1;
+    game.levelSettings.playerPosX = startPosLevels[levelId - 1][0];
+    game.levelSettings.playerPosY = startPosLevels[levelId - 1][1];
 
     loadLevel(levelId);
 
