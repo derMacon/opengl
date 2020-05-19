@@ -17,49 +17,8 @@
 
 Game game;
 
-// TODO: Aendern + P_START entfernen und dafuer Startkoordinaten einfuegen
-/*
-Levels levels[3] = {{
-                            {2, {
-                                        {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL},
-
-                                        {P_WALL, P_START, P_WALL, P_FREE, P_FREE, P_WALL, P_FREE, P_TARGET, P_WALL},
-                                        {P_WALL, P_FREE, P_WALL, P_FREE, P_DOOR_SWITCH, P_WALL, P_FREE, P_OBJECT_TRIANGLE, P_WALL},
-                                        {P_WALL, P_BOX, P_WALL, P_FREE, P_BOX, P_DOOR, P_FREE, P_FREE, P_WALL},
-                                        {P_WALL, P_FREE, P_FREE, P_FREE, P_FREE, P_WALL, P_FREE, P_FREE, P_WALL},
-                                        {P_WALL, P_FREE, P_FREE, P_OBJECT_TRIANGLE, P_FREE, P_WALL, P_WALL, P_WALL, P_WALL},
-                                        {P_WALL, P_FREE, P_FREE, P_FREE, P_WALL, P_FREE, P_FREE, P_FREE, P_WALL},
-                                        {P_WALL, P_BOX, P_FREE, P_PORTAL, P_WALL, P_PORTAL, P_FREE, P_HOUSE, P_WALL},
-
-                                        {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL}}},
-
-                            {2, {
-                                        {P_OUTER, P_WALL, P_WALL, P_WALL, P_OUTER, P_WALL, P_WALL, P_WALL, P_OUTER},
-                                        {P_WALL, P_WALL, P_START, P_WALL, P_WALL, P_WALL, P_TARGET, P_WALL, P_WALL},
-                                        {P_WALL, P_FREE, P_FREE, P_FREE, P_FREE, P_FREE, P_FREE, P_FREE, P_WALL},
-                                        {P_WALL, P_FREE, P_FREE, P_FREE, P_FREE, P_FREE, P_FREE, P_FREE, P_WALL},
-                                        {P_WALL, P_WALL, P_FREE, P_FREE, P_FREE, P_FREE, P_FREE, P_WALL, P_WALL},
-                                        {P_OUTER, P_WALL, P_WALL, P_FREE, P_FREE, P_FREE, P_WALL, P_WALL, P_OUTER},
-                                        {P_OUTER, P_OUTER, P_WALL, P_WALL, P_FREE, P_WALL, P_WALL, P_OUTER, P_OUTER},
-                                        {P_OUTER, P_OUTER, P_OUTER, P_WALL, P_WALL, P_WALL, P_OUTER, P_OUTER, P_OUTER},
-                                        {P_OUTER, P_OUTER, P_OUTER, P_OUTER, P_WALL, P_OUTER, P_OUTER, P_OUTER, P_OUTER}}},
-
-                            {2, {
-                                        {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL},
-                                        {P_WALL, P_START, P_FREE, P_FREE, P_FREE, P_BOX, P_DOOR, P_BOX, P_WALL},
-                                        {P_WALL, P_BOX, P_FREE, P_FREE, P_FREE, P_FREE, P_BOX, P_FREE, P_WALL},
-                                        {P_WALL, P_FREE, P_BOX, P_FREE, P_FREE, P_BOX, P_FREE, P_FREE, P_WALL},
-                                        {P_WALL, P_BOX, P_FREE, P_BOX, P_FREE, P_BOX, P_PORTAL, P_PORTAL, P_WALL},
-                                        {P_WALL, P_FREE, P_BOX, P_FREE, P_BOX, P_BOX, P_FREE, P_FREE, P_WALL},
-                                        {P_WALL, P_BOX, P_FREE, P_BOX, P_FREE, P_BOX, P_FREE, P_PORTAL, P_WALL},
-                                        {P_WALL, P_FREE, P_BOX, P_FREE, P_BOX, P_BOX, P_PORTAL, P_TARGET, P_WALL},
-                                        {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL}}}}};*/
-
-
 pushyFieldType getBlockOfPos(int x, int y) {
-
     return game.levelSettings.level[y][x];
-
 }
 
 /**
@@ -96,21 +55,21 @@ int moveObject(enum e_Direction direction, int x, int y, pushyFieldType fieldTyp
     pushyFieldType blockOfPos = getBlockOfPos(newX, newY);
 
     if (blockOfPos == P_FREE && fieldType != P_BOX_DOOR_SWITCH) {
-       game.levelSettings.level[y][x] = P_FREE;
+        game.levelSettings.level[y][x] = P_FREE;
         game.levelSettings.level[newY][newX] = fieldType;
         hasMoved = GL_TRUE;
     } else if (blockOfPos == P_DOOR_SWITCH && fieldType == P_BOX) {
-       game.levelSettings.level[y][x] = P_FREE;
+        game.levelSettings.level[y][x] = P_FREE;
         game.levelSettings.level[newY][newX] = P_BOX_DOOR_SWITCH;
         game.levelSettings.level[game.levelSettings.doorPosY][game.levelSettings.doorPosX] = P_FREE;
 
         hasMoved = GL_TRUE;
     } else if (blockOfPos == P_TARGET && fieldType == P_OBJECT_TRIANGLE) {
-       game.levelSettings.level[y][x] = P_FREE;
+        game.levelSettings.level[y][x] = P_FREE;
         checkTriangles();
         hasMoved = GL_TRUE;
     } else if (blockOfPos == P_FREE && fieldType == P_BOX_DOOR_SWITCH) {
-       game.levelSettings.level[y][x] = P_DOOR_SWITCH;
+        game.levelSettings.level[y][x] = P_DOOR_SWITCH;
         game.levelSettings.level[newY][newX] = P_BOX;
         game.levelSettings.level[game.levelSettings.doorPosY][game.levelSettings.doorPosX] = P_DOOR;
         hasMoved = GL_TRUE;
@@ -282,7 +241,6 @@ void loadLevel(int levelId) {
         case 3:
             tempLevel = level3;
             break;
-
     }
 
     for (int y = 0; y < LEVEL_SIZE; ++y) {

@@ -61,6 +61,4 @@ typedef struct {
     pushyLevel field;
 } Level;
 
-typedef Level Levels[3];
-
 #endif //UEB01_TYPES_H

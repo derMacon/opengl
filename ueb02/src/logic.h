@@ -8,7 +8,6 @@ void setPlayerMovement(enum e_Direction direction);
 
 Game *getGame();
 
-Levels *getLevels();
 
 void initLevel(int levelId);
 
