@@ -1,7 +1,7 @@
 
 #include "types.h"
 
-const int levelTimes[3] = {1, 2, 3};
+const int levelTimes[3] = {5, 50000, 30000};
 
 const int startPosLevels[3][2] = {{1, 1},
                                   {4, 6},

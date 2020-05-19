@@ -9,7 +9,6 @@
 #endif
 
 #include "variables.h"
-
 #include <stdio.h>
 #include "types.h"
 #include "drawObjects.h"
@@ -39,9 +38,10 @@ int newPos(int val, enum e_Direction direction, GLboolean isX) {
 }
 
 void checkTriangles() {
-    game.levelSettings.numberOfTriangles--;
+    if (game.levelSettings.numberOfTriangles > 0) {
+        game.levelSettings.numberOfTriangles--;
+    }
 
-    // TODO: Bei Levelneustart / levelÄnderung Haus wieder pink faerben
     if (game.levelSettings.numberOfTriangles == 0) {
         // MAKE HAUS GRUEN
         changeColor(GL_TRUE);
@@ -100,6 +100,14 @@ void teleportPlayer(int portalX, int portalY) {
     }
 }
 
+void decreaseTime() {
+    if (game.levelSettings.time > 1) {
+        game.levelSettings.time--;
+    } else {
+        game.gameStatus = GAME_LOST;
+    }
+}
+
 GLboolean playerMovementAllowed(enum e_Direction direction) {
     int pX = game.levelSettings.playerPosX;
     int pY = game.levelSettings.playerPosY;
@@ -123,6 +131,7 @@ GLboolean playerMovementAllowed(enum e_Direction direction) {
 
             case P_HOUSE:
                 if (game.levelSettings.numberOfTriangles == 0) {
+                    game.gameStatus = GAME_WON;
                     return GL_TRUE;
                     // TODO: Gewonnen juhu
                 }
@@ -221,6 +230,10 @@ void setObjectCoords() {
 
     game.levelSettings.numberOfTriangles = numberOfTriangles;
 
+    if (numberOfTriangles == 0) {
+        checkTriangles();
+    }
+
     checkForInvalidPortals(alreadyCountedPortals);
     checkForInvalidDoor(numberOfDoors);
 }
@@ -253,10 +266,11 @@ void loadLevel(int levelId) {
 void initLevel(int levelId) {
     game.gameStatus = GAME_RUNNING;
     game.levelId = levelId;
+    game.levelSettings.time = levelTimes[levelId - 1];
     game.levelSettings.playerPosX = startPosLevels[levelId - 1][0];
     game.levelSettings.playerPosY = startPosLevels[levelId - 1][1];
-
     loadLevel(levelId);
+    changeColor(GL_FALSE);
 
     // Positionen der Portale setzen
     setObjectCoords();

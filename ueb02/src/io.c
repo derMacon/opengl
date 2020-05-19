@@ -13,7 +13,6 @@
 #include "variables.h"
 #include "helper.h"
 
-GLboolean gamePaused = GL_FALSE;
 GLboolean showFullscreen = GL_FALSE;
 
 /**
@@ -55,16 +54,24 @@ cbTimer(int lastCallTime) {
     /* Seit dem Programmstart vergangene Zeit in Millisekunden */
     int thisCallTime = glutGet(GLUT_ELAPSED_TIME);
 
-    /* Seit dem letzten Funktionsaufruf vergangene Zeit in Sekunden
-    double interval = (double) (thisCallTime - lastCallTime) / 1000.0f;
-
-    // Spiel pausieren, also Intervall auf 0 setzen
-    if (gamePaused) {
-        interval = 0.0f;
-    }  */
-
     /* Wieder als Timer-Funktion registrieren */
     glutTimerFunc(1000 / TIMER_CALLS_PS, cbTimer, thisCallTime);
+
+    /* Neuzeichnen anstossen */
+    glutPostRedisplay();
+}
+
+static void
+decreaseTimer(int lastCallTime) {
+    /* Seit dem Programmstart vergangene Zeit in Millisekunden */
+    int thisCallTime = glutGet(GLUT_ELAPSED_TIME);
+
+    /* Wieder als Timer-Funktion registrieren */
+    glutTimerFunc(1000, decreaseTimer, thisCallTime);
+
+    if (getGame()->gameStatus == GAME_RUNNING) {
+        decreaseTime();
+    }
 
     /* Neuzeichnen anstossen */
     glutPostRedisplay();
@@ -128,6 +135,19 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
 
     /* Taste gedrueckt */
     if (status == GLUT_DOWN) {
+
+        Gamestatus s = getGame()->gameStatus;
+        if (s == GAME_WON) {
+            // Naechstes Level
+            if (getGame()->levelId < 3) {
+                initLevel(++getGame()->levelId);
+            } else {
+                initLevel(1);
+            }
+        } else if (s == GAME_LOST) {
+            initLevel(getGame()->levelId);
+        }
+
         /* Spezialtaste gedrueckt */
         if (isSpecialKey) {
             // TODO: Marcel meint, wir brauchen das hier :D
@@ -135,11 +155,6 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
             /* normale Taste gedrueckt */
         else {
             switch (key) {
-                /* Bewegung des Rechtecks in entsprechende Richtung starten */
-                case 'p':
-                case 'P':
-                    gamePaused = !gamePaused;
-                    break;
                 case 'h':
                 case 'H':
                     showHelp();
@@ -299,6 +314,7 @@ void registerCallbacks(void) {
                   cbTimer,
                   glutGet(GLUT_ELAPSED_TIME));
 
+    glutTimerFunc(1000, decreaseTimer, glutGet(GLUT_ELAPSED_TIME));
 
     /* Reshape-Callback - wird ausgefuehrt, wenn neu gezeichnet wird (z.B. nach
      * Erzeugen oder Groessenaenderungen des Fensters) */

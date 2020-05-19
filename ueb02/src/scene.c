@@ -15,6 +15,7 @@
 #include "drawObjects.h"
 #include "scene.h"
 #include "levels.h"
+#include "stringOutput.h"
 
 GLuint g_renderObjects;
 GLboolean showWireframe = GL_FALSE;
@@ -79,9 +80,8 @@ void showPlayer(int x, int y) {
     }
 }
 
-void drawLevel(int levelID) {
-    pushyFieldType (*level)[9] = getGame()->levelSettings.level;
-
+void drawLevel() {
+    pushyFieldType (*level)[LEVEL_SIZE] = getGame()->levelSettings.level;
 
     glPushMatrix();
     {
@@ -157,28 +157,71 @@ void drawLevel(int levelID) {
     glPopMatrix();
 }
 
-void drawGame(int levelId) {
+void drawGame() {
     glPushMatrix();
     {
         // Spielfeld ist ein wenig zu groß, also um 20% kleiner machen
-        // TODO: WIEDER NORMAL
-        // glScalef(3.8f, 3.8f, 1.0f);
         glScalef(0.8f, 0.8f, 1.0f);
 
         // Spielfeld ist ein wenig zu hoch, also bisschen tiefer setzen
         glTranslatef(0.0f, -0.1f, 0.0f);
 
         // Uebergebenes Level zeichnen
-        drawLevel(levelId);
+        drawLevel();
     }
     glPopMatrix();
+
+}
+
+void drawGameInfo() {
+    int timeLeft = getGame()->levelSettings.time;
+    int trianglesLeft = getGame()->levelSettings.numberOfTriangles;
+    GLfloat textColor[3] = {1, 1, 1};
+
+    // Langsam rot faerben
+    if (timeLeft <= 10) {
+        textColor[0] = 1;
+        textColor[1] = (float) timeLeft / 10.0f;
+        textColor[2] = (float) timeLeft / 10.0f;
+    }
+
+    drawString(0.14, 0.87, textColor, "Level %d | Verbleibende Dreiecke: %d | Verbleibende Zeit: %d",
+               getGame()->levelId, trianglesLeft,
+               timeLeft);
+}
+
+void drawLost() {
+    GLfloat textColor[3] = {1, 1, 1};
+    drawString(0.25f, 0.5f, textColor, "Du hast verloren. Dir fehlten noch %d Dreiecke.",
+               getGame()->levelSettings.numberOfTriangles);
+}
+
+void drawWon() {
+    GLfloat textColor[3] = {1, 1, 1};
+    int timeNeeded = levelTimes[getGame()->levelId - 1] - getGame()->levelSettings.time;
+
+
+    drawString(0.3f, 0.5f, textColor, "Du hast gewonnen und %d Sekunden gebraucht", timeNeeded);
+
+    if (getGame()->levelId == 3) {
+        drawString(0.25f, 0.55f, textColor, "Beliebe Taste zum Neustart des Spiels druecken.");
+    }
 }
 
 /**
  * Zeichnet die gesamte Szene
  */
 void drawScene(void) {
-    drawGame(getGame()->levelId);
+    Gamestatus gameStatus = getGame()->gameStatus;
+
+    if (gameStatus == GAME_RUNNING) {
+        drawGame();
+        drawGameInfo();
+    } else if (gameStatus == GAME_LOST) {
+        drawLost();
+    } else if (gameStatus == GAME_WON) {
+        drawWon();
+    }
 }
 
 /**

@@ -8,6 +8,7 @@ void setPlayerMovement(enum e_Direction direction);
 
 Game *getGame();
 
+void decreaseTime();
 
 void initLevel(int levelId);
 
