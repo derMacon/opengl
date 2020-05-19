@@ -5,17 +5,20 @@
 #else
 
 #include <GL/glut.h>
-#include <stdio.h>
 
 #endif
 
 #include "variables.h"
+
+#include <stdio.h>
 #include "types.h"
 #include "drawObjects.h"
+#include "levels.h"
 
 Game game;
 
 // TODO: Aendern + P_START entfernen und dafuer Startkoordinaten einfuegen
+/*
 Levels levels[3] = {{
                             {2, {
                                         {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL},
@@ -50,11 +53,13 @@ Levels levels[3] = {{
                                         {P_WALL, P_FREE, P_BOX, P_FREE, P_BOX, P_BOX, P_FREE, P_FREE, P_WALL},
                                         {P_WALL, P_BOX, P_FREE, P_BOX, P_FREE, P_BOX, P_FREE, P_PORTAL, P_WALL},
                                         {P_WALL, P_FREE, P_BOX, P_FREE, P_BOX, P_BOX, P_PORTAL, P_TARGET, P_WALL},
-                                        {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL}}}}};
+                                        {P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL, P_WALL}}}}};*/
 
 
 pushyFieldType getBlockOfPos(int x, int y) {
-    return levels[game.levelId]->field[y][x];
+
+    return game.levelSettings.level[y][x];
+
 }
 
 /**
@@ -91,23 +96,23 @@ int moveObject(enum e_Direction direction, int x, int y, pushyFieldType fieldTyp
     pushyFieldType blockOfPos = getBlockOfPos(newX, newY);
 
     if (blockOfPos == P_FREE && fieldType != P_BOX_DOOR_SWITCH) {
-        levels[game.levelId]->field[y][x] = P_FREE;
-        levels[game.levelId]->field[newY][newX] = fieldType;
+       game.levelSettings.level[y][x] = P_FREE;
+        game.levelSettings.level[newY][newX] = fieldType;
         hasMoved = GL_TRUE;
     } else if (blockOfPos == P_DOOR_SWITCH && fieldType == P_BOX) {
-        levels[game.levelId]->field[y][x] = P_FREE;
-        levels[game.levelId]->field[newY][newX] = P_BOX_DOOR_SWITCH;
-        levels[game.levelId]->field[game.levelSettings.doorPosY][game.levelSettings.doorPosX] = P_FREE;
+       game.levelSettings.level[y][x] = P_FREE;
+        game.levelSettings.level[newY][newX] = P_BOX_DOOR_SWITCH;
+        game.levelSettings.level[game.levelSettings.doorPosY][game.levelSettings.doorPosX] = P_FREE;
 
         hasMoved = GL_TRUE;
     } else if (blockOfPos == P_TARGET && fieldType == P_OBJECT_TRIANGLE) {
-        levels[game.levelId]->field[y][x] = P_FREE;
+       game.levelSettings.level[y][x] = P_FREE;
         checkTriangles();
         hasMoved = GL_TRUE;
     } else if (blockOfPos == P_FREE && fieldType == P_BOX_DOOR_SWITCH) {
-        levels[game.levelId]->field[y][x] = P_DOOR_SWITCH;
-        levels[game.levelId]->field[newY][newX] = P_BOX;
-        levels[game.levelId]->field[game.levelSettings.doorPosY][game.levelSettings.doorPosX] = P_DOOR;
+       game.levelSettings.level[y][x] = P_DOOR_SWITCH;
+        game.levelSettings.level[newY][newX] = P_BOX;
+        game.levelSettings.level[game.levelSettings.doorPosY][game.levelSettings.doorPosX] = P_DOOR;
         hasMoved = GL_TRUE;
     }
 
@@ -261,21 +266,49 @@ void setObjectCoords() {
     checkForInvalidDoor(numberOfDoors);
 }
 
+void loadLevel(int levelId) {
+
+    pushyFieldType (*tempLevel)[9] = NULL;
+
+    switch (levelId) {
+        case 1:
+            tempLevel = level1;
+            break;
+
+        case 2:
+            tempLevel = level2;
+            break;
+
+        case 3:
+            tempLevel = level3;
+            break;
+
+    }
+
+    for (int y = 0; y < LEVEL_SIZE; ++y) {
+        for (int x = 0; x < LEVEL_SIZE; ++x) {
+            game.levelSettings.level[y][x] = tempLevel[y][x];
+        }
+    }
+}
+
 void initLevel(int levelId) {
     game.gameStatus = GAME_RUNNING;
     game.levelId = levelId;
     game.levelSettings.playerPosX = 1;
     game.levelSettings.playerPosY = 1;
 
+    loadLevel(levelId);
+
     // Positionen der Portale setzen
     setObjectCoords();
-    printf("afa");
 }
 
 Game *getGame(void) {
     return &game;
 }
 
-Levels (*getLevels(void)) {
-    return (Levels *) &levels;
-}
+/*
+Levels *getLevels(void) {
+    return &levels;
+}*/

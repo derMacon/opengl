@@ -14,6 +14,7 @@
 #include "helper.h"
 #include "drawObjects.h"
 #include "scene.h"
+#include "levels.h"
 
 GLuint g_renderObjects;
 GLboolean showWireframe = GL_FALSE;
@@ -79,7 +80,9 @@ void showPlayer(int x, int y) {
 }
 
 void drawLevel(int levelID) {
-    Levels *levels = getLevels();
+    pushyFieldType (*level)[9] = getGame()->levelSettings.level;
+
+
     glPushMatrix();
     {
         /* Skalierung und Positionierung des Spielfelds. */
@@ -98,12 +101,12 @@ void drawLevel(int levelID) {
                     float xPos = (correctX + (float) x * BLOCK_SIZE) + BLOCK_SIZE / 2;
                     float yPos = correctY - ((float) y * BLOCK_SIZE);
 
-                    int level = levels[levelID]->field[y][x];
+                    int levelField = level[y][x];
 
                     /* Kachel an Position x,y zeichnen. */
                     glTranslatef(xPos, yPos, 0.0f);
 
-                    switch (level) {
+                    switch (levelField) {
                         case (P_FREE):
                         case (P_START):
                             glCallList(g_renderObjects + P_FREE);
@@ -172,7 +175,7 @@ void drawGame(int levelId) {
 }
 
 /**
- * Zeichnet die gesamte Szene (Grenzen, Ball, Stick und evtl. Extras
+ * Zeichnet die gesamte Szene
  */
 void drawScene(void) {
     drawGame(getGame()->levelId);

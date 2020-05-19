@@ -46,7 +46,8 @@ typedef struct {
     int playerPosX, playerPosY;
     int doorPosX, doorPosY;
     int numberOfTriangles;
-
+    int time;
+    pushyLevel level;
 } LevelSettings;
 
 typedef struct {
