@@ -32,6 +32,8 @@ typedef pushyFieldType (*pushyLevelPointer)[LEVEL_SIZE];
 typedef enum {
     GAME_RUNNING,
     GAME_WON,
+    GAME_PAUSED,
+    GAME_HELP,
     GAME_LOST
 } Gamestatus;
 

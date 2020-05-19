@@ -115,6 +115,14 @@ cbReshape(int w, int h) {
     setProjection((GLdouble) w / (GLdouble) h);
 }
 
+void switchGameStatus(Gamestatus status) {
+    if (getGame()->gameStatus == GAME_RUNNING) {
+        getGame()->gameStatus = status;
+    } else if (getGame()->gameStatus == status) {
+        getGame()->gameStatus = GAME_RUNNING;
+    }
+}
+
 /**
  * Verarbeitung eines Tasturereignisses.
  * Pfeiltasten steuern die Position des angezeigten Rechtecks.
@@ -157,11 +165,12 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
             switch (key) {
                 case 'h':
                 case 'H':
-                    showHelp();
+                    switchGameStatus(GAME_HELP);
                     break;
-                case 'f':
-                case 'F':
-                    toggleFullscreen();
+
+                case 'p':
+                case 'P':
+                    switchGameStatus(GAME_PAUSED);
                     break;
 
                 case '1':
@@ -210,6 +219,9 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     break;
                 case GLUT_KEY_F1:
                     toggleWireframe();
+                    break;
+                case GLUT_KEY_F2:
+                    toggleFullscreen();
                     break;
             }
         } else {

@@ -196,12 +196,31 @@ void drawLost() {
                getGame()->levelSettings.numberOfTriangles);
 }
 
+void drawHelp() {
+    GLfloat textColor[3] = {1, 1, 1};
+    drawString(0.45f, 0.35f, textColor, "H I L F E ");
+
+    drawString(0.2f, 0.45f, textColor, "q, Q, ESC                              Spiel beenden");
+    drawString(0.2f, 0.50f, textColor, "r, R                                         Level neustarten");
+    drawString(0.2f, 0.55f, textColor, "h, H                                        Hilfe anzeigen");
+    drawString(0.2f, 0.60f, textColor, "F1                                          Wireframe an/aus");
+    drawString(0.2f, 0.65f, textColor, "F2                                          Vollbildmodus an/aus");
+    drawString(0.2f, 0.70f, textColor, "p, P                                        Pause an/aus");
+    drawString(0.2f, 0.75f, textColor, "1, 2, 3                                     Direkter Levelzugriff");
+}
+
+void drawPause() {
+    GLfloat textColor[3] = {1, 1, 1};
+    drawString(0.45f, 0.4f, textColor, "P A U S E");
+    drawString(0.2f, 0.45f, textColor, "Dir fehlen noch %d Dreiecke und du hast noch %d Sekunden Zeit.",
+               getGame()->levelSettings.numberOfTriangles, getGame()->levelSettings.time);
+}
+
 void drawWon() {
     GLfloat textColor[3] = {1, 1, 1};
     int timeNeeded = levelTimes[getGame()->levelId - 1] - getGame()->levelSettings.time;
 
-
-    drawString(0.3f, 0.5f, textColor, "Du hast gewonnen und %d Sekunden gebraucht", timeNeeded);
+    drawString(0.25f, 0.5f, textColor, "Du hast gewonnen und %d Sekunden gebraucht", timeNeeded);
 
     if (getGame()->levelId == 3) {
         drawString(0.25f, 0.55f, textColor, "Beliebe Taste zum Neustart des Spiels druecken.");
@@ -221,6 +240,10 @@ void drawScene(void) {
         drawLost();
     } else if (gameStatus == GAME_WON) {
         drawWon();
+    } else if (gameStatus == GAME_PAUSED) {
+        drawPause();
+    } else if (gameStatus == GAME_HELP) {
+        drawHelp();
     }
 }
 
