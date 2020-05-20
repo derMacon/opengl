@@ -158,7 +158,27 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
 
         /* Spezialtaste gedrueckt */
         if (isSpecialKey) {
-            // TODO: Marcel meint, wir brauchen das hier :D
+            switch (key) {
+
+                /* Bewegung des Rechtecks in entsprechende Richtung beenden */
+                case GLUT_KEY_LEFT:
+                    setPlayerMovement(dirLeft);
+                    break;
+                case GLUT_KEY_RIGHT:
+                    setPlayerMovement(dirRight);
+                    break;
+                case GLUT_KEY_UP:
+                    setPlayerMovement(dirUp);
+                    break;
+                case GLUT_KEY_DOWN:
+                    setPlayerMovement(dirDown);
+                    break;
+                case GLUT_KEY_F1:
+                    toggleWireframe();
+                    break;
+                case GLUT_KEY_F2:
+                    toggleFullscreen();
+                    break;}
         }
             /* normale Taste gedrueckt */
         else {
@@ -190,42 +210,6 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     initLevel(getGame()->levelId);
                     break;
 
-                    /* Programm beenden */
-                case 'q':
-                case 'Q':
-                case ESC:
-                    exit(0);
-            }
-        }
-    }
-        /* Taste losgelassen */
-    else {
-        /* Spezialtaste losgelassen */
-        if (isSpecialKey) {
-            switch (key) {
-
-                /* Bewegung des Rechtecks in entsprechende Richtung beenden */
-                case GLUT_KEY_LEFT:
-                    setPlayerMovement(dirLeft);
-                    break;
-                case GLUT_KEY_RIGHT:
-                    setPlayerMovement(dirRight);
-                    break;
-                case GLUT_KEY_UP:
-                    setPlayerMovement(dirUp);
-                    break;
-                case GLUT_KEY_DOWN:
-                    setPlayerMovement(dirDown);
-                    break;
-                case GLUT_KEY_F1:
-                    toggleWireframe();
-                    break;
-                case GLUT_KEY_F2:
-                    toggleFullscreen();
-                    break;
-            }
-        } else {
-            switch (key) {
                 case 'a':
                 case 'A':
                     setPlayerMovement(dirLeft);
@@ -243,6 +227,21 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case 'S':
                     setPlayerMovement(dirDown);
                     break;
+                    /* Programm beenden */
+                case 'q':
+                case 'Q':
+                case ESC:
+                    exit(0);
+            }
+        }
+    }
+        /* Taste losgelassen */
+    else {
+        /* Spezialtaste losgelassen */
+        if (isSpecialKey) {
+            //todo weg damit
+        } else {
+            switch (key) {
             }
         }
     }
