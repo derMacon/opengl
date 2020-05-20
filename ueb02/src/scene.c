@@ -218,7 +218,7 @@ void drawPause() {
 
 void drawWon() {
     GLfloat textColor[3] = {1, 1, 1};
-    int timeNeeded = levelTimes[getGame()->levelId - 1] - getGame()->levelSettings.time;
+    int timeNeeded = levels[getGame()->levelId - 1].time - getGame()->levelSettings.time;
 
     drawString(0.25f, 0.5f, textColor, "Du hast gewonnen und %d Sekunden gebraucht", timeNeeded);
 
