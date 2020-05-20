@@ -1,5 +1,3 @@
-
-
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -239,22 +237,9 @@ void setObjectCoords() {
 }
 
 void loadLevel(int levelId) {
-
     pushyFieldType (*tempLevel)[9] = NULL;
 
-    switch (levelId) {
-        case 1:
-            tempLevel = level1;
-            break;
-
-        case 2:
-            tempLevel = level2;
-            break;
-
-        case 3:
-            tempLevel = level3;
-            break;
-    }
+    tempLevel = levels[levelId - 1].field;
 
     for (int y = 0; y < LEVEL_SIZE; ++y) {
         for (int x = 0; x < LEVEL_SIZE; ++x) {
@@ -266,9 +251,9 @@ void loadLevel(int levelId) {
 void initLevel(int levelId) {
     game.gameStatus = GAME_RUNNING;
     game.levelId = levelId;
-    game.levelSettings.time = levelTimes[levelId - 1];
-    game.levelSettings.playerPosX = startPosLevels[levelId - 1][0];
-    game.levelSettings.playerPosY = startPosLevels[levelId - 1][1];
+    game.levelSettings.time = levels[levelId - 1].time;
+    game.levelSettings.playerPosX = levels[levelId - 1].startPos[0];
+    game.levelSettings.playerPosY = levels[levelId - 1].startPos[1];
     loadLevel(levelId);
     changeColor(GL_FALSE);
 

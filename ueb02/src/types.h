@@ -1,4 +1,3 @@
-
 #ifndef UEB02_TYPES_H
 #define UEB02_TYPES_H
 
@@ -59,6 +58,7 @@ typedef struct {
 
 typedef struct {
     int time;
+    int startPos[2];
     pushyLevel field;
 } Level;
 
