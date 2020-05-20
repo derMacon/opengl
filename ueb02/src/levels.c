@@ -13,8 +13,12 @@ const Level levels[3] = {{
                                          {P_WALL, P_WALL, P_WALL, P_WALL,            P_WALL,        P_WALL,   P_WALL, P_WALL,            P_WALL}},
                                  .startPos = {1, 1},
                                  .time = 25,
-                                 .doors = {{3,2},{-1,-1},{-1,-1}},
-                                 .doorSwitch = {{3,5},{-1,-1},{-1,-1}}
+                                 .doors = {{5,  3},
+                                           {-1, -1},
+                                           {-1, -1}},
+                                 .doorSwitch = {{4,  2},
+                                                {-1, -1},
+                                                {-1, -1}}
 
                          },
                          {
@@ -30,8 +34,12 @@ const Level levels[3] = {{
                                          {P_WALL, P_WALL,  P_WALL, P_WALL, P_WALL, P_WALL, P_WALL,   P_WALL,   P_WALL}},
                                  .startPos = {4, 5},
                                  .time = 27,
-                                 .doors = {{3,2},{-1,-1},{-1,-1}},
-                                 .doorSwitch = {{3,5},{-1,-1},{-1,-1}}
+                                 .doors = {{-1, -1},
+                                           {-1, -1},
+                                           {-1, -1}},
+                                 .doorSwitch = {{-1, -1},
+                                                {-1, -1},
+                                                {-1, -1}}
 
                          },
                          {
@@ -48,7 +56,11 @@ const Level levels[3] = {{
                                  },
                                  .startPos = {3, 3},
                                  .time = 30,
-                                 .doors = {{3,2},{-1,-1},{-1,-1}},
-                                 .doorSwitch = {{3,5},{-1,-1},{-1,-1}}
+                                 .doors = {{-1, -1},
+                                           {-1, -1},
+                                           {-1, -1}},
+                                 .doorSwitch = {{-1, -1},
+                                                {-1, -1},
+                                                {-1, -1}}
                          }
 };
