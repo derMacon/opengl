@@ -16,4 +16,6 @@
 #define BOX_DASH_WIDTH 0.03f
 #define BOX_DASH_HEIGHT 0.7f
 
+#define NUMBER_OF_DOORS 3
+
 #endif //UEB02_VARIABLES_H

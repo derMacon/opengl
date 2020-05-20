@@ -12,7 +12,9 @@ const Level levels[3] = {{
                                          {P_WALL, P_BOX,  P_FREE, P_PORTAL,          P_WALL,        P_PORTAL, P_FREE, P_HOUSE,           P_WALL},
                                          {P_WALL, P_WALL, P_WALL, P_WALL,            P_WALL,        P_WALL,   P_WALL, P_WALL,            P_WALL}},
                                  .startPos = {1, 1},
-                                 .time = 25
+                                 .time = 25,
+                                 .doors = {{3,2},{-1,-1},{-1,-1}},
+                                 .doorSwitch = {{3,5},{-1,-1},{-1,-1}}
 
                          },
                          {
@@ -27,7 +29,9 @@ const Level levels[3] = {{
                                          {P_WALL, P_FREE,  P_BOX,  P_FREE, P_BOX,  P_BOX,  P_PORTAL, P_TARGET, P_WALL},
                                          {P_WALL, P_WALL,  P_WALL, P_WALL, P_WALL, P_WALL, P_WALL,   P_WALL,   P_WALL}},
                                  .startPos = {4, 5},
-                                 .time = 27
+                                 .time = 27,
+                                 .doors = {{3,2},{-1,-1},{-1,-1}},
+                                 .doorSwitch = {{3,5},{-1,-1},{-1,-1}}
 
                          },
                          {
@@ -43,6 +47,8 @@ const Level levels[3] = {{
                                          {P_OUTER, P_WALL, P_WALL,        P_WALL,            P_WALL, P_WALL,            P_WALL,   P_WALL,   P_OUTER}
                                  },
                                  .startPos = {3, 3},
-                                 .time = 30
+                                 .time = 30,
+                                 .doors = {{3,2},{-1,-1},{-1,-1}},
+                                 .doorSwitch = {{3,5},{-1,-1},{-1,-1}}
                          }
 };
