@@ -96,9 +96,9 @@ int moveObject(enum e_Direction direction, int x, int y, pushyFieldType currentT
         checkTriangles();
         hasMoved = GL_TRUE;
     } else if (targetTileType == P_FREE && currentTileType == P_BOX_DOOR_SWITCH) {
-        hasMoved = checkForDoors(x, y, newX, newY, P_BOX_DOOR_SWITCH, P_BOX, P_DOOR, GL_FALSE);
+        hasMoved = checkForDoors(x, y, newX, newY, P_DOOR_SWITCH, P_BOX, P_DOOR, GL_FALSE);
     } else if (targetTileType == P_DOOR_SWITCH && currentTileType == P_BOX_DOOR_SWITCH) {
-        hasMoved = checkForDoors(x, y, newX, newY, P_DOOR_SWITCH, P_BOX_DOOR_SWITCH, P_DOOR_SWITCH, GL_FALSE);
+        hasMoved = checkForDoors(x, y, newX, newY, P_DOOR_SWITCH, P_BOX_DOOR_SWITCH, P_DOOR, GL_FALSE);
     }
 
     return hasMoved;
