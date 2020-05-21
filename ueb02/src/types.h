@@ -60,6 +60,8 @@ typedef struct {
     int time;
     int startPos[2];
     pushyLevel field;
+    int doors [NUMBER_OF_DOORS][2];
+    int doorSwitch [NUMBER_OF_DOORS][2];
 } Level;
 
 #endif //UEB01_TYPES_H

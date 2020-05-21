@@ -235,17 +235,6 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
             }
         }
     }
-        /* Taste losgelassen */
-    else {
-        /* Spezialtaste losgelassen */
-        if (isSpecialKey) {
-            //todo weg damit
-        } else {
-            switch (key) {
-            }
-        }
-    }
-
 }
 
 /**
