@@ -61,8 +61,8 @@ typedef struct {
     int time;
     int startPos[2];
     pushyLevel field;
-    int doors [MAXIMUM_NUMBER_OF_DOORS][2];
-    int doorSwitch [MAXIMUM_NUMBER_OF_DOORS][2];
+    int doors[MAXIMUM_NUMBER_OF_DOORS][2];
+    int doorSwitch[MAXIMUM_NUMBER_OF_DOORS][2];
 } Level;
 
 #endif //UEB01_TYPES_H

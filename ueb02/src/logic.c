@@ -74,6 +74,7 @@ GLboolean checkForDoors(int x, int y, int newX, int newY, pushyFieldType current
                 hasMoved = GL_TRUE;
             }
         }
+
     }
 
     return hasMoved;
@@ -98,7 +99,7 @@ int moveObject(enum e_Direction direction, int x, int y, pushyFieldType currentT
     } else if (targetTileType == P_FREE && currentTileType == P_BOX_DOOR_SWITCH) {
         hasMoved = checkForDoors(x, y, newX, newY, P_BOX_DOOR_SWITCH, P_BOX, P_DOOR, GL_FALSE);
     } else if (targetTileType == P_DOOR_SWITCH && currentTileType == P_BOX_DOOR_SWITCH) {
-        hasMoved = checkForDoors(x, y, newX, newY, P_DOOR_SWITCH, P_BOX_DOOR_SWITCH, P_DOOR, GL_FALSE);
+        hasMoved = checkForDoors(x, y, newX, newY, P_DOOR_SWITCH, P_BOX_DOOR_SWITCH, P_DOOR_SWITCH, GL_FALSE);
     }
 
     return hasMoved;
@@ -214,6 +215,7 @@ void checkForInvalidDoor(int numberOfDoors) {
         game.levelSettings.doorPosX = -1;
         game.levelSettings.doorPosY = -1;
     }
+    game.levelSettings.numberOfDoors = numberOfDoors;
 }
 
 void setObjectCoords() {
@@ -275,23 +277,12 @@ void loadLevel(int levelId) {
     }
 }
 
-void countNumberOfDoors(int levelId) {
-    int count = 0;
-
-    for (int i = 0; i < sizeof(levels[levelId - 1].doors) / sizeof(levels[levelId - 1].doors[0]); ++i) {
-        count++;
-    }
-
-    game.levelSettings.numberOfDoors = count;
-}
-
 void initLevel(int levelId) {
     game.gameStatus = GAME_RUNNING;
     game.levelId = levelId;
     game.levelSettings.time = levels[levelId - 1].time;
     game.levelSettings.playerPosX = levels[levelId - 1].startPos[0];
     game.levelSettings.playerPosY = levels[levelId - 1].startPos[1];
-    countNumberOfDoors(levelId);
     loadLevel(levelId);
     changeColor(GL_FALSE);
 
