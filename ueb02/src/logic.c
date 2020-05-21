@@ -87,6 +87,26 @@ int moveObject(enum e_Direction direction, int x, int y, pushyFieldType fieldTyp
                 hasMoved = GL_TRUE;
             }
         }
+    } else if (blockOfPos == P_DOOR_SWITCH && fieldType == P_BOX_DOOR_SWITCH){
+        //todo auslagern
+        for (int i = 0; i < NUMBER_OF_DOORS; ++i) {
+            if (levels[game.levelId - 1].doorSwitch[i][0] == x
+                && levels[game.levelId - 1].doorSwitch[i][1] == y) {
+                game.levelSettings.level[y][x] = P_DOOR_SWITCH;
+                game.levelSettings.level[newY][newX] = P_BOX_DOOR_SWITCH;
+                game.levelSettings.level[levels[game.levelId - 1].doors[i][1]][levels[game.levelId -
+                                                                                      1].doors[i][0]] = P_DOOR;
+                hasMoved = GL_TRUE;
+            }
+            if (levels[game.levelId - 1].doorSwitch[i][0] == newX
+                && levels[game.levelId - 1].doorSwitch[i][1] == newY) {
+                game.levelSettings.level[levels[game.levelId - 1].doors[i][1]][levels[game.levelId -
+                                                                                      1].doors[i][0]] = P_FREE;
+                hasMoved = GL_TRUE;
+            }
+
+
+        }
     }
 
     return hasMoved;
@@ -147,7 +167,6 @@ GLboolean playerMovementAllowed(enum e_Direction direction) {
                 if (game.levelSettings.numberOfTriangles == 0) {
                     game.gameStatus = GAME_WON;
                     return GL_TRUE;
-                    // TODO: Gewonnen juhu
                 }
                 break;
 
