@@ -48,65 +48,57 @@ void checkTriangles() {
     }
 }
 
-int moveObject(enum e_Direction direction, int x, int y, pushyFieldType fieldType) {
+GLboolean checkForDoors(int x, int y, int newX, int newY, pushyFieldType currentType, pushyFieldType nextType,
+                        pushyFieldType doorType, GLboolean withNewX) {
+    int numberOfDoors = game.levelSettings.numberOfDoors;
+    GLboolean hasMoved = GL_FALSE;
+
+    int doorX = withNewX ? newX : x;
+    int doorY = withNewX ? newY : y;
+
+    for (int i = 0; i < numberOfDoors; ++i) {
+        if (levels[game.levelId - 1].doorSwitch[i][0] == doorX
+            && levels[game.levelId - 1].doorSwitch[i][1] == doorY) {
+            game.levelSettings.level[y][x] = currentType;
+            game.levelSettings.level[newY][newX] = nextType;
+            game.levelSettings.level[levels[game.levelId - 1].doors[i][1]][levels[game.levelId -
+                                                                                  1].doors[i][0]] = doorType;
+            hasMoved = GL_TRUE;
+        }
+
+        if (currentType == P_DOOR_SWITCH && nextType == P_BOX_DOOR_SWITCH) {
+            if (levels[game.levelId - 1].doorSwitch[i][0] == newX
+                && levels[game.levelId - 1].doorSwitch[i][1] == newY) {
+                game.levelSettings.level[levels[game.levelId - 1].doors[i][1]][levels[game.levelId -
+                                                                                      1].doors[i][0]] = P_FREE;
+                hasMoved = GL_TRUE;
+            }
+        }
+    }
+
+    return hasMoved;
+}
+
+int moveObject(enum e_Direction direction, int x, int y, pushyFieldType currentTileType) {
     int newX = newPos(x, direction, GL_TRUE);
     int newY = newPos(y, direction, GL_FALSE);
     GLboolean hasMoved = GL_FALSE;
-    pushyFieldType blockOfPos = getBlockOfPos(newX, newY);
+    pushyFieldType targetTileType = getBlockOfPos(newX, newY);
 
-    if (blockOfPos == P_FREE && fieldType != P_BOX_DOOR_SWITCH) {
+    if (targetTileType == P_FREE && currentTileType != P_BOX_DOOR_SWITCH) {
         game.levelSettings.level[y][x] = P_FREE;
-        game.levelSettings.level[newY][newX] = fieldType;
+        game.levelSettings.level[newY][newX] = currentTileType;
         hasMoved = GL_TRUE;
-    } else if (blockOfPos == P_DOOR_SWITCH && fieldType == P_BOX) {
-        //todo auslagern
-        for (int i = 0; i < NUMBER_OF_DOORS; ++i) {
-            if (levels[game.levelId - 1].doorSwitch[i][0] == newX
-                && levels[game.levelId - 1].doorSwitch[i][1] == newY) {
-                game.levelSettings.level[y][x] = P_FREE;
-                game.levelSettings.level[newY][newX] = P_BOX_DOOR_SWITCH;
-                game.levelSettings.level[levels[game.levelId - 1].doors[i][1]][levels[game.levelId -
-                                                                                      1].doors[i][0]] = P_FREE;
-                hasMoved = GL_TRUE;
-            }
-        }
-
-    } else if (blockOfPos == P_TARGET && fieldType == P_OBJECT_TRIANGLE) {
+    } else if (targetTileType == P_DOOR_SWITCH && currentTileType == P_BOX) {
+        hasMoved = checkForDoors(x, y, newX, newY, P_FREE, P_BOX_DOOR_SWITCH, P_FREE, GL_TRUE);
+    } else if (targetTileType == P_TARGET && currentTileType == P_OBJECT_TRIANGLE) {
         game.levelSettings.level[y][x] = P_FREE;
         checkTriangles();
         hasMoved = GL_TRUE;
-    } else if (blockOfPos == P_FREE && fieldType == P_BOX_DOOR_SWITCH) {
-        //todo auslagern
-        for (int i = 0; i < NUMBER_OF_DOORS; ++i) {
-            if (levels[game.levelId - 1].doorSwitch[i][0] == x
-                && levels[game.levelId - 1].doorSwitch[i][1] == y) {
-                game.levelSettings.level[y][x] = P_DOOR_SWITCH;
-                game.levelSettings.level[newY][newX] = P_BOX;
-                game.levelSettings.level[levels[game.levelId - 1].doors[i][1]][levels[game.levelId -
-                                                                                      1].doors[i][0]] = P_DOOR;
-                hasMoved = GL_TRUE;
-            }
-        }
-    } else if (blockOfPos == P_DOOR_SWITCH && fieldType == P_BOX_DOOR_SWITCH){
-        //todo auslagern
-        for (int i = 0; i < NUMBER_OF_DOORS; ++i) {
-            if (levels[game.levelId - 1].doorSwitch[i][0] == x
-                && levels[game.levelId - 1].doorSwitch[i][1] == y) {
-                game.levelSettings.level[y][x] = P_DOOR_SWITCH;
-                game.levelSettings.level[newY][newX] = P_BOX_DOOR_SWITCH;
-                game.levelSettings.level[levels[game.levelId - 1].doors[i][1]][levels[game.levelId -
-                                                                                      1].doors[i][0]] = P_DOOR;
-                hasMoved = GL_TRUE;
-            }
-            if (levels[game.levelId - 1].doorSwitch[i][0] == newX
-                && levels[game.levelId - 1].doorSwitch[i][1] == newY) {
-                game.levelSettings.level[levels[game.levelId - 1].doors[i][1]][levels[game.levelId -
-                                                                                      1].doors[i][0]] = P_FREE;
-                hasMoved = GL_TRUE;
-            }
-
-
-        }
+    } else if (targetTileType == P_FREE && currentTileType == P_BOX_DOOR_SWITCH) {
+        hasMoved = checkForDoors(x, y, newX, newY, P_BOX_DOOR_SWITCH, P_BOX, P_DOOR, GL_FALSE);
+    } else if (targetTileType == P_DOOR_SWITCH && currentTileType == P_BOX_DOOR_SWITCH) {
+        hasMoved = checkForDoors(x, y, newX, newY, P_DOOR_SWITCH, P_BOX_DOOR_SWITCH, P_DOOR, GL_FALSE);
     }
 
     return hasMoved;
@@ -283,12 +275,23 @@ void loadLevel(int levelId) {
     }
 }
 
+void countNumberOfDoors(int levelId) {
+    int count = 0;
+
+    for (int i = 0; i < sizeof(levels[levelId - 1].doors) / sizeof(levels[levelId - 1].doors[0]); ++i) {
+        count++;
+    }
+
+    game.levelSettings.numberOfDoors = count;
+}
+
 void initLevel(int levelId) {
     game.gameStatus = GAME_RUNNING;
     game.levelId = levelId;
     game.levelSettings.time = levels[levelId - 1].time;
     game.levelSettings.playerPosX = levels[levelId - 1].startPos[0];
     game.levelSettings.playerPosY = levels[levelId - 1].startPos[1];
+    countNumberOfDoors(levelId);
     loadLevel(levelId);
     changeColor(GL_FALSE);
 
