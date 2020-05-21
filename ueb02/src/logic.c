@@ -55,26 +55,25 @@ GLboolean checkForDoors(int x, int y, int newX, int newY, pushyFieldType current
 
     int doorX = withNewX ? newX : x;
     int doorY = withNewX ? newY : y;
+    Level level = levels[game.levelId - 1];
 
     for (int i = 0; i < numberOfDoors; ++i) {
-        if (levels[game.levelId - 1].doorSwitch[i][0] == doorX
-            && levels[game.levelId - 1].doorSwitch[i][1] == doorY) {
+        int levelDoorX = level.doors[i][0];
+        int levelDoorY = level.doors[i][1];
+
+        if (level.doorSwitch[i][0] == doorX && level.doorSwitch[i][1] == doorY) {
             game.levelSettings.level[y][x] = currentType;
             game.levelSettings.level[newY][newX] = nextType;
-            game.levelSettings.level[levels[game.levelId - 1].doors[i][1]][levels[game.levelId -
-                                                                                  1].doors[i][0]] = doorType;
+            game.levelSettings.level[levelDoorY][levelDoorX] = doorType;
             hasMoved = GL_TRUE;
         }
 
         if (currentType == P_DOOR_SWITCH && nextType == P_BOX_DOOR_SWITCH) {
-            if (levels[game.levelId - 1].doorSwitch[i][0] == newX
-                && levels[game.levelId - 1].doorSwitch[i][1] == newY) {
-                game.levelSettings.level[levels[game.levelId - 1].doors[i][1]][levels[game.levelId -
-                                                                                      1].doors[i][0]] = P_FREE;
+            if (level.doorSwitch[i][0] == newX && level.doorSwitch[i][1] == newY) {
+                game.levelSettings.level[levelDoorY][levelDoorX] = P_FREE;
                 hasMoved = GL_TRUE;
             }
         }
-
     }
 
     return hasMoved;
@@ -267,7 +266,6 @@ void setObjectCoords() {
 
 void loadLevel(int levelId) {
     pushyFieldType (*tempLevel)[9] = NULL;
-
     tempLevel = levels[levelId - 1].field;
 
     for (int y = 0; y < LEVEL_SIZE; ++y) {
@@ -293,8 +291,3 @@ void initLevel(int levelId) {
 Game *getGame(void) {
     return &game;
 }
-
-/*
-Levels *getLevels(void) {
-    return &levels;
-}*/
