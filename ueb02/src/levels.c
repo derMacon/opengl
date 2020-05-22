@@ -14,14 +14,14 @@ const Level levels[3] = {
                         {P_WALL, P_BOX,  P_FREE, P_PORTAL,          P_WALL,        P_PORTAL, P_FREE, P_HOUSE,           P_WALL},
                         {P_WALL, P_WALL, P_WALL, P_WALL,            P_WALL,        P_WALL,   P_WALL, P_WALL,            P_WALL}
                 },
-                .startPos = {1, 1},
-                .time = 25,
                 .doors = {{5, 3}},
                 .doorSwitch = {
-                        {4,  2},
+                        {4, 2},
                         {-1, -1},
                         {-1, -1}
-                }
+                },
+                .time = 25,
+                .startPos = {1, 1},
         },
         // Level 2
         {
@@ -36,14 +36,14 @@ const Level levels[3] = {
                         {P_OUTER, P_WALL, P_BOX,         P_BOX,             P_FREE, P_FREE,            P_PORTAL, P_WALL,   P_OUTER},
                         {P_OUTER, P_WALL, P_WALL,        P_WALL,            P_WALL, P_WALL,            P_WALL,   P_WALL,   P_OUTER}
                 },
-                .startPos = {4, 5},
-                .time = 30,
                 .doors = {
                         {2, 6}
                 },
                 .doorSwitch = {
                         {2, 1}
-                }
+                },
+                .startPos = {4, 5},
+                .time = 30,
         },
         // Level 3
         {
@@ -58,8 +58,6 @@ const Level levels[3] = {
                         {P_OUTER, P_WALL,  P_WALL, P_FREE,            P_DOOR, P_DOOR,        P_DOOR,            P_HOUSE,       P_WALL},
                         {P_OUTER, P_OUTER, P_WALL, P_WALL,            P_WALL, P_WALL,        P_WALL,            P_WALL,        P_WALL}
                 },
-                .startPos = {1, 1},
-                .time = 120,
                 .doors = {
                         {4, 7},
                         {5, 7},
@@ -69,7 +67,9 @@ const Level levels[3] = {
                         {5, 1},
                         {6, 1},
                         {7, 1}
-                }
-
+                },
+                .startPos = {1,
+                             1},
+                .time = 120
         }
 };
