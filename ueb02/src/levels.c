@@ -20,8 +20,8 @@ const Level levels[3] = {
                         {-1, -1},
                         {-1, -1}
                 },
-                .time = 25,
                 .startPos = {1, 1},
+                .time = 25,
         },
         // Level 2
         {
