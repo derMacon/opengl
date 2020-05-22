@@ -17,5 +17,6 @@
 #define BOX_DASH_HEIGHT 0.7f
 
 #define MAXIMUM_NUMBER_OF_DOORS 3
+#define NUMBER_OF_LEVEL 4
 
 #endif //UEB02_VARIABLES_H

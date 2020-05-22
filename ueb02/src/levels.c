@@ -1,6 +1,6 @@
 #include "types.h"
 
-const Level levels[3] = {
+const Level levels[NUMBER_OF_LEVEL] = {
         // Level 1
         {
                 .field = {
@@ -16,7 +16,7 @@ const Level levels[3] = {
                 },
                 .doors = {{5, 3}},
                 .doorSwitch = {
-                        {4, 2},
+                        {4,  2},
                         {-1, -1},
                         {-1, -1}
                 },
@@ -71,5 +71,31 @@ const Level levels[3] = {
                 .startPos = {1,
                              1},
                 .time = 120
-        }
+        },
+        // Level 4
+        {
+                .field = {
+                        {P_WALL, P_WALL,        P_WALL,            P_WALL,        P_WALL,   P_WALL,  P_WALL,   P_WALL,            P_WALL},
+                        {P_WALL, P_FREE,        P_FREE,            P_FREE,        P_FREE,   P_FREE,  P_DOOR,   P_TARGET,          P_WALL},
+                        {P_WALL, P_FREE,        P_FREE,            P_WALL,        P_WALL,   P_WALL,  P_WALL,   P_DOOR,            P_WALL},
+                        {P_WALL, P_FREE,        P_FREE,            P_WALL,        P_FREE,   P_FREE,  P_WALL,   P_FREE,            P_WALL},
+                        {P_WALL, P_BOX,         P_OBJECT_TRIANGLE, P_WALL,        P_PORTAL, P_HOUSE, P_WALL,   P_FREE,            P_WALL},
+                        {P_WALL, P_FREE,        P_FREE,            P_WALL,        P_WALL,   P_WALL,  P_WALL,   P_FREE,            P_WALL},
+                        {P_WALL, P_FREE,        P_OBJECT_TRIANGLE, P_FREE,        P_FREE,   P_FREE,  P_FREE,   P_OBJECT_TRIANGLE, P_WALL},
+                        {P_WALL, P_DOOR_SWITCH, P_FREE,            P_DOOR_SWITCH, P_FREE,   P_BOX,   P_PORTAL, P_FREE,            P_WALL},
+                        {P_WALL, P_WALL,        P_WALL,            P_WALL,        P_WALL,   P_WALL,  P_WALL,   P_WALL,            P_WALL}
+                },
+                .doors = {
+                        {6, 1},
+                        {7, 2}
+                },
+                .doorSwitch = {
+                        {1, 7},
+                        {3, 7}
+                },
+                .startPos = {
+                        5, 3
+                },
+                .time = 35,
+        },
 };

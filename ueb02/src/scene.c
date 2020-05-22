@@ -222,7 +222,7 @@ void drawWon() {
 
     drawString(0.25f, 0.5f, textColor, "Du hast gewonnen und %d Sekunden gebraucht", timeNeeded);
 
-    if (getGame()->levelId == 3) {
+    if (getGame()->levelId == NUMBER_OF_LEVEL) {
         drawString(0.25f, 0.55f, textColor, "Beliebe Taste zum Neustart des Spiels druecken.");
     }
 }

@@ -147,7 +147,7 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
         Gamestatus s = getGame()->gameStatus;
         if (s == GAME_WON) {
             // Naechstes Level
-            if (getGame()->levelId < 3) {
+            if (getGame()->levelId < NUMBER_OF_LEVEL) {
                 initLevel(++getGame()->levelId);
             } else {
                 initLevel(1);
@@ -203,6 +203,10 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
 
                 case '3':
                     initLevel(3);
+                    break;
+
+                case '4':
+                    initLevel(4);
                     break;
 
                 case 'r':
