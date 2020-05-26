@@ -279,18 +279,6 @@ void checkForInvalidPortals(int numberOfPortals) {
     }
 }
 
-/**
- * Prueft,
- * @param numberOfDoors
- */
-void checkForInvalidDoor(int numberOfDoors) {
-    if (numberOfDoors != 1) {
-        game.levelSettings.doorPosX = -1;
-        game.levelSettings.doorPosY = -1;
-    }
-    game.levelSettings.numberOfDoors = numberOfDoors;
-}
-
 void setObjectCoords() {
 
     int alreadyCountedPortals = 0;
@@ -320,11 +308,8 @@ void setObjectCoords() {
 
             // Tuer
             if (getBlockOfPos(x, y) == P_DOOR) {
-                game.levelSettings.doorPosX = x;
-                game.levelSettings.doorPosY = y;
                 numberOfDoors++;
             }
-
         }
     }
 
@@ -335,7 +320,8 @@ void setObjectCoords() {
     }
 
     checkForInvalidPortals(alreadyCountedPortals);
-    checkForInvalidDoor(numberOfDoors);
+
+    game.levelSettings.numberOfDoors = numberOfDoors;
 }
 
 void loadLevel(int levelId) {
