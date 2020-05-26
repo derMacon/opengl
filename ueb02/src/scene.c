@@ -20,6 +20,9 @@
 GLuint g_renderObjects;
 GLboolean showWireframe = GL_FALSE;
 
+/**
+ *  Initialisiert die Displaylisten
+ */
 void initDisplayList() {
 
     int numberOfTypes = (P_PLAYER - P_OUTER) + 1;
@@ -75,12 +78,20 @@ void initDisplayList() {
     }
 }
 
+/**
+ *  Spieler an Position anzeigen
+ * @param x x Pos des Spielers
+ * @param y y Pos des Spielers
+ */
 void showPlayer(int x, int y) {
     if (getGame()->levelSettings.playerPosX == x && getGame()->levelSettings.playerPosY == y) {
         glCallList(g_renderObjects + P_PLAYER);
     }
 }
 
+/**
+ *  Zeichnen des gesamten Levels
+ */
 void drawLevel() {
     pushyFieldType (*level)[LEVEL_SIZE] = getGame()->levelSettings.level;
 
@@ -139,6 +150,9 @@ void drawLevel() {
     glPopMatrix();
 }
 
+/**
+ * Skalierung des Spielfelds und Spiel zeichnen
+ */
 void drawGame() {
     glPushMatrix();
     {
@@ -155,6 +169,9 @@ void drawGame() {
 
 }
 
+/**
+ * Zeichnen der Info des Spiels
+ */
 void drawGameInfo() {
     int timeLeft = getGame()->levelSettings.time;
     int trianglesLeft = getGame()->levelSettings.numberOfTriangles;
@@ -172,12 +189,18 @@ void drawGameInfo() {
                timeLeft);
 }
 
+/**
+ * Zeichnen des Lost Screens
+ */
 void drawLost() {
     GLfloat textColor[3] = {1, 1, 1};
     drawString(0.25f, 0.5f, textColor, "Du hast verloren. Dir fehlten noch %d Dreiecke.",
                getGame()->levelSettings.numberOfTriangles);
 }
 
+/**
+ * Hilfe zeichnen
+ */
 void drawHelp() {
     GLfloat textColor[3] = {1, 1, 1};
     drawString(0.45f, 0.35f, textColor, "H I L F E ");
@@ -191,6 +214,9 @@ void drawHelp() {
     drawString(0.2f, 0.75f, textColor, "1, 2, 3                                     Direkter Levelzugriff");
 }
 
+/**
+ * Spielpause zeichnen
+ */
 void drawPause() {
     GLfloat textColor[3] = {1, 1, 1};
     drawString(0.45f, 0.4f, textColor, "P A U S E");
@@ -198,6 +224,10 @@ void drawPause() {
                getGame()->levelSettings.numberOfTriangles, getGame()->levelSettings.time);
 }
 
+
+/**
+ * Zeichnen des Winning screens
+ */
 void drawWon() {
     GLfloat textColor[3] = {1, 1, 1};
     int timeNeeded = levels[getGame()->levelId - 1].time - getGame()->levelSettings.time;
