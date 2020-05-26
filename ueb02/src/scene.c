@@ -30,7 +30,7 @@ void initDisplayList() {
     // Alle benoetigten Listen auf einmal erzeugen
     g_renderObjects = glGenLists((GLsizei) numberOfTypes);
     if (g_renderObjects != 0) {
-        for (GLuint index = 0; index < 15; index++) {
+        for (GLuint index = 0; index < numberOfTypes; index++) {
             // Displayliste bereit machen
             glNewList(g_renderObjects + index, GL_COMPILE);
 
