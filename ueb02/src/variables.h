@@ -1,7 +1,7 @@
 #ifndef UEB02_VARIABLES_H
 #define UEB02_VARIABLES_H
 
-/** Globale Einstellungen **/
+/* Globale Einstellungen */
 #define TIMER_CALLS_PS 144
 
 /* Hoehe/Breite des (quadratischen) Levels */
@@ -19,5 +19,6 @@
 #define MAXIMUM_NUMBER_OF_DOORS 3
 #define NUMBER_OF_LEVEL 4
 
+/* Cooldown der Spielerbewegung */
 #define COOLDOWN_TIME 0.3
 #endif //UEB02_VARIABLES_H
