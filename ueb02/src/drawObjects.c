@@ -3,11 +3,16 @@
 #include "types.h"
 #include "helper.h"
 
+// Werte fuer Portal-Animation
 float shrinkVal = 0;
 GLboolean isIncreasing = GL_TRUE;
 
 GLfloat houseColors[3] = {1.0f, 0.0f, 1.0f};
 
+/**
+ * Aendert die Farbe des Hauses
+ * @param isGreenHouse - wenn True, dann Farbe Gruen
+ */
 void changeColor(GLboolean isGreenHouse) {
     if (isGreenHouse) {
         houseColors[0] = 0.196f;
@@ -45,6 +50,9 @@ static void drawSquare() {
     glEnd();
 }
 
+/**
+ * Zeichnet ein Dreieck
+ */
 static void drawTriangle() {
     glBegin(GL_TRIANGLES);
 
@@ -84,33 +92,35 @@ static void drawCircle() {
     glEnd();
 }
 
-void drawHorizontalDash() {
+/**
+ * Zeichnet gerade Striche (z.B. fuer die Mauern)
+ * @param width  - Breite (wird ignoriert bei isHorizontal == true)
+ * @param heigth - Hoehe (wird ignoriert bei isHorizontal == true)
+ * @param isHorizontal - True, wenn horizontal gezeichnet werden soll
+ */
+void drawDash(float width, float heigth, GLboolean isHorizontal) {
+
+    float w = isHorizontal ? 1 : width;
+    float h = isHorizontal ? FUGUE_WIDTH : heigth;
+
     glPushMatrix();
     {
-        glScalef(1, FUGUE_WIDTH, 1.0f);
+        glScalef(w, h, 1.0f);
         drawSquare();
     }
     glPopMatrix();
 }
 
-void drawVerticalDash(float width, float height) {
-    glPushMatrix();
-    {
-        glScalef(width, height, 1.0f);
-        drawSquare();
-    }
-    glPopMatrix();
-}
-
+/**
+ * Zeichnet die Mauer
+ */
 void drawWall() {
 
     glColor3f(0.412f, 0.412f, 0.412f);
-
     float width = BLOCK_SIZE - 0.01f;
 
     glPushMatrix();
     {
-        //    glTranslatef(xPos, yPos, 0.0f);
         glScalef(width, BLOCK_SIZE - 0.01f, 1.0f);
         drawSquare();
 
@@ -124,7 +134,7 @@ void drawWall() {
             // Horizontale Striche
             for (int i = 0; i < 3; i++) {
                 glTranslatef(0.0f, FUGUE_HEIGHT, 0.0f);
-                drawHorizontalDash();
+                drawDash(0, 0, GL_TRUE);
             }
         }
         glPopMatrix();
@@ -147,7 +157,8 @@ void drawWall() {
                             xVal = FUGUE_HEIGHT + 0.1f;
                         }
                         glTranslatef(xVal, 0, 0);
-                        drawVerticalDash(FUGUE_WIDTH, FUGUE_HEIGHT);
+
+                        drawDash(FUGUE_WIDTH, FUGUE_HEIGHT, GL_FALSE);
                     }
                 }
                 glPopMatrix();
@@ -159,6 +170,9 @@ void drawWall() {
     glPopMatrix();
 }
 
+/**
+ * Zeichnet die Box
+ */
 void drawBox() {
     glColor3f(0.600f, 0.240f, 0.100f);
     float width = BLOCK_SIZE - 0.01f;
@@ -168,7 +182,6 @@ void drawBox() {
 
     glPushMatrix();
     {
-        //     glTranslatef(xPos, yPos, 0.0f);
         glScalef(width, BLOCK_SIZE - 0.01f, 1.0f);
         drawSquare();
 
@@ -181,7 +194,7 @@ void drawBox() {
             glTranslatef(0.0f, bottom + offset, 0.0f);
             // Horizontale Striche
             for (int i = 0; i < 2; i++) {
-                drawHorizontalDash();
+                drawDash(0, 0, GL_TRUE);
                 glTranslatef(0.0f, -(bottom + offset) * 2, 0.0f);
             }
         }
@@ -192,7 +205,7 @@ void drawBox() {
         {
             glTranslatef(-0.4f, 0.0f, 0.0f);
             for (int i = 0; i < BOX_NUMBER_OF_COLS; i++) {
-                drawVerticalDash(BOX_DASH_WIDTH, BOX_DASH_HEIGHT);
+                drawDash(BOX_DASH_WIDTH, BOX_DASH_HEIGHT, GL_FALSE);
                 glTranslatef(1.0f / (float) BOX_NUMBER_OF_COLS - (BOX_DASH_WIDTH / 2), 0.0, 0.0f);
             }
         }
@@ -202,12 +215,14 @@ void drawBox() {
     glPopMatrix();
 }
 
+/**
+ * Zeichnet den freien Block
+ */
 void drawFreeBlock() {
     glColor3f(0.663f, 0.663f, 0.663f);
 
     glPushMatrix();
     {
-        //   glTranslatef(xPos, yPos, 0.0f);
         glScalef(BLOCK_SIZE - 0.01f, BLOCK_SIZE - 0.01f, 1.0f);
         drawSquare();
     }
@@ -215,6 +230,9 @@ void drawFreeBlock() {
     glPopMatrix();
 }
 
+/**
+ * Zeichnet die Tuer
+ */
 void drawDoor() {
     float width = BLOCK_SIZE - 0.3f;
     drawFreeBlock();
@@ -225,21 +243,23 @@ void drawDoor() {
         glScalef(width, BLOCK_SIZE - 0.01f, 1.0f);
         drawSquare();
 
-        // Fugenfarbe
+        // Braun
         glColor3f(0.1f, 0.1f, 0.1f);
 
         // Horizontal
         glPushMatrix();
         {
             glTranslatef(0.0f, 0.0, 0.0f);
-            drawHorizontalDash();
-
+            drawDash(0, 0, GL_TRUE);
         }
         glPopMatrix();
     }
     glPopMatrix();
 }
 
+/**
+ * Zeichnet ein Dreieckobjekt
+ */
 void drawTriangleOject() {
     float width = BLOCK_SIZE - 0.3f;
     drawFreeBlock();
@@ -255,6 +275,10 @@ void drawTriangleOject() {
     glPopMatrix();
 }
 
+/**
+ * Zeichnet den blauen Kasten
+ * (Ziel fuer die Dreiecke)
+ */
 void drawFinish() {
     glColor3f(0.137f, 0.137f, 0.557f);
 
@@ -267,6 +291,9 @@ void drawFinish() {
     glPopMatrix();
 }
 
+/**
+ * Zeichnet einen Pfeil fuer den Tuerschalter
+ */
 void drawDoorSwitchArrow() {
     float width = BLOCK_SIZE - 0.3f;
 
@@ -274,6 +301,7 @@ void drawDoorSwitchArrow() {
     double arrowHeadHeight = BLOCK_SIZE / 4;
     double arrowBodyWidth = arrowHeadWidth / 2;
     double arrowBodyHeight = arrowHeadHeight / 2;
+
     glColor3f(0.498f, 1.000f, 0.831f);
 
     glPushMatrix();
@@ -299,6 +327,9 @@ void drawDoorSwitchArrow() {
     glPopMatrix();
 }
 
+/**
+ * Zeichnet den Tuerschalter
+ */
 void drawDoorSwitch() {
     drawFreeBlock();
 
@@ -316,6 +347,9 @@ void drawDoorSwitch() {
     }
 }
 
+/**
+ * Zeichnet die Portale
+ */
 void drawPortals() {
     drawFreeBlock();
     float size = 0.1f;
@@ -324,12 +358,15 @@ void drawPortals() {
 
     portalSize = 0 + shrinkVal;
 
+    // Portal animieren
     if (isIncreasing) {
         shrinkVal += 0.1f / shrinkInterval;
     } else {
         shrinkVal -= 0.1f / shrinkInterval;
     }
 
+    // Wenn das Portal auf 0 ist, wird es vergroessert
+    // sonst verkleinert
     if (portalSize <= 0) {
         isIncreasing = GL_TRUE;
     } else if (portalSize >= 1) {
@@ -339,7 +376,7 @@ void drawPortals() {
     glPushMatrix();
     {
         glScalef(portalSize, portalSize, 0);
-
+        // 5 Farben, 5 Ringe
         for (int i = 0; i < 5; ++i) {
             float *colors = selectColor(i);
             glColor3f(colors[0], colors[1], colors[2]);
@@ -359,6 +396,9 @@ void drawPortals() {
     glPopMatrix();
 }
 
+/**
+ * Zeichnet das Haus
+ */
 void drawHouse() {
     drawFreeBlock();
     glPushMatrix();
@@ -420,12 +460,13 @@ void drawHouse() {
             drawSquare();
         }
         glPopMatrix();
-
-
     }
     glPopMatrix();
 }
 
+/**
+ * Zeichnet die Augen des Spielers
+ */
 void drawPlayerEyes() {
     // Augenbrauen
     for (int i = 0; i < 2; ++i) {
@@ -469,6 +510,9 @@ void drawPlayerEyes() {
     }
 }
 
+/**
+ * Zeichnet den Spielerkopf
+ */
 void drawPlayerHead() {
     // Kopf
     glPushMatrix();
@@ -513,6 +557,9 @@ void drawPlayerHead() {
     glPopMatrix();
 }
 
+/**
+ * Zeichnet den Spielerkoerper
+ */
 void drawPlayerBody() {
     // Korpus
     glPushMatrix();
@@ -584,6 +631,9 @@ void drawPlayerBody() {
     }
 }
 
+/**
+ * Zeichnet den Spieler
+ */
 void drawPlayer() {
     glPushMatrix();
     {
@@ -592,7 +642,7 @@ void drawPlayer() {
 
         drawPlayerBody();
 
-        // Weisses Ding
+        // Krawatte
         glPushMatrix();
         {
             glTranslatef(0, -0.8f, 0);
@@ -604,7 +654,6 @@ void drawPlayer() {
         glPopMatrix();
 
         drawPlayerHead();
-
     }
     glPopMatrix();
 }

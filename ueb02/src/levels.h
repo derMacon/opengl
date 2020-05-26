@@ -3,6 +3,9 @@
 
 #include "types.h"
 
+/**
+ * Die Level
+ */
 extern Level levels[];
 
 #endif //UEB02_LEVELS_H

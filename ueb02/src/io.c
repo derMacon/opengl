@@ -2,9 +2,7 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
-
 #include <GL/glut.h>
-
 #endif
 
 #include "io.h"
@@ -70,8 +68,11 @@ cbTimer(int lastCallTime) {
     glutPostRedisplay();
 }
 
+/**
+ * Wird aufgerufen, um die Zeit fuer das Spiel zu zeichnen
+ */
 static void
-decreaseTimer(int lastCallTime) {
+decreaseTimer() {
     /* Seit dem Programmstart vergangene Zeit in Millisekunden */
     int thisCallTime = glutGet(GLUT_ELAPSED_TIME);
 

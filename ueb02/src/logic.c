@@ -1,7 +1,9 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+
 #include <GL/glut.h>
+
 #endif
 
 #include "variables.h"
@@ -12,6 +14,12 @@
 
 Game game;
 
+/**
+ * Gibt den Block an einer bestimmten Stelle zurueck
+ * @param x - x Wert der Position
+ * @param y - x Wert der Position
+ * @return - Gibt den Block wider (z.B. P_FREE)
+ */
 pushyFieldType getBlockOfPos(int x, int y) {
     return game.levelSettings.level[y][x];
 }
@@ -33,7 +41,11 @@ int newPos(int val, enum e_Direction direction, GLboolean isX) {
     return val;
 }
 
-void checkTriangles() {
+/**
+ * Prueft, ob noch Dreiecke uebrig sind
+ * Falls nicht, wird das Haus gruen gemalt
+ */
+void decreaseTriangleCount() {
     if (game.levelSettings.numberOfTriangles > 0) {
         game.levelSettings.numberOfTriangles--;
     }
@@ -44,19 +56,39 @@ void checkTriangles() {
     }
 }
 
+/**
+ * Hilfsfunktion fuer MoveObject. Sie ueberprueft und behandelt die Faelle mit den Tueren
+ * Wir verwenden diese Funktion, um Codeverdopplung zu beseitigen
+ * @param x - X-Wert des Blocks
+ * @param y - Y-Wert des Blocks
+ * @param newX - X-Wert des neuen Blocks
+ * @param newY - Y-Wert des neuen Blocks
+ * @param currentType - aktueller Blocktyp
+ * @param nextType  - naechster Blocktyp
+ * @param doorType - Entweder P_FREE oder P_DOOR
+ * @param withNewX - Wenn true, dann werden "newX" und "newY" fuer x und y verwendet
+ * @return True, wenn das Objekt bewegt wurde
+ */
 GLboolean checkForDoors(int x, int y, int newX, int newY, pushyFieldType currentType, pushyFieldType nextType,
                         pushyFieldType doorType, GLboolean withNewX) {
     int numberOfDoors = game.levelSettings.numberOfDoors;
     GLboolean hasMoved = GL_FALSE;
 
+    // wenn withNewX true, dann die Werte "newX" und "newY" verwenden,
+    // um die Stelle der Tuer zu finden
     int doorX = withNewX ? newX : x;
     int doorY = withNewX ? newY : y;
+
     Level level = levels[game.levelId - 1];
 
+    // Alle tueren durchlaufen, um zu ueberpruefen,
+    // ob eine Tuer oder Tuerschalter betreten wird
     for (int i = 0; i < numberOfDoors; ++i) {
         int levelDoorX = level.doors[i][0];
         int levelDoorY = level.doors[i][1];
 
+        // Wenn ein Tuerschalter zu der Tuer passt
+        // Box bewegen / Frei machen usw.
         if (level.doorSwitch[i][0] == doorX && level.doorSwitch[i][1] == doorY) {
             game.levelSettings.level[y][x] = currentType;
             game.levelSettings.level[newY][newX] = nextType;
@@ -64,11 +96,12 @@ GLboolean checkForDoors(int x, int y, int newX, int newY, pushyFieldType current
             hasMoved = GL_TRUE;
         }
 
-        if (currentType == P_DOOR_SWITCH && nextType == P_BOX_DOOR_SWITCH) {
-            if (level.doorSwitch[i][0] == newX && level.doorSwitch[i][1] == newY) {
-                game.levelSettings.level[levelDoorY][levelDoorX] = P_FREE;
-                hasMoved = GL_TRUE;
-            }
+        // Bei mehreren Switches wird Tuer geoeffnet
+        if (currentType == P_DOOR_SWITCH && nextType == P_BOX_DOOR_SWITCH &&
+            level.doorSwitch[i][0] == newX && level.doorSwitch[i][1] == newY) {
+
+            game.levelSettings.level[levelDoorY][levelDoorX] = P_FREE;
+            hasMoved = GL_TRUE;
         }
     }
 
@@ -82,34 +115,58 @@ int moveObject(enum e_Direction direction, int x, int y, pushyFieldType currentT
     pushyFieldType targetTileType = getBlockOfPos(newX, newY);
 
     if (targetTileType == P_FREE && currentTileType != P_BOX_DOOR_SWITCH) {
+        // Objekt bewegen (Box, Triangle)
         game.levelSettings.level[y][x] = P_FREE;
         game.levelSettings.level[newY][newX] = currentTileType;
         hasMoved = GL_TRUE;
+
     } else if (targetTileType == P_DOOR_SWITCH && currentTileType == P_BOX) {
+        // pruefen, welche Tuer geoeffnet werden kann
         hasMoved = checkForDoors(x, y, newX, newY, P_FREE, P_BOX_DOOR_SWITCH, P_FREE, GL_TRUE);
+
     } else if (targetTileType == P_TARGET && currentTileType == P_OBJECT_TRIANGLE) {
+        // Dreieck beseitigen
         game.levelSettings.level[y][x] = P_FREE;
-        checkTriangles();
+
+        // Pruefen, ob alle Dreiecke beseitigt wurden
+        decreaseTriangleCount();
         hasMoved = GL_TRUE;
+
     } else if (targetTileType == P_FREE && currentTileType == P_BOX_DOOR_SWITCH) {
+        // Box-Switch wird wieder zur Door-Switch
         hasMoved = checkForDoors(x, y, newX, newY, P_DOOR_SWITCH, P_BOX, P_DOOR, GL_FALSE);
     } else if (targetTileType == P_DOOR_SWITCH && currentTileType == P_BOX_DOOR_SWITCH) {
+        // Mehrere Doorswitches hintereinander
         hasMoved = checkForDoors(x, y, newX, newY, P_DOOR_SWITCH, P_BOX_DOOR_SWITCH, P_DOOR, GL_FALSE);
     }
 
     return hasMoved;
 }
 
+/**
+ * Setzt die Spielerposition
+ * @param x neuer X-Wert
+ * @param y neuer Y-Wert
+ */
 void setPlayerPos(int x, int y) {
     game.levelSettings.playerPosX = x;
     game.levelSettings.playerPosY = y;
 }
 
+/**
+ * Teleportiert den Spieler
+ * @param portalX - X-Wert des Portals
+ * @param portalY - Y-Wert des Portals
+ */
 void teleportPlayer(int portalX, int portalY) {
-    int lpX1 = game.levelSettings.portal1PosX;
-    int lpY1 = game.levelSettings.portal1PosY;
-    int lpX2 = game.levelSettings.portal2PosX;
-    int lpY2 = game.levelSettings.portal2PosY;
+
+    LevelSettings ls = game.levelSettings;
+
+    // Level Portalpositions
+    int lpX1 = ls.portal1PosX;
+    int lpY1 = ls.portal1PosY;
+    int lpX2 = ls.portal2PosX;
+    int lpY2 = ls.portal2PosY;
 
     // Nur ausfuehren, wenn korrekte Anzahl an Portalen vorhanden
     // -1 wird gesetzt, wenn zuviele Portale vorhanden sind.
@@ -122,6 +179,10 @@ void teleportPlayer(int portalX, int portalY) {
     }
 }
 
+/**
+ * Vermindert die laufende Zeit
+ * Wird verwendet, um die restliche Zeit des Levels anzuzeigen
+ */
 void decreaseTime() {
     if (game.levelSettings.time > 1) {
         game.levelSettings.time--;
@@ -130,21 +191,29 @@ void decreaseTime() {
     }
 }
 
+/**
+ * Prieft, ob der Spieler sich in die gegebene Richtung bewegen darf.
+ * @param direction - Richtung, fuer die geprueft wird
+ * @return True, wenn er sich bewegen darf
+ */
 GLboolean playerMovementAllowed(enum e_Direction direction) {
     int pX = game.levelSettings.playerPosX;
     int pY = game.levelSettings.playerPosY;
 
+    // Zielfeld
     int pXNew = newPos(pX, direction, GL_TRUE);
     int pYNew = newPos(pY, direction, GL_FALSE);
-    int checkTile;
 
+    // Auf diesen Block will der Spieler gehen
+    int checkTile = getBlockOfPos(pXNew, pYNew);
+
+    // Abfrage, ob der Spieler sich noch im legalen Levelbereich befindet
     if ((direction == dirUp && pY >= 1)
         || (direction == dirDown && pY < LEVEL_SIZE)
         || (direction == dirLeft && pX >= 1)
         || (direction == dirRight && pX < LEVEL_SIZE)) {
 
-        checkTile = getBlockOfPos(pXNew, pYNew);
-
+        // Zielblock behandeln
         switch (checkTile) {
             case P_BOX:
             case P_BOX_DOOR_SWITCH:
@@ -196,6 +265,11 @@ setPlayerMovement(enum e_Direction direction) {
     }
 }
 
+/**
+ * Prueft, ob die Anzahl der Portale == 2 ist.
+ * Bei weniger oder mehr als 2, werden die Positionen initial negativ belegt
+ * @param numberOfPortals - diese Anzahl wird ueberprueft
+ */
 void checkForInvalidPortals(int numberOfPortals) {
     if (numberOfPortals != 2) {
         game.levelSettings.portal1PosX = -1;
@@ -205,6 +279,10 @@ void checkForInvalidPortals(int numberOfPortals) {
     }
 }
 
+/**
+ * Prueft,
+ * @param numberOfDoors
+ */
 void checkForInvalidDoor(int numberOfDoors) {
     if (numberOfDoors != 1) {
         game.levelSettings.doorPosX = -1;
@@ -253,7 +331,7 @@ void setObjectCoords() {
     game.levelSettings.numberOfTriangles = numberOfTriangles;
 
     if (numberOfTriangles == 0) {
-        checkTriangles();
+        decreaseTriangleCount();
     }
 
     checkForInvalidPortals(alreadyCountedPortals);

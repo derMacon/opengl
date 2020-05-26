@@ -4,10 +4,4 @@
 #include <stdlib.h>
 
 float *selectColor(int index);
-
-/**
- * Zeigt die Hilfe fuer den Benutzer an
- */
-void showHelp();
-
 #endif
