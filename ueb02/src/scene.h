@@ -3,6 +3,9 @@
 
 #include "variables.h"
 
+/**
+ * Zeichnet die gesamte Szene
+ */
 void drawScene(void);
 
 /**
