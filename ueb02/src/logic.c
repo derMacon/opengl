@@ -45,7 +45,7 @@ int newPos(int val, enum e_Direction direction, GLboolean isX) {
  * Prueft, ob noch Dreiecke uebrig sind
  * Falls nicht, wird das Haus gruen gemalt
  */
-void decreaseTriangleCount() {
+void handleTriangles() {
     if (game.levelSettings.numberOfTriangles > 0) {
         game.levelSettings.numberOfTriangles--;
     }
@@ -129,7 +129,7 @@ int moveObject(enum e_Direction direction, int x, int y, pushyFieldType currentT
         game.levelSettings.level[y][x] = P_FREE;
 
         // Pruefen, ob alle Dreiecke beseitigt wurden
-        decreaseTriangleCount();
+        handleTriangles();
         hasMoved = GL_TRUE;
 
     } else if (targetTileType == P_FREE && currentTileType == P_BOX_DOOR_SWITCH) {
@@ -279,12 +279,17 @@ void checkForInvalidPortals(int numberOfPortals) {
     }
 }
 
+/**
+ * Liest das Level aus und zaehlt die Komponenten (Portale, Dreiecke, Tueren)
+ * und setzt in den Levelsettings die Werte
+ */
 void setObjectCoords() {
 
-    int alreadyCountedPortals = 0;
+    int numberOfPortals = 0;
     int numberOfTriangles = 0;
     int numberOfDoors = 0;
 
+    // Level durchgehen und Komponenten zaehlen und setzen
     for (int y = 0; y < LEVEL_SIZE; y++) {
         for (int x = 0; x < LEVEL_SIZE; x++) {
 
@@ -296,14 +301,14 @@ void setObjectCoords() {
             // Portale
             if (getBlockOfPos(x, y) == P_PORTAL) {
 
-                if (alreadyCountedPortals < 1) {
+                if (numberOfPortals < 1) {
                     game.levelSettings.portal1PosX = x;
                     game.levelSettings.portal1PosY = y;
                 } else {
                     game.levelSettings.portal2PosX = x;
                     game.levelSettings.portal2PosY = y;
                 }
-                alreadyCountedPortals++;
+                numberOfPortals++;
             }
 
             // Tuer
@@ -313,17 +318,22 @@ void setObjectCoords() {
         }
     }
 
+    game.levelSettings.numberOfDoors = numberOfDoors;
     game.levelSettings.numberOfTriangles = numberOfTriangles;
 
+    // Falls es keine Dreiecke gibt,
+    // dann kann das Haus direkt gruen dargestellt werden
     if (numberOfTriangles == 0) {
-        decreaseTriangleCount();
+        handleTriangles();
     }
 
-    checkForInvalidPortals(alreadyCountedPortals);
-
-    game.levelSettings.numberOfDoors = numberOfDoors;
+    checkForInvalidPortals(numberOfPortals);
 }
 
+/**
+ * Laedt die Leveldinfos in die Levelsettings
+ * @param levelId - Die ID des Levels welches geladen werden soll
+ */
 void loadLevel(int levelId) {
     pushyFieldType (*tempLevel)[9] = NULL;
     tempLevel = levels[levelId - 1].field;
@@ -335,6 +345,10 @@ void loadLevel(int levelId) {
     }
 }
 
+/**
+ * Initialisiert das Level
+ * @param levelId - Dieses Level wird initialisiert
+ */
 void initLevel(int levelId) {
     game.gameStatus = GAME_RUNNING;
     game.levelId = levelId;
@@ -342,12 +356,18 @@ void initLevel(int levelId) {
     game.levelSettings.playerPosX = levels[levelId - 1].startPos[0];
     game.levelSettings.playerPosY = levels[levelId - 1].startPos[1];
     loadLevel(levelId);
+
+    // Hausfarbe auf Pink setzen
     changeColor(GL_FALSE);
 
     // Positionen der Portale setzen
     setObjectCoords();
 }
 
+/**
+ * Getter fuer das Spiel
+ * @return
+ */
 Game *getGame(void) {
     return &game;
 }
