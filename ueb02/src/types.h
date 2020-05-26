@@ -19,7 +19,7 @@ GLboolean showFullscreen;
  */
 typedef enum {
     P_START, P_OUTER, P_FREE, P_WALL, P_BOX, P_TARGET, P_OBJECT_TRIANGLE,
-    P_TARGET_OBJECT, P_DOOR, P_DOOR_SWITCH, P_BOX_DOOR_SWITCH, P_PORTAL, P_HOUSE, P_PLAYER
+    P_DOOR, P_DOOR_SWITCH, P_BOX_DOOR_SWITCH, P_PORTAL, P_HOUSE, P_PLAYER
 } pushyFieldType;
 
 /* Spielfeld */
@@ -38,7 +38,7 @@ typedef enum {
 
 /** Bewegungsrichtungen. */
 enum e_Direction {
-    dirLeft, dirRight, dirUp, dirDown
+    dirLeft, dirRight, dirUp, dirDown, dirNone
 };
 
 typedef struct {

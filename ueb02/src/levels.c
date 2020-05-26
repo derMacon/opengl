@@ -14,14 +14,14 @@ const Level levels[NUMBER_OF_LEVEL] = {
                         {P_WALL, P_BOX,  P_FREE, P_PORTAL,          P_WALL,        P_PORTAL, P_FREE, P_HOUSE,           P_WALL},
                         {P_WALL, P_WALL, P_WALL, P_WALL,            P_WALL,        P_WALL,   P_WALL, P_WALL,            P_WALL}
                 },
-                .doors = {{5, 3}},
+                .doors = {
+                        {5, 3}
+                },
                 .doorSwitch = {
-                        {4,  2},
-                        {-1, -1},
-                        {-1, -1}
+                        {4, 2}
                 },
                 .startPos = {1, 1},
-                .time = 25,
+                .time = 45,
         },
         // Level 2
         {
@@ -70,7 +70,7 @@ const Level levels[NUMBER_OF_LEVEL] = {
                 },
                 .startPos = {1,
                              1},
-                .time = 120
+                .time = 100
         },
         // Level 4
         {
@@ -79,7 +79,7 @@ const Level levels[NUMBER_OF_LEVEL] = {
                         {P_WALL, P_FREE,        P_FREE,            P_FREE,        P_FREE,   P_FREE,  P_DOOR,   P_TARGET,          P_WALL},
                         {P_WALL, P_FREE,        P_FREE,            P_WALL,        P_WALL,   P_WALL,  P_WALL,   P_DOOR,            P_WALL},
                         {P_WALL, P_FREE,        P_FREE,            P_WALL,        P_FREE,   P_FREE,  P_WALL,   P_FREE,            P_WALL},
-                        {P_WALL, P_BOX,         P_OBJECT_TRIANGLE, P_WALL,        P_PORTAL, P_HOUSE, P_WALL,   P_FREE,            P_WALL},
+                        {P_WALL, P_WALL,        P_OBJECT_TRIANGLE, P_WALL,        P_PORTAL, P_HOUSE, P_WALL,   P_FREE,            P_WALL},
                         {P_WALL, P_FREE,        P_FREE,            P_WALL,        P_WALL,   P_WALL,  P_WALL,   P_FREE,            P_WALL},
                         {P_WALL, P_FREE,        P_OBJECT_TRIANGLE, P_FREE,        P_FREE,   P_FREE,  P_FREE,   P_OBJECT_TRIANGLE, P_WALL},
                         {P_WALL, P_DOOR_SWITCH, P_FREE,            P_DOOR_SWITCH, P_FREE,   P_BOX,   P_PORTAL, P_FREE,            P_WALL},
@@ -96,6 +96,6 @@ const Level levels[NUMBER_OF_LEVEL] = {
                 .startPos = {
                         5, 3
                 },
-                .time = 35,
-        },
+                .time = 80,
+        }
 };

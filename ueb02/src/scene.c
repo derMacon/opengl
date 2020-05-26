@@ -21,9 +21,11 @@ GLuint g_renderObjects;
 GLboolean showWireframe = GL_FALSE;
 
 void initDisplayList() {
+
+    int numberOfTypes = (P_PLAYER - P_START) + 1;
+
     // Alle benoetigten Listen auf einmal erzeugen
-    // TODO: 15 dynamisch
-    g_renderObjects = glGenLists((GLsizei) 15);
+    g_renderObjects = glGenLists((GLsizei) numberOfTypes);
     if (g_renderObjects != 0) {
         for (GLuint index = 0; index < 15; index++) {
             // Displayliste bereit machen

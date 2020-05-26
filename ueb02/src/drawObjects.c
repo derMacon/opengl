@@ -132,8 +132,6 @@ void drawWall() {
         // Vertikal
         glPushMatrix();
         {
-            // TODO: KOMMENTARE, kp mehr was hier abgeht :D
-            // TODO: Wieso 2.5? :P
             glTranslatef(0.0f, -FUGUE_HEIGHT * 2.5f, 0);
             for (int i = 0; i < 4; i++) {
 
@@ -224,7 +222,6 @@ void drawDoor() {
 
     glPushMatrix();
     {
-        //     glTranslatef(xPos, yPos, 0.0f);
         glScalef(width, BLOCK_SIZE - 0.01f, 1.0f);
         drawSquare();
 
@@ -249,7 +246,6 @@ void drawTriangleOject() {
 
     glPushMatrix();
     {
-        //    glTranslatef(xPos, yPos, 0.0f);
         glScalef(width, BLOCK_SIZE / 2, 1.0f);
         glRotatef(90, 0.0f, 0.0f, 1.0f);
 
@@ -264,7 +260,6 @@ void drawFinish() {
 
     glPushMatrix();
     {
-        // glTranslatef(xPos, yPos, 0.0f);
         glScalef(BLOCK_SIZE - 0.01f, BLOCK_SIZE - 0.01f, 1.0f);
         drawSquare();
     }
@@ -343,7 +338,6 @@ void drawPortals() {
 
     glPushMatrix();
     {
-        //     glTranslatef(xPos, yPos, 0.0f);
         glScalef(portalSize, portalSize, 0);
 
         for (int i = 0; i < 5; ++i) {

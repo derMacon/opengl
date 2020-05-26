@@ -13,7 +13,9 @@
 #include "variables.h"
 #include "helper.h"
 
+enum e_Direction direction = dirNone;
 GLboolean showFullscreen = GL_FALSE;
+double cooldown = 0.0f;
 
 /**
  * Setzen der Projektionsmatrix.
@@ -53,6 +55,13 @@ static void
 cbTimer(int lastCallTime) {
     /* Seit dem Programmstart vergangene Zeit in Millisekunden */
     int thisCallTime = glutGet(GLUT_ELAPSED_TIME);
+
+    if (cooldown < 0) {
+        setPlayerMovement(direction);
+        cooldown = COOLDOWN_TIME;
+    } else {
+        cooldown -= (double) (thisCallTime - lastCallTime) / 1000.0f;
+    }
 
     /* Wieder als Timer-Funktion registrieren */
     glutTimerFunc(1000 / TIMER_CALLS_PS, cbTimer, thisCallTime);
@@ -159,26 +168,27 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
         /* Spezialtaste gedrueckt */
         if (isSpecialKey) {
             switch (key) {
-
                 /* Bewegung des Rechtecks in entsprechende Richtung beenden */
                 case GLUT_KEY_LEFT:
-                    setPlayerMovement(dirLeft);
+
+                    direction = dirLeft;
                     break;
                 case GLUT_KEY_RIGHT:
-                    setPlayerMovement(dirRight);
+                    direction = dirRight;
                     break;
                 case GLUT_KEY_UP:
-                    setPlayerMovement(dirUp);
+                    direction = dirUp;
                     break;
                 case GLUT_KEY_DOWN:
-                    setPlayerMovement(dirDown);
+                    direction = dirDown;
                     break;
                 case GLUT_KEY_F1:
                     toggleWireframe();
                     break;
                 case GLUT_KEY_F2:
                     toggleFullscreen();
-                    break;}
+                    break;
+            }
         }
             /* normale Taste gedrueckt */
         else {
@@ -236,6 +246,26 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case 'Q':
                 case ESC:
                     exit(0);
+            }
+        }
+    } else if (status == GLUT_UP) {
+
+        /* Spezialtaste gedrueckt */
+        if (isSpecialKey) {
+            switch (key) {
+                /* Bewegung des Rechtecks in entsprechende Richtung beenden */
+                case GLUT_KEY_LEFT:
+                    direction = dirNone;
+                    break;
+                case GLUT_KEY_RIGHT:
+                    direction = dirNone;
+                    break;
+                case GLUT_KEY_UP:
+                    direction = dirNone;
+                    break;
+                case GLUT_KEY_DOWN:
+                    direction = dirNone;
+                    break;
             }
         }
     }
