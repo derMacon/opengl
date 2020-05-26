@@ -22,7 +22,7 @@ GLboolean showWireframe = GL_FALSE;
 
 void initDisplayList() {
 
-    int numberOfTypes = (P_PLAYER - P_START) + 1;
+    int numberOfTypes = (P_PLAYER - P_OUTER) + 1;
 
     // Alle benoetigten Listen auf einmal erzeugen
     g_renderObjects = glGenLists((GLsizei) numberOfTypes);
@@ -33,7 +33,6 @@ void initDisplayList() {
 
             switch (index) {
                 case (P_FREE):
-                case (P_START):
                     drawFreeBlock();
                     break;
 
@@ -107,45 +106,26 @@ void drawLevel() {
 
                     /* Kachel an Position x,y zeichnen. */
                     glTranslatef(xPos, yPos, 0.0f);
-
                     switch (levelField) {
                         case (P_FREE):
-                        case (P_START):
-                            glCallList(g_renderObjects + P_FREE);
-                            break;
-
                         case (P_WALL):
-                            glCallList(g_renderObjects + P_WALL);
+                        case (P_DOOR):
+                        case (P_DOOR_SWITCH):
+                        case (P_OBJECT_TRIANGLE):
+                        case (P_TARGET):
+                        case (P_BOX):
+                            glCallList(g_renderObjects + levelField);
                             break;
 
-                        case (P_BOX):
                         case (P_BOX_DOOR_SWITCH):
                             glCallList(g_renderObjects + P_BOX);
-                            break;
-
-                        case (P_DOOR):
-                            glCallList(g_renderObjects + P_DOOR);
-                            break;
-
-                        case (P_DOOR_SWITCH):
-                            glCallList(g_renderObjects + P_DOOR_SWITCH);
-                            break;
-
-                        case (P_TARGET):
-                            glCallList(g_renderObjects + P_TARGET);
-                            break;
-
-                        case (P_OBJECT_TRIANGLE):
-                            glCallList(g_renderObjects + P_OBJECT_TRIANGLE);
                             break;
                         case (P_PORTAL):
                             drawPortals();
                             break;
-
                         case (P_HOUSE):
                             drawHouse();
                             break;
-
                         default:
                             break;
                     }
