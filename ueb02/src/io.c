@@ -82,9 +82,6 @@ decreaseTimer() {
     if (getGame()->gameStatus == GAME_RUNNING) {
         decreaseTime();
     }
-
-    /* Neuzeichnen anstossen */
-    glutPostRedisplay();
 }
 
 /**
