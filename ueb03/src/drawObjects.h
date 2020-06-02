@@ -59,4 +59,11 @@ void drawPlayer();
  */
 void changeColor(GLboolean isGreenHouse);
 
+
+
+
+void drawCube();
+
+void drawAxes();
+
 #endif //UEB02_DRAWOBJECTS_H

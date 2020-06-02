@@ -40,19 +40,26 @@ void initDisplayList() {
                     break;
 
                 case (P_WALL):
-                    drawWall();
+                    glPushMatrix();
+                    {
+                        float val = 0.2f;
+                        glTranslatef(0, 0.1, 0);
+                        glScalef(val, val, val);
+                        drawCube();
+                    }
+                    glPopMatrix();
                     break;
 
                 case (P_BOX):
-                    drawBox();
+                    //    drawBox();
                     break;
 
                 case (P_DOOR):
-                    drawDoor();
+                    //  drawDoor();
                     break;
 
                 case (P_DOOR_SWITCH):
-                    drawDoorSwitch();
+                    //   drawDoorSwitch();
                     break;
 
                 case (P_TARGET):
@@ -60,11 +67,11 @@ void initDisplayList() {
                     break;
 
                 case (P_OBJECT_TRIANGLE):
-                    drawTriangleOject();
+                    //   drawTriangleOject();
                     break;
 
                 case (P_PLAYER):
-                    drawPlayer();
+                    //   drawPlayer();
                     break;
 
                 default:
@@ -106,6 +113,7 @@ void drawLevel() {
 
                 glPushMatrix();
                 {
+
                     // Spielfeld faengt bei -1 (x) und 1 (y) an
                     float correctX = -1.0f;
                     float correctY = 1.0f;
@@ -247,6 +255,27 @@ void drawWon() {
 void drawScene(void) {
     Gamestatus gameStatus = getGame()->gameStatus;
 
+    /* Wuerfel */
+//    glPushMatrix ();
+//    {
+//        /* Wuerfel groesser skalieren */
+//       // glScalef (5.0f, 5.0f, 5.0f);
+//        /* Wuerfel zeichnen */
+//        drawCube ();
+//    }
+//    glPopMatrix ();
+
+    /* Koordinatenachsen */
+    glPushMatrix();
+    {
+        float scaleVal = 2.0f;
+        /* Koordinatensachsen skalieren */
+        glScalef(scaleVal, scaleVal, scaleVal);
+        /* Koordinatensachsen zeichnen */
+        drawAxes();
+    }
+    glPopMatrix();
+
     if (gameStatus == GAME_RUNNING) {
         drawGame();
         drawGameInfo();
@@ -288,6 +317,14 @@ initScene(void) {
     // Zeit fuer Random einbeziehen, um Zufallsfarben zu generieren
     // srand steht hier, weil es nur einmal aufgerufen werden darf
     srand(time(NULL));
+
+
+    /* Z-Buffer-Test aktivieren */
+    glEnable(GL_DEPTH_TEST);
+
+    /* Polygonrueckseiten nicht anzeigen */
+    glCullFace(GL_BACK);
+    glEnable(GL_CULL_FACE);
 
     /* Alles in Ordnung? */
     return (GLGETERROR == GL_NO_ERROR);

@@ -27,4 +27,6 @@ void registerCallbacks(void);
 int
 initAndStartIO(char *title, int width, int height);
 
+
+typedef GLfloat CGColor3f[3];
 #endif

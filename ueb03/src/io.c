@@ -35,10 +35,10 @@ setProjection(GLdouble aspect) {
     glLoadIdentity();
 
     /* perspektivische Projektion */
-    gluPerspective (70.0,         /* Oeffnungswinkel */
+    gluPerspective (15.0,         /* Oeffnungswinkel */
                     aspect,       /* Seitenverhaeltnis */
                     0.1,          /* nahe Clipping-Ebene */
-                    30.0 /* ferne Clipping-Ebene */ );
+                    40.0 /* ferne Clipping-Ebene */ );
 }
 
 /**
@@ -103,9 +103,10 @@ cbDisplay(void) {
     glLoadIdentity();
 
     /* Kameraposition */
-    gluLookAt (2, -2.0, 0,   /* Augpunkt */
+
+    gluLookAt (7.5, 10.0, 15.0,   /* Augpunkt */
                0.0, 0.0, 0.0,     /* Zentrum */
-               0.0, 0.0, 2.0);    /* Up-Vektor */
+               0.0, 1.0, 0.0);    /* Up-Vektor */
 
     /* Szene zeichnen */
     drawScene();

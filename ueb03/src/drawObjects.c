@@ -2,12 +2,81 @@
 #include "debug.h"
 #include "types.h"
 #include "helper.h"
+#include "io.h"
 
 // Werte fuer Portal-Animation
 float shrinkVal = 0;
 GLboolean isIncreasing = GL_TRUE;
 
 GLfloat houseColors[3] = {1.0f, 0.0f, 1.0f};
+
+static void
+drawAxesArrow(void) {
+    glBegin(GL_LINE_STRIP);
+    {
+        /* Achse */
+        glVertex3f(0.0f, 0.0f, -0.5f);
+        glVertex3f(0.0f, 0.0f, 0.5f);
+        /* erster Pfeil */
+        glVertex3f(0.05f, 0.0f, 0.45f);
+        glVertex3f(-0.05f, 0.0f, 0.45f);
+        glVertex3f(0.0f, 0.0f, 0.5f);
+        /* zweiter Pfeil */
+        glVertex3f(0.0f, 0.05f, 0.45f);
+        glVertex3f(0.0f, -0.05f, 0.45f);
+        glVertex3f(0.0f, 0.0f, 0.5f);
+    }
+    glEnd();
+}
+
+/**
+ * Zeichnet Koordinatenachsen (inklusive Beschriftung).
+ */
+void
+drawAxes(void) {
+    /* Farben der Koordinatenachsen */
+    CGColor3f axesColor = {1.0f, 0.5f, 0.0f};
+    CGColor3f axesTextColor = {1.0f, 1.0f, 0.0f};
+
+    glColor3fv(axesColor);
+
+    /* x-Achse */
+    glPushMatrix();
+    {
+        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+        glScalef(1.0f, 1.0f, 2.0f);
+        drawAxesArrow();
+    }
+    glPopMatrix();
+
+    /* y-Achse */
+    glPushMatrix();
+    {
+        glRotatef(270.0f, 1.0f, 0.0f, 0.0f);
+        glScalef(1.0f, 1.0f, 2.0f);
+        drawAxesArrow();
+    }
+    glPopMatrix();
+
+    /* z-Achse */
+    glPushMatrix();
+    {
+        glScalef(1.0f, 1.0f, 2.0f);
+        drawAxesArrow();
+    }
+    glPopMatrix();
+
+    /* Beschriftungen der Koordinatenachsen */
+
+    glColor3fv(axesTextColor);
+    glRasterPos3f(1.1f, 0.0f, 0.0f);
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, 'x');
+    glRasterPos3f(0.0f, 1.1f, 0.0f);
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, 'y');
+    glRasterPos3f(0.0f, 0.0f, 1.1f);
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, 'z');
+}
+
 
 /**
  * Aendert die Farbe des Hauses
@@ -24,26 +93,99 @@ void changeColor(GLboolean isGreenHouse) {
         houseColors[2] = 1.0f;
     }
 }
+//
+//static void drawSquare() {
+//    float length = 0.5f;
+//
+//    glBegin(GL_QUADS);
+//    {
+//        // Links unten
+//        glVertex3f(-length, 0, -length);
+//
+//        // Rechts unten
+//        glVertex3f(length, 0, -length);
+//
+//        // Links oben
+//        glVertex3f(length, 0, length);
+//
+//        // Rechts oben
+//        glVertex3f(-length, 0, length);
+//    }
+//
+//    glEnd();
+//}
 
 static void drawSquare() {
-    float length = 0.5f;
-
     glBegin(GL_QUADS);
     {
-        // Links unten
-        glVertex3f(-length, 0, -length);
-
-        // Rechts unten
-        glVertex3f(length, 0, -length);
-
-        // Links oben
-        glVertex3f(length, 0, length);
-
-        // Rechts oben
-        glVertex3f(-length, 0, length);
+        glVertex3f(0.5f, 0.5f, 0.0f);
+        glVertex3f(-0.5f, 0.5f, 0.0f);
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(0.5f, -0.5f, 0.0f);
     }
-
     glEnd();
+}
+
+void drawCube() {
+
+    /* Frontflaeche */
+    glPushMatrix();
+    {
+        glTranslatef(0.0f, 0.0f, 0.5f);
+        glColor3f(1.0, 0.0, 0.0);
+        drawSquare();
+    }
+    glPopMatrix();
+
+    /* rechte Seitenflaeche */
+    glPushMatrix();
+    {
+        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+        glTranslatef(0.0f, 0.0f, 0.5f);
+        glColor3f(0.0, 1.0, 0.0);
+        drawSquare();
+    }
+    glPopMatrix();
+
+    /* Rueckseitenflaeche */
+    glPushMatrix();
+    {
+        glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+        glTranslatef(0.0f, 0.0f, 0.5f);
+        glColor3f(0.0, 0.0, 1.0);
+        drawSquare();
+    }
+    glPopMatrix();
+
+    /* linke Seitenflaeche */
+    glPushMatrix();
+    {
+        glRotatef(270.0f, 0.0f, 1.0f, 0.0f);
+        glTranslatef(0.0f, 0.0f, 0.5f);
+        glColor3f(0.0, 1.0, 1.0);
+        drawSquare();
+    }
+    glPopMatrix();
+
+    /* Deckelflaeche */
+    glPushMatrix();
+    {
+        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+        glTranslatef(0.0f, 0.0f, 0.5f);
+        glColor3f(1.0, 0.0, 1.0);
+        drawSquare();
+    }
+    glPopMatrix();
+
+    /* Bodenflaeche */
+    glPushMatrix();
+    {
+        glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+        glTranslatef(0.0f, 0.0f, 0.5f);
+        glColor3f(1.0, 1.0, 0.0);
+        drawSquare();
+    }
+    glPopMatrix();
 }
 
 /**
@@ -117,7 +259,8 @@ void drawWall() {
 
     glPushMatrix();
     {
-        glScalef(width, 1.0f, BLOCK_SIZE - 0.01f);
+        glRotatef(-90, 1, 0,0);
+        glScalef(width, BLOCK_SIZE - 0.01f, 1.0f);
         drawSquare();
 
         // Fugenfarbe
@@ -126,10 +269,10 @@ void drawWall() {
         // Horizontal
         glPushMatrix();
         {
-            glTranslatef(0.0f, 0.0f, -FUGUE_HEIGHT * 2);
+            glTranslatef(0.0f, -FUGUE_HEIGHT * 2, 0.0f);
             // Horizontale Striche
             for (int i = 0; i < 3; i++) {
-                glTranslatef(0.0f, 0.0f, FUGUE_HEIGHT);
+                glTranslatef(0.0f, FUGUE_HEIGHT, 0.0f);
                 drawDash(0, 0, GL_TRUE);
             }
         }
@@ -138,10 +281,10 @@ void drawWall() {
         // Vertikal
         glPushMatrix();
         {
-            glTranslatef(0.0f, 0, -FUGUE_HEIGHT * 2.5f);
+            glTranslatef(0.0f, -FUGUE_HEIGHT * 2.5f, 0);
             for (int i = 0; i < 4; i++) {
 
-                glTranslatef(0.0, 0, FUGUE_HEIGHT);
+                glTranslatef(0.0, FUGUE_HEIGHT, 0);
                 int max = i % 2 == 0 ? 3 : 2;
 
                 glPushMatrix();
@@ -219,7 +362,8 @@ void drawFreeBlock() {
 
     glPushMatrix();
     {
-        glScalef(BLOCK_SIZE - 0.01f, 1.0f, BLOCK_SIZE - 0.01f);
+        glRotatef(-90, 1, 0,0);
+        glScalef(BLOCK_SIZE - 0.01f, BLOCK_SIZE - 0.01f, 1.0f);
         drawSquare();
     }
 
@@ -279,7 +423,8 @@ void drawFinish() {
 
     glPushMatrix();
     {
-        glScalef(BLOCK_SIZE - 0.01f, 1.0f, BLOCK_SIZE - 0.01f);
+        glRotatef(-90, 1, 0,0);
+        glScalef(BLOCK_SIZE - 0.01f, BLOCK_SIZE - 0.01f, 1.0f);
         drawSquare();
     }
 
