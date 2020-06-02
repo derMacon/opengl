@@ -25,26 +25,22 @@ void changeColor(GLboolean isGreenHouse) {
     }
 }
 
-/**
- * Zeichnet ein Rechteck mit der Breite und Hoehe 1.
- */
 static void drawSquare() {
-
     float length = 0.5f;
 
     glBegin(GL_QUADS);
     {
         // Links unten
-        glVertex2f(-length, -length);
+        glVertex3f(-length, 0, -length);
 
         // Rechts unten
-        glVertex2f(length, -length);
+        glVertex3f(length, 0, -length);
 
         // Links oben
-        glVertex2f(length, length);
+        glVertex3f(length, 0, length);
 
         // Rechts oben
-        glVertex2f(-length, length);
+        glVertex3f(-length, 0, length);
     }
 
     glEnd();
@@ -59,13 +55,13 @@ static void drawTriangle() {
     float x = 0.7f;
 
     // Links unten
-    glVertex2f(-x, -x);
+    glVertex3f(-x, 0, -x);
 
     // Rechts unten
-    glVertex2f(x, -x);
+    glVertex3f(x, 0, -x);
 
     // oben
-    glVertex2f(0, x);
+    glVertex3f(0, 0, x);
 
     glEnd();
 }
@@ -86,7 +82,7 @@ static void drawCircle() {
     // Winkel immer minimal erhoehen und somit den Kreis zeichnen
     // 2 * PI entsprechen 360°
     for (float angle = 0; angle < 2 * M_PI; angle += increaseValue) {
-        glVertex3f(radius * cosf(angle), radius * sinf(angle), 0);
+        glVertex3f(radius * cosf(angle), 0, radius * sinf(angle));
     }
 
     glEnd();
@@ -105,7 +101,7 @@ void drawDash(float width, float heigth, GLboolean isHorizontal) {
 
     glPushMatrix();
     {
-        glScalef(w, h, 1.0f);
+        glScalef(w, 1.0f, h);
         drawSquare();
     }
     glPopMatrix();
@@ -121,7 +117,7 @@ void drawWall() {
 
     glPushMatrix();
     {
-        glScalef(width, BLOCK_SIZE - 0.01f, 1.0f);
+        glScalef(width, 1.0f, BLOCK_SIZE - 0.01f);
         drawSquare();
 
         // Fugenfarbe
@@ -130,10 +126,10 @@ void drawWall() {
         // Horizontal
         glPushMatrix();
         {
-            glTranslatef(0.0f, -FUGUE_HEIGHT * 2, 0.0f);
+            glTranslatef(0.0f, 0.0f, -FUGUE_HEIGHT * 2);
             // Horizontale Striche
             for (int i = 0; i < 3; i++) {
-                glTranslatef(0.0f, FUGUE_HEIGHT, 0.0f);
+                glTranslatef(0.0f, 0.0f, FUGUE_HEIGHT);
                 drawDash(0, 0, GL_TRUE);
             }
         }
@@ -142,10 +138,10 @@ void drawWall() {
         // Vertikal
         glPushMatrix();
         {
-            glTranslatef(0.0f, -FUGUE_HEIGHT * 2.5f, 0);
+            glTranslatef(0.0f, 0, -FUGUE_HEIGHT * 2.5f);
             for (int i = 0; i < 4; i++) {
 
-                glTranslatef(0.0, FUGUE_HEIGHT, 0);
+                glTranslatef(0.0, 0, FUGUE_HEIGHT);
                 int max = i % 2 == 0 ? 3 : 2;
 
                 glPushMatrix();
@@ -182,7 +178,7 @@ void drawBox() {
 
     glPushMatrix();
     {
-        glScalef(width, BLOCK_SIZE - 0.01f, 1.0f);
+        glScalef(width, 1.0f, BLOCK_SIZE - 0.01f);
         drawSquare();
 
         // Fugenfarbe
@@ -191,11 +187,11 @@ void drawBox() {
         // Horizontal
         glPushMatrix();
         {
-            glTranslatef(0.0f, bottom + offset, 0.0f);
+            glTranslatef(0.0f, 0.0f, bottom + offset);
             // Horizontale Striche
             for (int i = 0; i < 2; i++) {
                 drawDash(0, 0, GL_TRUE);
-                glTranslatef(0.0f, -(bottom + offset) * 2, 0.0f);
+                glTranslatef(0.0f, 0.0f, -(bottom + offset) * 2);
             }
         }
         glPopMatrix();
@@ -223,7 +219,7 @@ void drawFreeBlock() {
 
     glPushMatrix();
     {
-        glScalef(BLOCK_SIZE - 0.01f, BLOCK_SIZE - 0.01f, 1.0f);
+        glScalef(BLOCK_SIZE - 0.01f, 1.0f, BLOCK_SIZE - 0.01f);
         drawSquare();
     }
 
@@ -240,7 +236,7 @@ void drawDoor() {
 
     glPushMatrix();
     {
-        glScalef(width, BLOCK_SIZE - 0.01f, 1.0f);
+        glScalef(width, 1.0f, BLOCK_SIZE - 0.01f);
         drawSquare();
 
         // Braun
@@ -266,9 +262,8 @@ void drawTriangleOject() {
 
     glPushMatrix();
     {
-        glScalef(width, BLOCK_SIZE / 2, 1.0f);
-        glRotatef(90, 0.0f, 0.0f, 1.0f);
-
+        glScalef(width, 1.0f, BLOCK_SIZE / 2);
+        glRotatef(90, 0.0f, 1.0f, 0.0f);
         glColor3f(0.137f, 0.137f, 0.557f);
         drawTriangle();
     }
@@ -284,7 +279,7 @@ void drawFinish() {
 
     glPushMatrix();
     {
-        glScalef(BLOCK_SIZE - 0.01f, BLOCK_SIZE - 0.01f, 1.0f);
+        glScalef(BLOCK_SIZE - 0.01f, 1.0f, BLOCK_SIZE - 0.01f);
         drawSquare();
     }
 
@@ -309,8 +304,8 @@ void drawDoorSwitchArrow() {
         // Arrow Head
         glPushMatrix();
         {
-            glTranslatef(0, 0.05f, 0);
-            glScalef(arrowHeadWidth, arrowHeadHeight, 1.0f);
+            glTranslatef(0, 0, 0.05f);
+            glScalef(arrowHeadWidth, 1.0f, arrowHeadHeight);
             drawTriangle();
         }
         glPopMatrix();
@@ -318,8 +313,8 @@ void drawDoorSwitchArrow() {
         // Arrow Body
         glPushMatrix();
         {
-            glTranslatef(0.0, -0.009f, 0);
-            glScalef(arrowBodyWidth, arrowBodyHeight * 1.5f, 1.0f);
+            glTranslatef(0.0, 0, -0.009f);
+            glScalef(arrowBodyWidth, 1.0f, arrowBodyHeight * 1.5f);
             drawSquare();
         }
         glPopMatrix();
@@ -334,13 +329,13 @@ void drawDoorSwitch() {
     drawFreeBlock();
 
     for (int i = 0; i < 2; ++i) {
-        int angle = i == 0 ? -45 : -225;
+        int angle = i == 0 ? 45 : 225;
         float pos = i == 0 ? 0.03f : -0.03f;
 
         glPushMatrix();
         {
-            glTranslatef(pos, pos, 0.0f);
-            glRotatef(angle, 0, 0, 1);
+            glTranslatef(pos, 0.0f, pos);
+            glRotatef(angle, 0, 1, 0);
             drawDoorSwitchArrow();
         }
         glPopMatrix();
@@ -375,7 +370,7 @@ void drawPortals() {
 
     glPushMatrix();
     {
-        glScalef(portalSize, portalSize, 0);
+        glScalef(portalSize, 0, portalSize);
         // 5 Farben, 5 Ringe
         for (int i = 0; i < 5; ++i) {
             float *colors = selectColor(i);
@@ -383,7 +378,7 @@ void drawPortals() {
 
             glPushMatrix();
             {
-                glScalef(size, size, 0);
+                glScalef(size, 0, size);
                 drawCircle();
                 size -= 0.02f;
             }
@@ -403,14 +398,14 @@ void drawHouse() {
     drawFreeBlock();
     glPushMatrix();
     {
-        glTranslatef(0, -0.025f, 0.0f);
-        glScalef(1.5f, 1.5f, 0);
+        glTranslatef(0, 0.0f, -0.025f);
+        glScalef(1.5f, 0, 1.5f);
 
         // Hauskoerper
         glPushMatrix();
         {
-            glTranslatef(0, -0.015f, 0);
-            glScalef(0.09f, 0.06f, 1.0f);
+            glTranslatef(0, 0, -0.015f);
+            glScalef(0.09f, 1.0f, 0.06f);
 
             glColor3f(1.0f, 1.0f, 1.0f);
             drawSquare();
@@ -420,8 +415,8 @@ void drawHouse() {
         // Dach
         glPushMatrix();
         {
-            glTranslatef(0, 0.05f, 0);
-            glScalef(0.08f, 0.05f, 1.0f);
+            glTranslatef(0, 0, 0.05f);
+            glScalef(0.08f, 1.0f, 0.05f);
             glColor3f(houseColors[0], houseColors[1], houseColors[2]);
             drawTriangle();
         }
@@ -430,8 +425,8 @@ void drawHouse() {
         // Tuer
         glPushMatrix();
         {
-            glTranslatef(0, -0.03f, 0);
-            glScalef(0.018f, 0.03f, 1.0f);
+            glTranslatef(0, 0, -0.03f);
+            glScalef(0.018f, 1.0f, 0.03f);
             glColor3f(houseColors[0], houseColors[1], houseColors[2]);
             drawSquare();
         }
@@ -442,8 +437,8 @@ void drawHouse() {
             float x = i == 0 ? -0.015f : 0.015f;
             glPushMatrix();
             {
-                glTranslatef(x, 0.003, 0);
-                glScalef(0.02f, 0.015f, 1.0f);
+                glTranslatef(x, 0, 0.003);
+                glScalef(0.02f, 1.0f, 0.015f);
                 glColor3f(0.529f, 0.808f, 0.922f);
                 drawSquare();
             }
@@ -453,8 +448,8 @@ void drawHouse() {
         // Tuerknauf
         glPushMatrix();
         {
-            glTranslatef(-0.0055f, -0.035f, 0);
-            glScalef(0.005f, 0.005, 1.0f);
+            glTranslatef(-0.0055f, 0, -0.035f);
+            glScalef(0.005f, 1.0f, 0.005);
 
             glColor3f(0.663f, 0.663f, 0.663f);
             drawSquare();
@@ -474,10 +469,10 @@ void drawPlayerEyes() {
         {
             float xEyebrow = i == 0 ? -0.15f : 0.15f;
             int xEyebrowAngle = i == 0 ? 10 : -10;
-            glTranslatef(xEyebrow, 0.3f, 0.0f);
+            glTranslatef(xEyebrow, 0.0f, 0.3f);
             glRotatef(xEyebrowAngle, 0.0f, 0.0f, 1.0f);
             glColor3f(0, 0, 0);
-            glScalef(0.16f, 0.05f, 0);
+            glScalef(0.16f, 0, 0.05f);
             drawSquare();
         }
         glPopMatrix();
@@ -488,9 +483,9 @@ void drawPlayerEyes() {
         glPushMatrix();
         {
             float x = i == 0 ? -0.15f : 0.15f;
-            glTranslatef(x, 0.15f, 0.0f);
+            glTranslatef(x, 0.0f, 0.15f);
             glColor3f(1, 1, 1);
-            glScalef(0.07f, 0.07f, 0);
+            glScalef(0.07f, 0, 0.07f);
             drawCircle();
         }
         glPopMatrix();
@@ -501,9 +496,9 @@ void drawPlayerEyes() {
         glPushMatrix();
         {
             float x = j == 0 ? -0.15f : 0.15f;
-            glTranslatef(x, 0.15f, 0.0f);
+            glTranslatef(x, 0.0f, 0.15f);
             glColor3f(0, 0, 0);
-            glScalef(0.03f, 0.03f, 0);
+            glScalef(0.03f, 0, 0.03f);
             drawCircle();
         }
         glPopMatrix();
@@ -518,7 +513,7 @@ void drawPlayerHead() {
     glPushMatrix();
     {
         glColor3f(0.824f, 0.706f, 0.549f);
-        glScalef(0.5f, 0.5f, 0);
+        glScalef(0.5f, 0, 0.5f);
         drawCircle();
     }
     glPopMatrix();
@@ -529,9 +524,9 @@ void drawPlayerHead() {
     // Mund
     glPushMatrix();
     {
-        glTranslatef(0, -0.15f, 0.0f);
+        glTranslatef(0, 0.0f, -0.15f);
         glColor3f(1, 1, 1);
-        glScalef(0.5f, 0.05f, 0);
+        glScalef(0.5f, 0, 0.05f);
         drawSquare();
     }
     glPopMatrix();
@@ -539,9 +534,9 @@ void drawPlayerHead() {
     // Hutdeckel
     glPushMatrix();
     {
-        glTranslatef(0, 0.65f, 0.0f);
+        glTranslatef(0, 0.0f, 0.65f);
         glColor3f(0, 0, 0);
-        glScalef(0.5f, 0.4f, 0);
+        glScalef(0.5f, 0, 0.4f);
         drawSquare();
     }
     glPopMatrix();
@@ -549,9 +544,9 @@ void drawPlayerHead() {
     // Hutkoerper
     glPushMatrix();
     {
-        glTranslatef(0, 0.45f, 0.0f);
+        glTranslatef(0, 0.0f, 0.45f);
         glColor3f(0, 0, 0);
-        glScalef(1.0f, 0.05f, 0);
+        glScalef(1.0f, 0, 0.05f);
         drawSquare();
     }
     glPopMatrix();
@@ -564,9 +559,9 @@ void drawPlayerBody() {
     // Korpus
     glPushMatrix();
     {
-        glTranslatef(0, -1.1f, 0.0f);
+        glTranslatef(0, 0.0f, -1.1f);
         glColor3f(0, 0, 0);
-        glScalef(0.8f, 0.9f, 0);
+        glScalef(0.8f, 0, 0.9f);
         drawCircle();
     }
     glPopMatrix();
@@ -576,9 +571,9 @@ void drawPlayerBody() {
         glPushMatrix();
         {
             float xLegPos = i == 0 ? -0.3f : 0.3f;
-            glTranslatef(xLegPos, -2.3f, 0.0f);
+            glTranslatef(xLegPos, 0.0f, -2.3f);
             glColor3f(0, 0, 0);
-            glScalef(0.3f, 0.9f, 0);
+            glScalef(0.3f, 0, 0.9f);
             drawSquare();
         }
         glPopMatrix();
@@ -590,9 +585,9 @@ void drawPlayerBody() {
         {
             float xLegPos = i == 0 ? -0.5f : 0.5f;
 
-            glTranslatef(xLegPos, -2.7f, 0.0f);
+            glTranslatef(xLegPos, 0.0f, -2.7f);
             glColor3f(0, 0, 0);
-            glScalef(0.7f, 0.2f, 0);
+            glScalef(0.7f, 0, 0.2f);
             drawTriangle();
         }
         glPopMatrix();
@@ -606,9 +601,9 @@ void drawPlayerBody() {
             float xArmPos = i == 0 ? -0.9f : 0.9f;
             int angle = i == 0 ? -60 : 60;
 
-            glTranslatef(xArmPos, -0.9f, 0.0f);
-            glRotatef(angle, 0, 0, 1);
-            glScalef(0.3f, 0.9f, 0);
+            glTranslatef(xArmPos, 0.0f, -0.9f);
+            glRotatef(angle, 0, -1, 0);
+            glScalef(0.3f, 0, 0.9f);
             drawSquare();
         }
         glPopMatrix();
@@ -622,9 +617,9 @@ void drawPlayerBody() {
             float xHandPos = i == 0 ? -1.4f : 1.4f;
             int angle = i == 0 ? -60 : 60;
 
-            glTranslatef(xHandPos, -1.15f, 0.0f);
+            glTranslatef(xHandPos, 0.0f, -1.15f);
             glRotatef(angle, 0, 0, 1);
-            glScalef(0.2f, 0.2f, 0);
+            glScalef(0.2f, 0, 0.2f);
             drawCircle();
         }
         glPopMatrix();
@@ -637,16 +632,16 @@ void drawPlayerBody() {
 void drawPlayer() {
     glPushMatrix();
     {
-        glTranslatef(0, 0.05f, 0.0f);
-        glScalef(0.05f, 0.05f, 0);
+        glTranslatef(0, 0.0f, 0.05f);
+        glScalef(0.05f, 0, 0.05f);
 
         drawPlayerBody();
 
         // Krawatte
         glPushMatrix();
         {
-            glTranslatef(0, -0.8f, 0);
-            glScalef(0.08f, 0.3, 0);
+            glTranslatef(0, 0, -0.8f);
+            glScalef(0.08f, 0, 0.3);
 
             glColor3f(1, 1, 1);
             drawTriangle();

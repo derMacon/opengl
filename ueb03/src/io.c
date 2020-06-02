@@ -2,7 +2,9 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+
 #include <GL/glut.h>
+
 #endif
 
 #include "io.h"
@@ -32,14 +34,11 @@ setProjection(GLdouble aspect) {
     /* Matrix zuruecksetzen - Einheitsmatrix laden */
     glLoadIdentity();
 
-    /* Koordinatensystem bleibt quadratisch */
-    if (aspect <= 1) {
-        gluOrtho2D(-1.0, 1.0,    /* links, rechts */
-                   -1.0 / aspect, 1.0 / aspect); /* unten, oben */
-    } else {
-        gluOrtho2D(-1.0 * aspect, 1.0 * aspect,  /* links, rechts */
-                   -1.0, 1.0);   /* unten, oben */
-    }
+    /* perspektivische Projektion */
+    gluPerspective (70.0,         /* Oeffnungswinkel */
+                    aspect,       /* Seitenverhaeltnis */
+                    0.1,          /* nahe Clipping-Ebene */
+                    30.0 /* ferne Clipping-Ebene */ );
 }
 
 /**
@@ -94,14 +93,19 @@ decreaseTimer() {
  */
 static void
 cbDisplay(void) {
-    /* Buffer zuruecksetzen */
-    glClear(GL_COLOR_BUFFER_BIT);
+    // Kombiniert mit Leeren des Colorbuffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     /* Nachfolgende Operationen beeinflussen Modelviewmatrix */
     glMatrixMode(GL_MODELVIEW);
 
     /* Matrix zuruecksetzen - Einheitsmatrix laden */
     glLoadIdentity();
+
+    /* Kameraposition */
+    gluLookAt (2, -2.0, 0,   /* Augpunkt */
+               0.0, 0.0, 0.0,     /* Zentrum */
+               0.0, 0.0, 2.0);    /* Up-Vektor */
 
     /* Szene zeichnen */
     drawScene();
@@ -380,8 +384,11 @@ initAndStartIO(char *title, int width, int height) {
     glutInit(&argc, &argv);
 
     /* Initialisieren des Fensters */
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(width, height);
+
+    //Tiefentest (in der init()) aktivieren
+   glEnable(GL_DEPTH_TEST);
 
     // Auf dem aktuellen Bildschirm anzeigen
     glutInitWindowPosition(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);

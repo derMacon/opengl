@@ -116,7 +116,8 @@ void drawLevel() {
                     int levelField = level[y][x];
 
                     /* Kachel an Position x,y zeichnen. */
-                    glTranslatef(xPos, yPos, 0.0f);
+                    glTranslatef(xPos, 0.0f, yPos);
+
                     switch (levelField) {
                         case (P_FREE):
                         case (P_WALL):
@@ -154,6 +155,7 @@ void drawLevel() {
  * Skalierung des Spielfelds und Spiel zeichnen
  */
 void drawGame() {
+
     glPushMatrix();
     {
         // Spielfeld ist ein wenig zu groß, also um 20% kleiner machen
