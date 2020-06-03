@@ -199,12 +199,10 @@ void drawDash(float width, float heigth, GLboolean isHorizontal) {
 void drawWall() {
 
     glColor3f(0.412f, 0.412f, 0.412f);
-    float width = BLOCK_SIZE;
+
 
     glPushMatrix();
     {
-        glRotatef(-90, 1, 0, 0);
-        glScalef(width, BLOCK_SIZE, 0);
         drawSquare();
 
         // Fugenfarbe
@@ -213,7 +211,7 @@ void drawWall() {
         // Horizontal
         glPushMatrix();
         {
-            glTranslatef(0.0f, -FUGUE_HEIGHT * 2, 0.0f);
+            glTranslatef(0.0f, -FUGUE_HEIGHT * 2, 0.001f);
             // Horizontale Striche
             for (int i = 0; i < 3; i++) {
                 glTranslatef(0.0f, FUGUE_HEIGHT, 0.0f);
@@ -225,7 +223,7 @@ void drawWall() {
         // Vertikal
         glPushMatrix();
         {
-            glTranslatef(0.0f, -FUGUE_HEIGHT * 2.5f, 0);
+            glTranslatef(0.0f, -FUGUE_HEIGHT * 2.5f, 0.001);
             for (int i = 0; i < 4; i++) {
 
                 glTranslatef(0.0, FUGUE_HEIGHT, 0);

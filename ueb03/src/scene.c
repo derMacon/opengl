@@ -40,7 +40,7 @@ void initDisplayList() {
                     break;
 
                 case (P_WALL):
-                   // drawCube(GL_TRUE);
+                    drawCube(GL_TRUE);
                     break;
 
                 case (P_BOX):
