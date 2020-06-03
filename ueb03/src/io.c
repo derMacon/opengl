@@ -12,10 +12,106 @@
 #include "logic.h"
 #include "variables.h"
 #include "helper.h"
+#include <math.h>
 
 enum e_Direction direction = dirNone;
 GLboolean showFullscreen = GL_FALSE;
 double cooldown = 0.0f;
+
+// TODO: Neuschreiben
+void changeCameraOrientation(GLfloat deltaRadius, GLfloat deltaPolar, GLfloat deltaAzimuth)
+{
+    getGame()->camera.radius += deltaRadius;
+    getGame()->camera.polarAngle += deltaPolar;
+    getGame()->camera.azimuthAngle += deltaAzimuth;
+
+    if (getGame()->camera.radius < CAMERA_RADIUS_MIN) {
+        getGame()->camera.radius = CAMERA_RADIUS_MIN;
+    }
+
+    if (getGame()->camera.radius > CAMERA_RADIUS_MAX) {
+        getGame()->camera.radius = CAMERA_RADIUS_MAX;
+    }
+
+    if (getGame()->camera.polarAngle < 0.0f) {
+        getGame()->camera.polarAngle += 360.0f;
+    }
+
+    if (getGame()->camera.polarAngle > 360.0f) {
+        getGame()->camera.polarAngle -= 360.0f;
+    }
+
+    if (getGame()->camera.azimuthAngle < 5.0f) {
+        getGame()->camera.azimuthAngle = 5.0f;
+    }
+
+    if (getGame()->camera.azimuthAngle > 90.0f) {
+        getGame()->camera.azimuthAngle = 90.0f;
+    }
+}
+
+
+// TODO: Neuschreiben
+void handleMouseEvent (int x, int y, CGMouseEventType eventType,
+                       int button, int buttonState)
+{
+    /* aktueller Status der linken Maustaste */
+    static int leftMouseButtonState = GLUT_UP;
+
+    /* Position der Maus beim letzten Aendern der Kamera */
+    static int oldMousePos[2] = { 0, 0 };
+
+    /* Veraenderung der Kameraausrichtung */
+    float radius = 0.0f;
+    float polar = 0.0f;
+    float azimuth = 0.0f;
+
+    switch (eventType)
+    {
+        case mouseButton:
+            switch (button)
+            {
+                case GLUT_LEFT_BUTTON:
+                    leftMouseButtonState = buttonState;
+                    oldMousePos[0] = x;
+                    oldMousePos[1] = y;
+                    break;
+
+                case 3: /* Hoch-Scrollen */
+                    if (buttonState == GLUT_UP)
+                    {
+                        radius -= SCROLL_SPEED;
+                    }
+                    break;
+
+                case 4: /* Runter-Scrollen */
+                    if (buttonState == GLUT_UP)
+                    {
+                        radius += SCROLL_SPEED;
+                    }
+                    break;
+            }
+            break;
+
+        case mouseMotion:
+            if (leftMouseButtonState == GLUT_DOWN)
+            {
+                int deltaX = oldMousePos[0] - x;
+                int deltaY = oldMousePos[1] - y;
+
+                polar += ((float)deltaX) * POLAR_FACTOR;
+                azimuth += ((float)deltaY) * AZIMUTH_FACTOR;
+
+                oldMousePos[0] = x;
+                oldMousePos[1] = y;
+            }
+            break;
+        default:
+            break;
+    }
+
+    changeCameraOrientation(radius, polar, azimuth);
+}
 
 /**
  * Setzen der Projektionsmatrix.
@@ -104,9 +200,27 @@ cbDisplay(void) {
 
     /* Kameraposition */
 
-    gluLookAt (7.5, 10.0, 15.0,   /* Augpunkt */
-               0.0, 0.0, 0.0,     /* Zentrum */
-               0.0, 1.0, 0.0);    /* Up-Vektor */
+    // TODO: Neuschreiben
+    GLfloat eyeX = 0.0f;
+    GLfloat eyeY = 0.0f;
+    GLfloat eyeZ = 0.0f;
+
+    GLfloat radius = getGame()->camera.radius;
+    GLfloat polar = TO_RADIANS(getGame()->camera.polarAngle);
+    GLfloat azimuth = TO_RADIANS(getGame()->camera.azimuthAngle);
+
+    eyeX = radius * sinf(azimuth) * cosf(polar);
+    eyeY = radius * cosf(azimuth);
+    eyeZ = radius * sinf(azimuth) * sinf(polar);
+
+    gluLookAt(eyeX, eyeY, eyeZ, /* Augpunkt */
+              0.0f, 0.0f, 0.0f,   /* Mittelpunkt */
+              0.0f, 1.0f, 0.0f);  /* Up-Vektor */
+
+
+//    gluLookAt (7.5, 10.0, 15.0,   /* Augpunkt */
+//               0.0, 0.0, 0.0,     /* Zentrum */
+//               0.0, 1.0, 0.0);    /* Up-Vektor */
 
     /* Szene zeichnen */
     drawScene();
@@ -136,6 +250,40 @@ void switchGameStatus(Gamestatus status) {
     } else if (getGame()->gameStatus == status) {
         getGame()->gameStatus = GAME_RUNNING;
     }
+}
+
+// TODO: Neuschreiben
+/**
+ * Mouse-Button-Callback.
+ * @param button Taste, die den Callback ausgeloest hat.
+ * @param state Status der Taste, die den Callback ausgeloest hat.
+ * @param x X-Position des Mauszeigers beim Ausloesen des Callbacks.
+ * @param y Y-Position des Mauszeigers beim Ausloesen des Callbacks.
+ */
+static void cbMouseButton (int button, int state, int x, int y)
+{
+    handleMouseEvent(x, y, mouseButton, button, state);
+}
+// TODO: Neuschreiben
+/**
+ * Mouse-Motion-Callback.
+ * @param x X-Position des Mauszeigers.
+ * @param y Y-Position des Mauszeigers.
+ */
+static void cbMouseMotion (int x, int y)
+{
+    handleMouseEvent(x, y, mouseMotion, 0, 0);
+}
+// TODO: Neuschreiben
+/**
+ * Mouse-Passive-Motion-Callback.
+ * @param x X-Position des Mauszeigers.
+ * @param y Y-Position des Mauszeigers.
+ */
+static void
+cbMousePassiveMotion (int x, int y)
+{
+    handleMouseEvent(x, y, mousePassiveMotion, 0, 0);
 }
 
 /**
@@ -342,6 +490,19 @@ void registerCallbacks(void) {
      * gedrueckt wird
      * */
     glutSpecialFunc(cbSpecial);
+
+    /* Mouse-Button-Callback (wird ausgefuehrt, wenn eine Maustaste
+ * gedrueckt oder losgelassen wird) */
+    glutMouseFunc (cbMouseButton);
+
+    /* Mouse-Motion-Callback (wird ausgefuehrt, wenn die Maus bewegt wird,
+     * waehrend eine Maustaste gedrueckt wird) */
+    glutMotionFunc (cbMouseMotion);
+
+    /* Mouse-Motion-Callback (wird ausgefuehrt, wenn die Maus bewegt wird,
+     * waehrend keine Maustaste gedrueckt wird) */
+    glutPassiveMotionFunc (cbMousePassiveMotion);
+
 
     /* Spezialtasten-Loslass-Callback - wird ausgefuehrt, wenn eine Spezialtaste losgelassen wird */
     glutSpecialUpFunc(cbSpecialUp);

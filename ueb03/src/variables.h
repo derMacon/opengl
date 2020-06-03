@@ -4,6 +4,13 @@
 /* Globale Einstellungen */
 #define TIMER_CALLS_PS 144
 
+// TODO: Umbenennen
+#define SCROLL_SPEED (0.6f)
+#define POLAR_FACTOR (-0.25f)
+#define AZIMUTH_FACTOR (0.25f)
+#define CAMERA_RADIUS_MIN ( 1.0f)
+#define CAMERA_RADIUS_MAX (18.0f)
+
 /* Hoehe/Breite des (quadratischen) Levels */
 #define LEVEL_SIZE (9)
 #define BLOCK_SIZE (2.f / LEVEL_SIZE)

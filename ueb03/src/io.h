@@ -28,5 +28,16 @@ int
 initAndStartIO(char *title, int width, int height);
 
 
+// TODO: Umschreiben
+typedef enum {
+    mouseButton,
+    mouseMotion,
+    mousePassiveMotion
+} CGMouseEventType;
+
+// TODO: Umschreiben
+void handleMouseEvent(int x, int y, CGMouseEventType eventType,
+                      int button, int buttonState);
+
 typedef GLfloat CGColor3f[3];
 #endif

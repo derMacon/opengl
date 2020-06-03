@@ -48,11 +48,26 @@ typedef struct {
             level;
 } LevelSettings;
 
+
+// TODO: Neuschreiben
+#define TAU (acos(-1.0) * 2.f)
+#define TO_RADIANS(x) ((x) * TAU / 360.0f)
+
+// TODO: Neuschreiben
+typedef struct {
+    GLfloat radius;
+    GLfloat azimuthAngle;
+    GLfloat polarAngle;
+} CameraOrientation;
+
 /** Spieleinstellungen */
 typedef struct {
     int levelId;
     Gamestatus gameStatus;
     LevelSettings levelSettings;
+
+    // TODO: Umbenennen
+    CameraOrientation camera;
 } Game;
 
 /** Level des Spiels */
