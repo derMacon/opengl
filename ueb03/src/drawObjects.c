@@ -255,12 +255,12 @@ void drawDash(float width, float heigth, GLboolean isHorizontal) {
 void drawWall() {
 
     glColor3f(0.412f, 0.412f, 0.412f);
-    float width = BLOCK_SIZE - 0.01f;
+    float width = BLOCK_SIZE;
 
     glPushMatrix();
     {
         glRotatef(-90, 1, 0,0);
-        glScalef(width, BLOCK_SIZE - 0.01f, 1.0f);
+        glScalef(width, BLOCK_SIZE, 1.0f);
         drawSquare();
 
         // Fugenfarbe
@@ -314,14 +314,14 @@ void drawWall() {
  */
 void drawBox() {
     glColor3f(0.600f, 0.240f, 0.100f);
-    float width = BLOCK_SIZE - 0.01f;
+    float width = BLOCK_SIZE;
 
     float bottom = -0.5f;
     float offset = 0.15f;
 
     glPushMatrix();
     {
-        glScalef(width, 1.0f, BLOCK_SIZE - 0.01f);
+        glScalef(width, 1.0f, BLOCK_SIZE);
         drawSquare();
 
         // Fugenfarbe
@@ -363,7 +363,7 @@ void drawFreeBlock() {
     glPushMatrix();
     {
         glRotatef(-90, 1, 0,0);
-        glScalef(BLOCK_SIZE - 0.01f, BLOCK_SIZE - 0.01f, 1.0f);
+        glScalef(BLOCK_SIZE, BLOCK_SIZE, 1.0f);
         drawSquare();
     }
 
@@ -374,13 +374,13 @@ void drawFreeBlock() {
  * Zeichnet die Tuer
  */
 void drawDoor() {
-    float width = BLOCK_SIZE - 0.3f;
+    float width = BLOCK_WIDTH - 0.3f;
     drawFreeBlock();
     glColor3f(0.600f, 0.240f, 0.100f);
 
     glPushMatrix();
     {
-        glScalef(width, 1.0f, BLOCK_SIZE - 0.01f);
+        glScalef(width, 1.0f, BLOCK_SIZE);
         drawSquare();
 
         // Braun
@@ -401,12 +401,12 @@ void drawDoor() {
  * Zeichnet ein Dreieckobjekt
  */
 void drawTriangleOject() {
-    float width = BLOCK_SIZE - 0.3f;
+    float width = BLOCK_WIDTH - 0.3f;
     drawFreeBlock();
 
     glPushMatrix();
     {
-        glScalef(width, 1.0f, BLOCK_SIZE / 2);
+        glScalef(width, 1.0f, BLOCK_WIDTH / 2);
         glRotatef(90, 0.0f, 1.0f, 0.0f);
         glColor3f(0.137f, 0.137f, 0.557f);
         drawTriangle();
@@ -424,7 +424,7 @@ void drawFinish() {
     glPushMatrix();
     {
         glRotatef(-90, 1, 0,0);
-        glScalef(BLOCK_SIZE - 0.01f, BLOCK_SIZE - 0.01f, 1.0f);
+        glScalef(BLOCK_SIZE, BLOCK_SIZE, 1.0f);
         drawSquare();
     }
 
@@ -435,10 +435,10 @@ void drawFinish() {
  * Zeichnet einen Pfeil fuer den Tuerschalter
  */
 void drawDoorSwitchArrow() {
-    float width = BLOCK_SIZE - 0.3f;
+    float width = BLOCK_WIDTH - 0.3f;
 
     double arrowHeadWidth = width / 1.5;
-    double arrowHeadHeight = BLOCK_SIZE / 4;
+    double arrowHeadHeight = BLOCK_WIDTH / 4;
     double arrowBodyWidth = arrowHeadWidth / 2;
     double arrowBodyHeight = arrowHeadHeight / 2;
 

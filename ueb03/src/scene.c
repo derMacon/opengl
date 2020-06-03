@@ -42,16 +42,16 @@ void initDisplayList() {
                 case (P_WALL):
                     glPushMatrix();
                     {
-                        float val = 0.2f;
                         glTranslatef(0, 0.1, 0);
-                        glScalef(val, val, val);
+                        glScalef(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
                         drawCube();
                     }
                     glPopMatrix();
                     break;
 
                 case (P_BOX):
-                    //    drawBox();
+
+                    drawBox();
                     break;
 
                 case (P_DOOR):
@@ -71,7 +71,7 @@ void initDisplayList() {
                     break;
 
                 case (P_PLAYER):
-                    //   drawPlayer();
+                    drawPlayer();
                     break;
 
                 default:
@@ -114,14 +114,12 @@ void drawLevel() {
 
                 glPushMatrix();
                 {
-
-
                     // Spielfeld faengt bei -1 (x) und 1 (y) an
                     float correctX = -1.0f;
                     float correctY = 1.0f;
 
-                    float xPos = (correctX + (float) x * BLOCK_SIZE) + BLOCK_SIZE / 2;
-                    float yPos = correctY - ((float) y * BLOCK_SIZE);
+                    float xPos = (correctX + (float) x * BLOCK_WIDTH) + BLOCK_WIDTH / 2;
+                    float yPos = correctY - ((float) y * BLOCK_WIDTH);
 
                     int levelField = level[y][x];
 
@@ -171,7 +169,7 @@ void drawGame() {
         //todo maybe ändern
 
         // Spielfeld ist ein wenig zu groß, also um 20% kleiner machen
-        glScalef(1.0f, 1.0f,1.0f);
+        //glScalef(1.0f, 1.0f,1.0f);
 
         // Spielfeld ist ein wenig zu hoch, also bisschen tiefer setzen
         glTranslatef(0.0f, -0.1f, 0.0f);

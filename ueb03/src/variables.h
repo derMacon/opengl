@@ -14,7 +14,9 @@
 
 /* Hoehe/Breite des (quadratischen) Levels */
 #define LEVEL_SIZE (9)
-#define BLOCK_SIZE (2.f / LEVEL_SIZE)
+#define BLOCK_WIDTH (2.f / LEVEL_SIZE)
+#define BLOCK_OFFSET  0.005f
+#define BLOCK_SIZE BLOCK_WIDTH - BLOCK_OFFSET
 
 #define FUGUE_HEIGHT 0.25f
 #define FUGUE_WIDTH 0.05f
