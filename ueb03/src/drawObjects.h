@@ -60,9 +60,7 @@ void drawPlayer();
 void changeColor(GLboolean isGreenHouse);
 
 
-
-
-void drawCube();
+void drawCube(pushyFieldType fieldType);
 
 void drawAxes();
 

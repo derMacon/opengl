@@ -126,67 +126,6 @@ static void drawSquare() {
     glEnd();
 }
 
-void drawCube() {
-
-    /* Frontflaeche */
-    glPushMatrix();
-    {
-        glTranslatef(0.0f, 0.0f, 0.5f);
-        glColor3f(1.0, 0.0, 0.0);
-        drawSquare();
-    }
-    glPopMatrix();
-
-    /* rechte Seitenflaeche */
-    glPushMatrix();
-    {
-        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-        glTranslatef(0.0f, 0.0f, 0.5f);
-        glColor3f(0.0, 1.0, 0.0);
-        drawSquare();
-    }
-    glPopMatrix();
-
-    /* Rueckseitenflaeche */
-    glPushMatrix();
-    {
-        glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-        glTranslatef(0.0f, 0.0f, 0.5f);
-        glColor3f(0.0, 0.0, 1.0);
-        drawSquare();
-    }
-    glPopMatrix();
-
-    /* linke Seitenflaeche */
-    glPushMatrix();
-    {
-        glRotatef(270.0f, 0.0f, 1.0f, 0.0f);
-        glTranslatef(0.0f, 0.0f, 0.5f);
-        glColor3f(0.0, 1.0, 1.0);
-        drawSquare();
-    }
-    glPopMatrix();
-
-    /* Deckelflaeche */
-    glPushMatrix();
-    {
-        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-        glTranslatef(0.0f, 0.0f, 0.5f);
-        glColor3f(1.0, 0.0, 1.0);
-        drawSquare();
-    }
-    glPopMatrix();
-
-    /* Bodenflaeche */
-    glPushMatrix();
-    {
-        glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-        glTranslatef(0.0f, 0.0f, 0.5f);
-        glColor3f(1.0, 1.0, 0.0);
-        drawSquare();
-    }
-    glPopMatrix();
-}
 
 /**
  * Zeichnet ein Dreieck
@@ -238,12 +177,17 @@ static void drawCircle() {
  */
 void drawDash(float width, float heigth, GLboolean isHorizontal) {
 
-    float w = isHorizontal ? 1 : width;
-    float h = isHorizontal ? FUGUE_WIDTH : heigth;
+    float w = width;
+    float h = heigth;
+
+    if (isHorizontal) {
+        w = w < 0.00001f ? 1 : w;
+        h = h < 0.00001f ? FUGUE_WIDTH : h;
+    }
 
     glPushMatrix();
     {
-        glScalef(w, 1.0f, h);
+        glScalef(w, h, 1.0f);
         drawSquare();
     }
     glPopMatrix();
@@ -259,8 +203,8 @@ void drawWall() {
 
     glPushMatrix();
     {
-        glRotatef(-90, 1, 0,0);
-        glScalef(width, BLOCK_SIZE, 1.0f);
+        glRotatef(-90, 1, 0, 0);
+        glScalef(width, BLOCK_SIZE, 0);
         drawSquare();
 
         // Fugenfarbe
@@ -314,14 +258,14 @@ void drawWall() {
  */
 void drawBox() {
     glColor3f(0.600f, 0.240f, 0.100f);
-    float width = BLOCK_SIZE;
+//    float width = BLOCK_SIZE - 0.01f;
 
     float bottom = -0.5f;
     float offset = 0.15f;
 
     glPushMatrix();
     {
-        glScalef(width, 1.0f, BLOCK_SIZE);
+//        glScalef(width, BLOCK_SIZE - 0.01f, 1.0f);
         drawSquare();
 
         // Fugenfarbe
@@ -330,11 +274,11 @@ void drawBox() {
         // Horizontal
         glPushMatrix();
         {
-            glTranslatef(0.0f, 0.0f, bottom + offset);
+            glTranslatef(0.0f, bottom + offset, 0.002f);
             // Horizontale Striche
             for (int i = 0; i < 2; i++) {
                 drawDash(0, 0, GL_TRUE);
-                glTranslatef(0.0f, 0.0f, -(bottom + offset) * 2);
+                glTranslatef(0.0f, -(bottom + offset) * 2, 0.0f);
             }
         }
         glPopMatrix();
@@ -342,7 +286,7 @@ void drawBox() {
         // Vertikal
         glPushMatrix();
         {
-            glTranslatef(-0.4f, 0.0f, 0.0f);
+            glTranslatef(-0.4f, 0.0f, 0.001f);
             for (int i = 0; i < BOX_NUMBER_OF_COLS; i++) {
                 drawDash(BOX_DASH_WIDTH, BOX_DASH_HEIGHT, GL_FALSE);
                 glTranslatef(1.0f / (float) BOX_NUMBER_OF_COLS - (BOX_DASH_WIDTH / 2), 0.0, 0.0f);
@@ -362,7 +306,7 @@ void drawFreeBlock() {
 
     glPushMatrix();
     {
-        glRotatef(-90, 1, 0,0);
+        glRotatef(-90, 1, 0, 0);
         glScalef(BLOCK_SIZE, BLOCK_SIZE, 1.0f);
         drawSquare();
     }
@@ -423,7 +367,7 @@ void drawFinish() {
 
     glPushMatrix();
     {
-        glRotatef(-90, 1, 0,0);
+        glRotatef(-90, 1, 0, 0);
         glScalef(BLOCK_SIZE, BLOCK_SIZE, 1.0f);
         drawSquare();
     }
@@ -794,6 +738,100 @@ void drawPlayer() {
         glPopMatrix();
 
         drawPlayerHead();
+    }
+    glPopMatrix();
+}
+
+
+void
+drawCube(pushyFieldType type) {
+    glPushMatrix();
+    {
+        glTranslatef(0, 0.1f, 0);
+        glScalef(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+
+        /* Frontflaeche */
+        glPushMatrix();
+        {
+            glTranslatef(0.0f, 0.0f, 0.5f);
+            glColor3f(1.0, 0.0, 0.0);
+            if (type == P_BOX) {
+                drawBox();
+            } else {
+                drawWall();
+            }
+        }
+        glPopMatrix();
+
+        /* rechte Seitenflaeche */
+        glPushMatrix();
+        {
+            glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+            glTranslatef(0.0f, 0.0f, 0.5f);
+            glColor3f(0.0, 1.0, 0.0);
+            if (type == P_BOX) {
+                drawBox();
+            } else {
+                drawWall();
+            }
+        }
+        glPopMatrix();
+
+        /* Rueckseitenflaeche */
+        glPushMatrix();
+        {
+            glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+            glTranslatef(0.0f, 0.0f, 0.5f);
+            glColor3f(0.0, 0.0, 1.0);
+            if (type == P_BOX) {
+                drawBox();
+            } else {
+                drawWall();
+            }
+        }
+        glPopMatrix();
+
+        /* linke Seitenflaeche */
+        glPushMatrix();
+        {
+            glRotatef(270.0f, 0.0f, 1.0f, 0.0f);
+            glTranslatef(0.0f, 0.0f, 0.5f);
+            glColor3f(0.0, 1.0, 1.0);
+            if (type == P_BOX) {
+                drawBox();
+            } else {
+                drawWall();
+            }
+        }
+        glPopMatrix();
+
+        /* Deckelflaeche */
+        glPushMatrix();
+        {
+            glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+            glTranslatef(0.0f, 0.0f, 0.5f);
+            glColor3f(1.0, 0.0, 1.0);
+            if (type == P_BOX) {
+                drawBox();
+            } else {
+                drawWall();
+            }
+        }
+        glPopMatrix();
+
+        /* Bodenflaeche */
+        glPushMatrix();
+        {
+            glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+            glTranslatef(0.0f, 0.0f, 0.5f);
+            glColor3f(1.0, 1.0, 0.0);
+            if (type == P_BOX) {
+                drawBox();
+            } else {
+                drawWall();
+            }
+        }
+        glPopMatrix();
     }
     glPopMatrix();
 }

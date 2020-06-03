@@ -40,18 +40,11 @@ void initDisplayList() {
                     break;
 
                 case (P_WALL):
-                    glPushMatrix();
-                    {
-                        glTranslatef(0, 0.1, 0);
-                        glScalef(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-                        drawCube();
-                    }
-                    glPopMatrix();
+                   // drawCube(GL_TRUE);
                     break;
 
                 case (P_BOX):
-
-                    drawBox();
+                    drawCube(P_BOX);
                     break;
 
                 case (P_DOOR):
