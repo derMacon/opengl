@@ -19,8 +19,7 @@ GLboolean showFullscreen = GL_FALSE;
 double cooldown = 0.0f;
 
 // TODO: Neuschreiben
-void changeCameraOrientation(GLfloat deltaRadius, GLfloat deltaPolar, GLfloat deltaAzimuth)
-{
+void changeCameraOrientation(GLfloat deltaRadius, GLfloat deltaPolar, GLfloat deltaAzimuth) {
     getGame()->camera.radius += deltaRadius;
     getGame()->camera.polarAngle += deltaPolar;
     getGame()->camera.azimuthAngle += deltaAzimuth;
@@ -52,25 +51,22 @@ void changeCameraOrientation(GLfloat deltaRadius, GLfloat deltaPolar, GLfloat de
 
 
 // TODO: Neuschreiben
-void handleMouseEvent (int x, int y, CGMouseEventType eventType,
-                       int button, int buttonState)
-{
+void handleMouseEvent(int x, int y, CGMouseEventType eventType,
+                      int button, int buttonState) {
     /* aktueller Status der linken Maustaste */
     static int leftMouseButtonState = GLUT_UP;
 
     /* Position der Maus beim letzten Aendern der Kamera */
-    static int oldMousePos[2] = { 0, 0 };
+    static int oldMousePos[2] = {0, 0};
 
     /* Veraenderung der Kameraausrichtung */
     float radius = 0.0f;
     float polar = 0.0f;
     float azimuth = 0.0f;
 
-    switch (eventType)
-    {
+    switch (eventType) {
         case mouseButton:
-            switch (button)
-            {
+            switch (button) {
                 case GLUT_LEFT_BUTTON:
                     leftMouseButtonState = buttonState;
                     oldMousePos[0] = x;
@@ -78,15 +74,13 @@ void handleMouseEvent (int x, int y, CGMouseEventType eventType,
                     break;
 
                 case 3: /* Hoch-Scrollen */
-                    if (buttonState == GLUT_UP)
-                    {
+                    if (buttonState == GLUT_UP) {
                         radius -= SCROLL_SPEED;
                     }
                     break;
 
                 case 4: /* Runter-Scrollen */
-                    if (buttonState == GLUT_UP)
-                    {
+                    if (buttonState == GLUT_UP) {
                         radius += SCROLL_SPEED;
                     }
                     break;
@@ -94,13 +88,12 @@ void handleMouseEvent (int x, int y, CGMouseEventType eventType,
             break;
 
         case mouseMotion:
-            if (leftMouseButtonState == GLUT_DOWN)
-            {
+            if (leftMouseButtonState == GLUT_DOWN) {
                 int deltaX = oldMousePos[0] - x;
                 int deltaY = oldMousePos[1] - y;
 
-                polar += ((float)deltaX) * POLAR_FACTOR;
-                azimuth += ((float)deltaY) * AZIMUTH_FACTOR;
+                polar += ((float) deltaX) * POLAR_FACTOR;
+                azimuth += ((float) deltaY) * AZIMUTH_FACTOR;
 
                 oldMousePos[0] = x;
                 oldMousePos[1] = y;
@@ -131,10 +124,10 @@ setProjection(GLdouble aspect) {
     glLoadIdentity();
 
     /* perspektivische Projektion */
-    gluPerspective (15.0,         /* Oeffnungswinkel */
-                    aspect,       /* Seitenverhaeltnis */
-                    0.1,          /* nahe Clipping-Ebene */
-                    40.0 /* ferne Clipping-Ebene */ );
+    gluPerspective(15.0,         /* Oeffnungswinkel */
+                   aspect,       /* Seitenverhaeltnis */
+                   0.1,          /* nahe Clipping-Ebene */
+                   40.0 /* ferne Clipping-Ebene */ );
 }
 
 /**
@@ -201,22 +194,17 @@ cbDisplay(void) {
     /* Kameraposition */
 
     // TODO: Neuschreiben
-    GLfloat eyeX = 0.0f;
-    GLfloat eyeY = 0.0f;
-    GLfloat eyeZ = 0.0f;
-
     GLfloat radius = getGame()->camera.radius;
     GLfloat polar = TO_RADIANS(getGame()->camera.polarAngle);
     GLfloat azimuth = TO_RADIANS(getGame()->camera.azimuthAngle);
 
-    eyeX = radius * sinf(azimuth) * cosf(polar);
-    eyeY = radius * cosf(azimuth);
-    eyeZ = radius * sinf(azimuth) * sinf(polar);
+    GLfloat eyeX = radius * sinf(azimuth) * cosf(polar);
+    GLfloat eyeY = radius * cosf(azimuth);
+    GLfloat eyeZ = radius * sinf(azimuth) * sinf(polar);
 
-    gluLookAt(eyeX, eyeY, eyeZ, /* Augpunkt */
-              0.0f, 0.0f, 0.0f,   /* Mittelpunkt */
-              0.0f, 1.0f, 0.0f);  /* Up-Vektor */
-
+    gluLookAt(eyeX, eyeY, eyeZ,   /* Augpunkt */
+              0.0, 0.0, 0.0,     /* Zentrum */
+              0.0, 1.0, 0.0);    /* Up-Vektor */
 
 //    gluLookAt (7.5, 10.0, 15.0,   /* Augpunkt */
 //               0.0, 0.0, 0.0,     /* Zentrum */
@@ -260,8 +248,7 @@ void switchGameStatus(Gamestatus status) {
  * @param x X-Position des Mauszeigers beim Ausloesen des Callbacks.
  * @param y Y-Position des Mauszeigers beim Ausloesen des Callbacks.
  */
-static void cbMouseButton (int button, int state, int x, int y)
-{
+static void cbMouseButton(int button, int state, int x, int y) {
     handleMouseEvent(x, y, mouseButton, button, state);
 }
 // TODO: Neuschreiben
@@ -270,8 +257,7 @@ static void cbMouseButton (int button, int state, int x, int y)
  * @param x X-Position des Mauszeigers.
  * @param y Y-Position des Mauszeigers.
  */
-static void cbMouseMotion (int x, int y)
-{
+static void cbMouseMotion(int x, int y) {
     handleMouseEvent(x, y, mouseMotion, 0, 0);
 }
 // TODO: Neuschreiben
@@ -281,8 +267,7 @@ static void cbMouseMotion (int x, int y)
  * @param y Y-Position des Mauszeigers.
  */
 static void
-cbMousePassiveMotion (int x, int y)
-{
+cbMousePassiveMotion(int x, int y) {
     handleMouseEvent(x, y, mousePassiveMotion, 0, 0);
 }
 
@@ -493,15 +478,15 @@ void registerCallbacks(void) {
 
     /* Mouse-Button-Callback (wird ausgefuehrt, wenn eine Maustaste
  * gedrueckt oder losgelassen wird) */
-    glutMouseFunc (cbMouseButton);
+    glutMouseFunc(cbMouseButton);
 
     /* Mouse-Motion-Callback (wird ausgefuehrt, wenn die Maus bewegt wird,
      * waehrend eine Maustaste gedrueckt wird) */
-    glutMotionFunc (cbMouseMotion);
+    glutMotionFunc(cbMouseMotion);
 
     /* Mouse-Motion-Callback (wird ausgefuehrt, wenn die Maus bewegt wird,
      * waehrend keine Maustaste gedrueckt wird) */
-    glutPassiveMotionFunc (cbMousePassiveMotion);
+    glutPassiveMotionFunc(cbMousePassiveMotion);
 
 
     /* Spezialtasten-Loslass-Callback - wird ausgefuehrt, wenn eine Spezialtaste losgelassen wird */
@@ -550,7 +535,7 @@ initAndStartIO(char *title, int width, int height) {
     glutInitWindowSize(width, height);
 
     //Tiefentest (in der init()) aktivieren
-   glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
 
     // Auf dem aktuellen Bildschirm anzeigen
     glutInitWindowPosition(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);

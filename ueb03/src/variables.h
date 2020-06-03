@@ -10,6 +10,7 @@
 #define AZIMUTH_FACTOR (0.25f)
 #define CAMERA_RADIUS_MIN ( 1.0f)
 #define CAMERA_RADIUS_MAX (18.0f)
+#define EMPTY_CAMERA_ORIENTATION {8.0f, 45.0f, -90}
 
 /* Hoehe/Breite des (quadratischen) Levels */
 #define LEVEL_SIZE (9)
