@@ -106,7 +106,8 @@ void drawLevel() {
     {
         /* Skalierung und Positionierung des Spielfelds. */
         glTranslatef(0.0f, 0.1f, 0.0f);
-        glScalef(0.9f, 0.9f, 1.0f);
+        //todo maybe ändern
+//        glScalef(0.9f,1.0f, 0.9f);
 
         for (int y = 0; y < LEVEL_SIZE; y++) {
             for (int x = 0; x < LEVEL_SIZE; x++) {
@@ -167,8 +168,10 @@ void drawGame() {
 
     glPushMatrix();
     {
+        //todo maybe ändern
+
         // Spielfeld ist ein wenig zu groß, also um 20% kleiner machen
-        glScalef(0.8f, 0.8f, 1.0f);
+        glScalef(1.0f, 1.0f,1.0f);
 
         // Spielfeld ist ein wenig zu hoch, also bisschen tiefer setzen
         glTranslatef(0.0f, -0.1f, 0.0f);
