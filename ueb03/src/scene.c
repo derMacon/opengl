@@ -114,6 +114,7 @@ void drawLevel() {
                 glPushMatrix();
                 {
 
+
                     // Spielfeld faengt bei -1 (x) und 1 (y) an
                     float correctX = -1.0f;
                     float correctY = 1.0f;
@@ -124,7 +125,7 @@ void drawLevel() {
                     int levelField = level[y][x];
 
                     /* Kachel an Position x,y zeichnen. */
-                    glTranslatef(xPos, 0.0f, yPos);
+                    glTranslatef(-xPos, 0.0f, yPos);
 
                     switch (levelField) {
                         case (P_FREE):
@@ -254,16 +255,6 @@ void drawWon() {
  */
 void drawScene(void) {
     Gamestatus gameStatus = getGame()->gameStatus;
-
-    /* Wuerfel */
-//    glPushMatrix ();
-//    {
-//        /* Wuerfel groesser skalieren */
-//       // glScalef (5.0f, 5.0f, 5.0f);
-//        /* Wuerfel zeichnen */
-//        drawCube ();
-//    }
-//    glPopMatrix ();
 
     /* Koordinatenachsen */
     glPushMatrix();
