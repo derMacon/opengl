@@ -790,20 +790,20 @@ void drawPlayerHead() {
     // Hutdeckel
     glPushMatrix();
     {
-        glTranslatef(0, 0.0f, 0.65f);
+        glTranslatef(0, 0.01f, 0);
         glColor3f(0, 0, 0);
-        glScalef(0.5f, 0, 0.4f);
-        drawSquare();
+        glScalef(3.5f, 0.02f, 3);
+        drawCube('a');
     }
     glPopMatrix();
 
     // Hutkoerper
     glPushMatrix();
     {
-        glTranslatef(0, 0.0f, 0.45f);
+        glTranslatef(0, 0.01f, 0);
         glColor3f(0, 0, 0);
-        glScalef(1.0f, 0, 0.05f);
-        drawSquare();
+        glScalef(2.5, 0.15, 2.5);
+        drawCube('a');
     }
     glPopMatrix();
 }
@@ -812,13 +812,14 @@ void drawPlayerHead() {
  * Zeichnet den Spielerkoerper
  */
 void drawPlayerBody() {
+    glColor3f(0, 0, 0);
+
     // Korpus
     glPushMatrix();
     {
-        glTranslatef(0, 0.0f, -1.1f);
-        glColor3f(0, 0, 0);
-        glScalef(0.8f, 0, 0.9f);
-        drawCircle();
+        glTranslatef(0, -0.08f, 0);
+        glScalef(0.8f, 0.1f, 0.9f);
+        drawSphere();
     }
     glPopMatrix();
 
@@ -827,10 +828,10 @@ void drawPlayerBody() {
         glPushMatrix();
         {
             float xLegPos = i == 0 ? -0.3f : 0.3f;
-            glTranslatef(xLegPos, 0.0f, -2.3f);
-            glColor3f(0, 0, 0);
-            glScalef(0.3f, 0, 0.9f);
-            drawSquare();
+            glTranslatef(xLegPos, -0.165f, 0);
+
+            glScalef(0.6f, 0.3f, 0.9f);
+            drawCube('a');
         }
         glPopMatrix();
     }
@@ -888,10 +889,10 @@ void drawPlayerBody() {
 void drawPlayer() {
     glPushMatrix();
     {
-        glTranslatef(0, 0.1f, 0.05f);
-        glScalef(0.05f, 0.5f, 0.05f);
+        glTranslatef(0, 0.2f, 0.05f);
+        glScalef(0.08, 0.8f, 0.08f);
 
-//        drawPlayerBody();
+        drawPlayerBody();
 //
 //        // Krawatte
 //        glPushMatrix();
@@ -904,7 +905,7 @@ void drawPlayer() {
 //        }
 //        glPopMatrix();
 
-            drawPlayerHead();
+        drawPlayerHead();
     }
     glPopMatrix();
 }
