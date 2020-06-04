@@ -467,31 +467,26 @@ void drawDoorSwitchArrow() {
 
 //    glColor3f(0.498f, 1.000f, 0.831f);
 
-
     glPushMatrix();
     {
+        glTranslatef(0.04f, 0.0f, -0.05f);
         for (int i = 0; i < 2; ++i) {
-            float posX = i == 0 ? 0.02f : -0.1f;
+            float posX = i == 0 ? 0.0f : 1.0f;
             int angle = i == 0 ? 90 : -90;
-
-            // Arrow Head
+//
             glPushMatrix();
             {
-                glTranslatef(posX, 0.03f, 0);
                 glScalef(0.1f, 0.1f, 0.1f);
+                glTranslatef(posX, 0.0f, 0.0f);
                 glRotatef(angle, 0, 0, 1);
                 drawTriangle();
+                glPopMatrix();
             }
-            glPopMatrix();
         }
 
-        // Arrow Body
+        // Zylinder
         glPushMatrix();
         {
-            glColor3f(0, 0, 1);
-            glTranslatef(0.2f, 0, 0);
-            glRotatef(90, 0, 0,1);
-
             // TODO: Verbindungsstueck
         }
         glPopMatrix();
