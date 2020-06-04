@@ -48,11 +48,12 @@ void initDisplayList() {
                     break;
 
                 case (P_DOOR):
-                    //  drawDoor();
+                    //drawDoor();
+                    drawCube(P_DOOR);
                     break;
 
                 case (P_DOOR_SWITCH):
-                       drawDoorSwitch();
+                    drawDoorSwitch();
                     break;
 
                 case (P_TARGET):
@@ -60,7 +61,7 @@ void initDisplayList() {
                     break;
 
                 case (P_OBJECT_TRIANGLE):
-                       drawTriangleOject();
+                    drawTriangleOject();
                     break;
 
                 case (P_PLAYER):
