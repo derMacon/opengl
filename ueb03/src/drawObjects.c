@@ -136,6 +136,43 @@ static void drawCylinder() {
     gluCylinder(quadratic, 0.2f, 0.2f, 1.0f, 32, 32);
 }
 
+static void drawPyramid() {
+    glBegin(GL_TRIANGLES);           // Begin drawing the pyramid with 4 triangles
+    // Front
+    glColor3f(1.0f, 0.0f, 0.0f);     // Red
+    glVertex3f(0.0f, 0.5f, 0.0f);
+    glColor3f(0.0f, 1.0f, 0.0f);     // Green
+    glVertex3f(-0.5f, -0.5f, 0.5f);
+    glColor3f(0.0f, 0.0f, 1.0f);     // Blue
+    glVertex3f(0.5f, -0.5f, 0.5f);
+
+    // Right
+    glColor3f(1.0f, 0.0f, 0.0f);     // Red
+    glVertex3f(0.0f, 0.5f, 0.0f);
+    glColor3f(0.0f, 0.0f, 1.0f);     // Blue
+    glVertex3f(0.5f, -0.5f, 0.5f);
+    glColor3f(0.0f, 1.0f, 0.0f);     // Green
+    glVertex3f(0.5f, -0.5f, -0.5f);
+
+    // Back
+    glColor3f(0.5f, 0.0f, 0.0f);     // Red
+    glVertex3f(0.0f, 0.5f, 0.0f);
+    glColor3f(0.0f, 0.5f, 0.0f);     // Green
+    glVertex3f(0.5f, -0.5f, -0.5f);
+    glColor3f(0.0f, 0.0f, 0.5f);     // Blue
+    glVertex3f(-0.5f, -0.5f, -0.5f);
+
+    // Left
+    glColor3f(0.5f, 0.0f, 0.0f);       // Red
+    glVertex3f(0.0f, 0.5f, 0.0f);
+    glColor3f(0.0f, 0.0f, 0.5f);       // Blue
+    glVertex3f(-0.5f, -0.5f, -0.5f);
+    glColor3f(0.0f, 0.5f, 0.0f);       // Green
+    glVertex3f(-0.5f, -0.5f, 0.5f);
+    glEnd();   // Done drawing the pyramid
+}
+
+
 /**
  * Zeichnet einen Thyreophora
  */
@@ -455,6 +492,8 @@ drawCube(pushyFieldType type) {
                 drawWall();
             } else if (type == P_DOOR) {
                 drawDoor();
+            } else if (type == P_HOUSE) {
+                drawSquare();
             }
         }
         glPopMatrix();
@@ -471,6 +510,8 @@ drawCube(pushyFieldType type) {
             } else if (type == P_DOOR) {
                 glRotatef(90, 0, 0, 1);
                 drawDoor();
+            } else if (type == P_HOUSE) {
+                drawSquare();
             }
         }
         glPopMatrix();
@@ -487,6 +528,8 @@ drawCube(pushyFieldType type) {
             } else if (type == P_DOOR) {
 
                 drawDoor();
+            } else if (type == P_HOUSE) {
+                drawSquare();
             }
         }
         glPopMatrix();
@@ -503,6 +546,8 @@ drawCube(pushyFieldType type) {
             } else if (type == P_DOOR) {
                 glRotatef(90, 0, 0, 1);
                 drawDoor();
+            } else if (type == P_HOUSE) {
+                drawSquare();
             }
         }
         glPopMatrix();
@@ -518,6 +563,8 @@ drawCube(pushyFieldType type) {
                 drawWall();
             } else if (type == P_DOOR) {
                 drawDoor();
+            } else if (type == P_HOUSE) {
+                drawSquare();
             }
         }
         glPopMatrix();
@@ -596,27 +643,25 @@ void drawHouse() {
     drawFreeBlock();
     glPushMatrix();
     {
-        glTranslatef(0, 0.0f, -0.025f);
-        glScalef(1.5f, 1, 1.5f);
+//        glTranslatef(0, 0.0f, -0.025f);
 
-        // Hauskoerper
         glPushMatrix();
         {
-            glTranslatef(0, 0, -0.015f);
-            glScalef(0.09f, 1.0f, 0.06f);
-
+            // Hauskoerper
+            glScalef(0.8f, 1, 0.8);
             glColor3f(1.0f, 1.0f, 1.0f);
-            drawSquare();
-            glPopMatrix();
+            drawCube(P_HOUSE);
         }
+        glPopMatrix();
 
         // Dach
         glPushMatrix();
         {
-            glTranslatef(0, 0, 0.05f);
-            glScalef(0.08f, 0.10f, 0.05f);
+
+            glTranslatef(0, 0.305, 0.0f);
+            glScalef(0.18f, 0.18f, 0.18f);
             glColor3f(houseColors[0], houseColors[1], houseColors[2]);
-            drawTetrahedron();
+            drawPyramid();
         }
         glPopMatrix();
 
