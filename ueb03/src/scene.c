@@ -40,7 +40,7 @@ void initDisplayList() {
                     break;
 
                 case (P_WALL):
-                    drawCube(GL_TRUE);
+                    drawCube(P_WALL);
                     break;
 
                 case (P_BOX):
@@ -133,12 +133,14 @@ void drawLevel() {
                         case (P_BOX_DOOR_SWITCH):
                             glCallList(g_renderObjects + P_BOX);
                             break;
-                        case (P_PORTAL):
-                            drawPortals();
-                            break;
                         case (P_HOUSE):
                             drawHouse();
                             break;
+
+                        case (P_PORTAL):
+                            drawPortals();
+                            break;
+
                         default:
                             break;
                     }

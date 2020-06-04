@@ -157,7 +157,7 @@ static void drawCircle() {
 
     // Winkel immer minimal erhoehen und somit den Kreis zeichnen
     // 2 * PI entsprechen 360°
-    for (float angle = 0; angle < 2 * M_PI; angle += increaseValue) {
+    for (float angle = 2 * M_PI; angle > 0; angle -= increaseValue) {
         glVertex3f(radius * cosf(angle), 0, radius * sinf(angle));
     }
 
@@ -436,11 +436,9 @@ void drawPortals() {
     portalSize = 0 + shrinkVal;
 
     // Portal animieren
-    if (isIncreasing) {
-        shrinkVal += 0.1f / shrinkInterval;
-    } else {
-        shrinkVal -= 0.1f / shrinkInterval;
-    }
+    isIncreasing
+    ? (shrinkVal += 0.1f / shrinkInterval)
+    : (shrinkVal -= 0.1f / shrinkInterval);
 
     // Wenn das Portal auf 0 ist, wird es vergroessert
     // sonst verkleinert
@@ -452,11 +450,13 @@ void drawPortals() {
 
     glPushMatrix();
     {
-        glScalef(portalSize, 0, portalSize);
+        glScalef(portalSize, 0.02f, portalSize);
+
         // 5 Farben, 5 Ringe
         for (int i = 0; i < 5; ++i) {
             float *colors = selectColor(i);
             glColor3f(colors[0], colors[1], colors[2]);
+            glTranslatef(0.0f, 0.01f, 0.0f);
 
             glPushMatrix();
             {
