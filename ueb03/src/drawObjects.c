@@ -126,6 +126,15 @@ static void drawSquare() {
     glEnd();
 }
 
+/**
+ * Zeichnet einen Zylinder
+ */
+static void drawCylinder(){
+    GLUquadricObj *quadratic;
+    quadratic = gluNewQuadric();
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    gluCylinder(quadratic,0.2f,0.2f,1.0f,32,32);
+}
 
 /**
  * Zeichnet ein Dreieck
@@ -465,15 +474,15 @@ void drawFinish() {
  */
 void drawDoorSwitchArrow() {
 
-//    glColor3f(0.498f, 1.000f, 0.831f);
+    glColor3f(0.498f, 1.000f, 0.831f);
 
     glPushMatrix();
     {
-        glTranslatef(0.04f, 0.0f, -0.05f);
         for (int i = 0; i < 2; ++i) {
             float posX = i == 0 ? 0.0f : 1.0f;
             int angle = i == 0 ? 90 : -90;
-//
+
+            // 2x Tetraeder
             glPushMatrix();
             {
                 glScalef(0.1f, 0.1f, 0.1f);
@@ -487,7 +496,9 @@ void drawDoorSwitchArrow() {
         // Zylinder
         glPushMatrix();
         {
-            // TODO: Verbindungsstueck
+            glScalef(0.1f,0.1f,0.1f);
+            glTranslatef(0.0f,0.0f,0.0f);
+            drawCylinder();
         }
         glPopMatrix();
     }
@@ -505,7 +516,7 @@ void drawDoorSwitch() {
     {
         glColor3f(1, 0, 0);
         glScalef(scaleVal, scaleVal, scaleVal);
-        glTranslatef(-0.1f, 0.02f, 0.05f);
+        glTranslatef(-0.1f, 0.03f, 0.05f);
         drawDoorSwitchArrow();
     }
     glPopMatrix();
