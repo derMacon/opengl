@@ -129,11 +129,11 @@ static void drawSquare() {
 /**
  * Zeichnet einen Zylinder
  */
-static void drawCylinder(){
+static void drawCylinder() {
     GLUquadricObj *quadratic;
     quadratic = gluNewQuadric();
     glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-    gluCylinder(quadratic,0.2f,0.2f,1.0f,32,32);
+    gluCylinder(quadratic, 0.2f, 0.2f, 1.0f, 32, 32);
 }
 
 /**
@@ -496,8 +496,8 @@ void drawDoorSwitchArrow() {
         // Zylinder
         glPushMatrix();
         {
-            glScalef(0.1f,0.1f,0.1f);
-            glTranslatef(0.0f,0.0f,0.0f);
+            glScalef(0.1f, 0.1f, 0.1f);
+            glTranslatef(0.0f, 0.0f, 0.0f);
             drawCylinder();
         }
         glPopMatrix();
@@ -516,7 +516,7 @@ void drawDoorSwitch() {
     {
         glColor3f(1, 0, 0);
         glScalef(scaleVal, scaleVal, scaleVal);
-        glTranslatef(-0.1f, 0.03f, 0.05f);
+        glTranslatef(-0.1f, 0.05f, 0.05f);
         drawDoorSwitchArrow();
     }
     glPopMatrix();
