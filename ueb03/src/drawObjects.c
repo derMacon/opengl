@@ -419,35 +419,31 @@ void drawDoorSwitchArrow() {
 }
 
 static void
-drawSphere (void)
-{
+drawSphere(void) {
     /* Quadric erzuegen */
-    GLUquadricObj *qobj = gluNewQuadric ();
-    if (qobj != 0)
-    {
+    GLUquadricObj *qobj = gluNewQuadric();
+    if (qobj != 0) {
         /* Material */
-        float matAmbient[] = { 1.0f, 0.0f, 0.0f };
-        float matDiffuse[] = { 1.0f, 0.0f, 0.0f };
-        float matSpecular[] = { 1.0f, 0.7f, 0.7f };
-        float matShininess[] = { 20.0f };
+        float matAmbient[] = {1.0f, 0.0f, 0.0f};
+        float matDiffuse[] = {1.0f, 0.0f, 0.0f};
+        float matSpecular[] = {1.0f, 0.7f, 0.7f};
+        float matShininess[] = {20.0f};
 
         /* Setzen der Material-Parameter */
-        glMaterialfv (GL_FRONT, GL_AMBIENT, matAmbient);
-        glMaterialfv (GL_FRONT, GL_DIFFUSE, matDiffuse);
-        glMaterialfv (GL_FRONT, GL_SPECULAR, matSpecular);
-        glMaterialfv (GL_FRONT, GL_SHININESS, matShininess);
+        glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
+        glMaterialfv(GL_FRONT, GL_SHININESS, matShininess);
 
         /* Normalen fuer Quadrics berechnen lassen */
-        gluQuadricNormals (qobj, GLU_SMOOTH);
+        gluQuadricNormals(qobj, GLU_SMOOTH);
 
         /* Kugel zeichen */
-        gluSphere (qobj, 0.5, 20, 20);
+        gluSphere(qobj, 0.5, 20, 20);
 
         /* Loeschen des Quadrics nicht vergessen */
-        gluDeleteQuadric (qobj);
-    }
-    else
-    {
+        gluDeleteQuadric(qobj);
+    } else {
         CG_ERROR (("Could not create Quadric\n"));
     }
 }
@@ -529,6 +525,8 @@ drawCube(pushyFieldType type) {
                 drawDoor();
             } else if (type == P_HOUSE) {
                 drawSquare();
+            } else {
+                drawSquare();
             }
         }
         glPopMatrix();
@@ -546,9 +544,10 @@ drawCube(pushyFieldType type) {
                 glRotatef(90, 0, 0, 1);
                 drawDoor();
             } else if (type == P_HOUSE) {
-
                 // Tuer + Fenster
                 drawHouseFront();
+                drawSquare();
+            } else {
                 drawSquare();
             }
         }
@@ -568,6 +567,8 @@ drawCube(pushyFieldType type) {
                 drawDoor();
             } else if (type == P_HOUSE) {
                 drawSquare();
+            } else {
+                drawSquare();
             }
         }
         glPopMatrix();
@@ -586,6 +587,8 @@ drawCube(pushyFieldType type) {
                 drawDoor();
             } else if (type == P_HOUSE) {
                 drawSquare();
+            } else {
+                drawSquare();
             }
         }
         glPopMatrix();
@@ -603,6 +606,8 @@ drawCube(pushyFieldType type) {
                 drawDoor();
             } else if (type == P_HOUSE) {
                 drawSquare();
+            } else {
+                drawSquare();
             }
         }
         glPopMatrix();
@@ -618,6 +623,8 @@ drawCube(pushyFieldType type) {
                 drawWall();
             } else if (type == P_DOOR) {
                 drawDoor();
+            } else {
+                drawSquare();
             }
         }
         glPopMatrix();
@@ -708,17 +715,20 @@ void drawHouse() {
  * Zeichnet die Augen des Spielers
  */
 void drawPlayerEyes() {
+
     // Augenbrauen
+    glColor3f(0, 0, 0);
     for (int i = 0; i < 2; ++i) {
         glPushMatrix();
         {
-            float xEyebrow = i == 0 ? -0.15f : 0.15f;
-            int xEyebrowAngle = i == 0 ? 10 : -10;
-            glTranslatef(xEyebrow, 0.0f, 0.3f);
-            glRotatef(xEyebrowAngle, 0.0f, 0.0f, 1.0f);
-            glColor3f(0, 0, 0);
-            glScalef(0.16f, 0, 0.05f);
-            drawSquare();
+
+            int angle = i == 0 ? 10 : -10;
+            float x = i == 0 ? 0.4f : -0.4f;
+
+            glScalef(0.5, 0.02, 0.2);
+            glRotatef(angle, 0, 0, 1);
+            glTranslatef(x, 0.5, -1.2);
+            drawCube('a');
         }
         glPopMatrix();
     }
