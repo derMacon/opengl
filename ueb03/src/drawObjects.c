@@ -768,7 +768,7 @@ void drawPlayerHead() {
     glPushMatrix();
     {
         glColor3f(0.824f, 0.706f, 0.549f);
-        glScalef(0.5f, 0.1, 0.5f);
+        glScalef(0.5f, 0.07, 0.5f);
         drawSphere();
     }
     glPopMatrix();
@@ -779,10 +779,11 @@ void drawPlayerHead() {
     // Mund
     glPushMatrix();
     {
-        glTranslatef(0, 0.0f, -0.15f);
         glColor3f(1, 1, 1);
-        glScalef(0.5f, 0, 0.05f);
-        drawSquare();
+
+        glTranslatef(0, -0.02f, -0.22f);
+        glScalef(1, 0.02f, 0.1f);
+        drawCube('a');
     }
     glPopMatrix();
 
@@ -903,7 +904,7 @@ void drawPlayer() {
 //        }
 //        glPopMatrix();
 
-        drawPlayerHead();
+            drawPlayerHead();
     }
     glPopMatrix();
 }
