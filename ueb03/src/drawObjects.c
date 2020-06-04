@@ -93,27 +93,6 @@ void changeColor(GLboolean isGreenHouse) {
         houseColors[2] = 1.0f;
     }
 }
-//
-//static void drawSquare() {
-//    float length = 0.5f;
-//
-//    glBegin(GL_QUADS);
-//    {
-//        // Links unten
-//        glVertex3f(-length, 0, -length);
-//
-//        // Rechts unten
-//        glVertex3f(length, 0, -length);
-//
-//        // Links oben
-//        glVertex3f(length, 0, length);
-//
-//        // Rechts oben
-//        glVertex3f(-length, 0, length);
-//    }
-//
-//    glEnd();
-//}
 
 static void drawSquare() {
     glBegin(GL_QUADS);
@@ -136,40 +115,31 @@ static void drawCylinder() {
     gluCylinder(quadratic, 0.2f, 0.2f, 1.0f, 32, 32);
 }
 
+/**
+ * Zeichnet eine Pyramide
+ */
 static void drawPyramid() {
-    glBegin(GL_TRIANGLES);           // Begin drawing the pyramid with 4 triangles
-    // Front
-    glColor3f(1.0f, 0.0f, 0.0f);     // Red
+    glBegin(GL_TRIANGLES);
+    // Vorne
     glVertex3f(0.0f, 0.5f, 0.0f);
-    glColor3f(0.0f, 1.0f, 0.0f);     // Green
     glVertex3f(-0.5f, -0.5f, 0.5f);
-    glColor3f(0.0f, 0.0f, 1.0f);     // Blue
     glVertex3f(0.5f, -0.5f, 0.5f);
 
-    // Right
-    glColor3f(1.0f, 0.0f, 0.0f);     // Red
+    // Rechts
     glVertex3f(0.0f, 0.5f, 0.0f);
-    glColor3f(0.0f, 0.0f, 1.0f);     // Blue
     glVertex3f(0.5f, -0.5f, 0.5f);
-    glColor3f(0.0f, 1.0f, 0.0f);     // Green
     glVertex3f(0.5f, -0.5f, -0.5f);
 
-    // Back
-    glColor3f(0.5f, 0.0f, 0.0f);     // Red
+    // Hinten
     glVertex3f(0.0f, 0.5f, 0.0f);
-    glColor3f(0.0f, 0.5f, 0.0f);     // Green
     glVertex3f(0.5f, -0.5f, -0.5f);
-    glColor3f(0.0f, 0.0f, 0.5f);     // Blue
     glVertex3f(-0.5f, -0.5f, -0.5f);
 
-    // Left
-    glColor3f(0.5f, 0.0f, 0.0f);       // Red
+    // Links
     glVertex3f(0.0f, 0.5f, 0.0f);
-    glColor3f(0.0f, 0.0f, 0.5f);       // Blue
     glVertex3f(-0.5f, -0.5f, -0.5f);
-    glColor3f(0.0f, 0.5f, 0.0f);       // Green
     glVertex3f(-0.5f, -0.5f, 0.5f);
-    glEnd();   // Done drawing the pyramid
+    glEnd();
 }
 
 
@@ -465,6 +435,37 @@ void drawDoorSwitch() {
     glPopMatrix();
 }
 
+/**
+ * Zeichnet die Tür und die Fenster des Hauses
+ */
+void drawHouseFront() {
+
+    // Tür
+    glPushMatrix();
+    {
+        glTranslatef(0, -0.34, 0.03f);
+        glScalef(0.18f, 0.3f, 0.03f);
+        glColor3f(houseColors[0], houseColors[1], houseColors[2]);
+        drawSquare();
+        glColor3f(1, 1, 1);
+    }
+    glPopMatrix();
+
+    // Fenster
+    for (int i = 0; i < 2; ++i) {
+        float x = i == 0 ? -0.3f : 0.3f;
+        glPushMatrix();
+        {
+            glTranslatef(x, 0.16, 0.003);
+            glScalef(0.24f, 0.24f, 0.015f);
+            glColor3f(0.529f, 0.808f, 0.922f);
+            drawSquare();
+            glColor3f(1, 1, 1);
+        }
+        glPopMatrix();
+    }
+}
+
 void
 drawCube(pushyFieldType type) {
 
@@ -511,7 +512,23 @@ drawCube(pushyFieldType type) {
                 glRotatef(90, 0, 0, 1);
                 drawDoor();
             } else if (type == P_HOUSE) {
+
+                // Tuer + Fenster
+                drawHouseFront();
                 drawSquare();
+
+                //todo Türknauf
+
+//         Tuerknauf
+//        glPushMatrix();
+//        {
+//            glTranslatef(-0.0055f, 0, -0.035f);
+//            glScalef(0.005f, 1.0f, 0.005);
+//
+//            glColor3f(0.663f, 0.663f, 0.663f);
+//            drawSquare();
+//        }
+//        glPopMatrix();
             }
         }
         glPopMatrix();
@@ -643,8 +660,6 @@ void drawHouse() {
     drawFreeBlock();
     glPushMatrix();
     {
-//        glTranslatef(0, 0.0f, -0.025f);
-
         glPushMatrix();
         {
             // Hauskoerper
@@ -657,7 +672,6 @@ void drawHouse() {
         // Dach
         glPushMatrix();
         {
-
             glTranslatef(0, 0.305, 0.0f);
             glScalef(0.18f, 0.18f, 0.18f);
             glColor3f(houseColors[0], houseColors[1], houseColors[2]);
@@ -665,39 +679,6 @@ void drawHouse() {
         }
         glPopMatrix();
 
-        // Tuer
-        glPushMatrix();
-        {
-            glTranslatef(0, 0, -0.03f);
-            glScalef(0.018f, 1.0f, 0.03f);
-            glColor3f(houseColors[0], houseColors[1], houseColors[2]);
-            drawSquare();
-        }
-        glPopMatrix();
-
-        // Fenster
-        for (int i = 0; i < 2; ++i) {
-            float x = i == 0 ? -0.015f : 0.015f;
-            glPushMatrix();
-            {
-                glTranslatef(x, 0, 0.003);
-                glScalef(0.02f, 1.0f, 0.015f);
-                glColor3f(0.529f, 0.808f, 0.922f);
-                drawSquare();
-            }
-            glPopMatrix();
-        }
-
-        // Tuerknauf
-        glPushMatrix();
-        {
-            glTranslatef(-0.0055f, 0, -0.035f);
-            glScalef(0.005f, 1.0f, 0.005);
-
-            glColor3f(0.663f, 0.663f, 0.663f);
-            drawSquare();
-        }
-        glPopMatrix();
     }
     glPopMatrix();
 }
