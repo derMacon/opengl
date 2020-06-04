@@ -131,19 +131,14 @@ static void drawSquare() {
  * Zeichnet ein Dreieck
  */
 static void drawTriangle() {
-    glBegin(GL_TRIANGLES);
 
-    float x = 0.7f;
-
-    // Links unten
-    glVertex3f(-x, 0, -x);
-
-    // Rechts unten
-    glVertex3f(x, 0, -x);
-
-    // oben
-    glVertex3f(0, 0, x);
-
+    glBegin(GL_TRIANGLE_STRIP);
+    glVertex3f(0, 1, 0);
+    glVertex3f(-0.5, 0, 0.5);
+    glVertex3f(0.5, 0, 0.5);
+    glVertex3f(0, 0, -0.7);
+    glVertex3f(0, 1, 0);
+    glVertex3f(-0.5, 0, 0.5);
     glEnd();
 }
 
@@ -343,13 +338,13 @@ void drawDoor() {
  * Zeichnet ein Dreieckobjekt
  */
 void drawTriangleOject() {
-    float width = BLOCK_WIDTH - 0.3f;
+//    float width = BLOCK_WIDTH - 0.3f;
     drawFreeBlock();
 
     glPushMatrix();
     {
-        glScalef(width, 1.0f, BLOCK_WIDTH / 2);
-        glRotatef(90, 0.0f, 1.0f, 0.0f);
+        glScalef(0.12f, 0.12f, 0.12f);
+//        glRotatef(90, 0.0f, 1.0f, 0.0f);
         glColor3f(0.137f, 0.137f, 0.557f);
         drawTriangle();
     }

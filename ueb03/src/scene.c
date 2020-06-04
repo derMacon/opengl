@@ -60,7 +60,7 @@ void initDisplayList() {
                     break;
 
                 case (P_OBJECT_TRIANGLE):
-                    //   drawTriangleOject();
+                       drawTriangleOject();
                     break;
 
                 case (P_PLAYER):
