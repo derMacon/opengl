@@ -418,6 +418,40 @@ void drawDoorSwitchArrow() {
     glPopMatrix();
 }
 
+static void
+drawSphere (void)
+{
+    /* Quadric erzuegen */
+    GLUquadricObj *qobj = gluNewQuadric ();
+    if (qobj != 0)
+    {
+        /* Material */
+        float matAmbient[] = { 1.0f, 0.0f, 0.0f };
+        float matDiffuse[] = { 1.0f, 0.0f, 0.0f };
+        float matSpecular[] = { 1.0f, 0.7f, 0.7f };
+        float matShininess[] = { 20.0f };
+
+        /* Setzen der Material-Parameter */
+        glMaterialfv (GL_FRONT, GL_AMBIENT, matAmbient);
+        glMaterialfv (GL_FRONT, GL_DIFFUSE, matDiffuse);
+        glMaterialfv (GL_FRONT, GL_SPECULAR, matSpecular);
+        glMaterialfv (GL_FRONT, GL_SHININESS, matShininess);
+
+        /* Normalen fuer Quadrics berechnen lassen */
+        gluQuadricNormals (qobj, GLU_SMOOTH);
+
+        /* Kugel zeichen */
+        gluSphere (qobj, 0.5, 20, 20);
+
+        /* Loeschen des Quadrics nicht vergessen */
+        gluDeleteQuadric (qobj);
+    }
+    else
+    {
+        CG_ERROR (("Could not create Quadric\n"));
+    }
+}
+
 /**
  * Zeichnet den Tuerschalter
  */
@@ -690,27 +724,27 @@ void drawPlayerEyes() {
     }
 
     // Augen
+    glColor3f(1, 1, 1);
     for (int i = 0; i < 2; ++i) {
         glPushMatrix();
         {
             float x = i == 0 ? -0.15f : 0.15f;
-            glTranslatef(x, 0.0f, 0.15f);
-            glColor3f(1, 1, 1);
-            glScalef(0.07f, 0, 0.07f);
-            drawCircle();
+            glTranslatef(x, 0.0f, -0.2f);
+            glScalef(0.1f, 0.01, 0.1f);
+            drawSphere();
         }
         glPopMatrix();
     }
 
     // Pupillen
+    glColor3f(0, 0, 0);
     for (int j = 0; j < 2; ++j) {
         glPushMatrix();
         {
             float x = j == 0 ? -0.15f : 0.15f;
-            glTranslatef(x, 0.0f, 0.15f);
-            glColor3f(0, 0, 0);
-            glScalef(0.03f, 0, 0.03f);
-            drawCircle();
+            glTranslatef(x, 0.0f, -0.25f);
+            glScalef(0.03f, 0.003, 0.03f);
+            drawSphere();
         }
         glPopMatrix();
     }
@@ -724,8 +758,8 @@ void drawPlayerHead() {
     glPushMatrix();
     {
         glColor3f(0.824f, 0.706f, 0.549f);
-        glScalef(0.5f, 0, 0.5f);
-        drawCircle();
+        glScalef(0.5f, 0.1, 0.5f);
+        drawSphere();
     }
     glPopMatrix();
 
@@ -843,21 +877,21 @@ void drawPlayerBody() {
 void drawPlayer() {
     glPushMatrix();
     {
-        glTranslatef(0, 0.0f, 0.05f);
+        glTranslatef(0, 0.1f, 0.05f);
         glScalef(0.05f, 0.5f, 0.05f);
 
-        drawPlayerBody();
-
-        // Krawatte
-        glPushMatrix();
-        {
-            glTranslatef(0, 0, -0.8f);
-            glScalef(0.08f, 0.5f, 0.3);
-
-            glColor3f(1, 1, 1);
-            drawTetrahedron();
-        }
-        glPopMatrix();
+//        drawPlayerBody();
+//
+//        // Krawatte
+//        glPushMatrix();
+//        {
+//            glTranslatef(0, 0, -0.8f);
+//            glScalef(0.08f, 0.5f, 0.3);
+//
+//            glColor3f(1, 1, 1);
+//            drawTetrahedron();
+//        }
+//        glPopMatrix();
 
         drawPlayerHead();
     }
