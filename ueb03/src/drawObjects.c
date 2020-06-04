@@ -137,9 +137,9 @@ static void drawCylinder() {
 }
 
 /**
- * Zeichnet ein Dreieck
+ * Zeichnet einen Thyreophora
  */
-static void drawTriangle() {
+static void drawTetrahedron() {
 
     glBegin(GL_TRIANGLE_STRIP);
     glVertex3f(0, 1, 0);
@@ -353,7 +353,7 @@ void drawTriangleOject() {
         glScalef(0.12f, 0.12f, 0.12f);
 //        glRotatef(90, 0.0f, 1.0f, 0.0f);
         glColor3f(0.137f, 0.137f, 0.557f);
-        drawTriangle();
+        drawTetrahedron();
     }
     glPopMatrix();
 }
@@ -394,7 +394,7 @@ void drawDoorSwitchArrow() {
                 glScalef(0.1f, 0.1f, 0.1f);
                 glTranslatef(posX, 0.0f, 0.0f);
                 glRotatef(angle, 0, 0, 1);
-                drawTriangle();
+                drawTetrahedron();
                 glPopMatrix();
             }
         }
@@ -616,7 +616,7 @@ void drawHouse() {
             glTranslatef(0, 0, 0.05f);
             glScalef(0.08f, 0.10f, 0.05f);
             glColor3f(houseColors[0], houseColors[1], houseColors[2]);
-            drawTriangle();
+            drawTetrahedron();
         }
         glPopMatrix();
 
@@ -786,7 +786,7 @@ void drawPlayerBody() {
             glTranslatef(xLegPos, 0.0f, -2.7f);
             glColor3f(0, 0, 0);
             glScalef(0.7f, 0, 0.2f);
-            drawTriangle();
+            drawTetrahedron();
         }
         glPopMatrix();
     }
@@ -842,7 +842,7 @@ void drawPlayer() {
             glScalef(0.08f, 0.5f, 0.3);
 
             glColor3f(1, 1, 1);
-            drawTriangle();
+            drawTetrahedron();
         }
         glPopMatrix();
 
