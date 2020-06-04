@@ -291,6 +291,98 @@ void drawBox() {
     glPopMatrix();
 }
 
+void
+drawCube(pushyFieldType type) {
+    glPushMatrix();
+    {
+        glTranslatef(0, 0.1f, 0);
+
+        if (type == P_DOOR_SWITCH) {
+            glScalef(0.02f, 0.1f, 0.025f);
+        } else {
+            glScalef(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+        }
+
+        /* Frontflaeche */
+        glPushMatrix();
+        {
+            glTranslatef(0.0f, 0.0f, 0.5f);
+            if (type == P_BOX) {
+                drawBox();
+            } else if (type == P_WALL) {
+                drawWall();
+            }
+        }
+        glPopMatrix();
+
+        /* rechte Seitenflaeche */
+        glPushMatrix();
+        {
+            glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+            glTranslatef(0.0f, 0.0f, 0.5f);
+            if (type == P_BOX) {
+                drawBox();
+            } else if (type == P_WALL) {
+                drawWall();
+            }
+        }
+        glPopMatrix();
+
+        /* Rueckseitenflaeche */
+        glPushMatrix();
+        {
+            glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+            glTranslatef(0.0f, 0.0f, 0.5f);
+            if (type == P_BOX) {
+                drawBox();
+            } else if (type == P_WALL) {
+                drawWall();
+            }
+        }
+        glPopMatrix();
+
+        /* linke Seitenflaeche */
+        glPushMatrix();
+        {
+            glRotatef(270.0f, 0.0f, 1.0f, 0.0f);
+            glTranslatef(0.0f, 0.0f, 0.5f);
+            if (type == P_BOX) {
+                drawBox();
+            } else if (type == P_WALL) {
+                drawWall();
+            }
+        }
+        glPopMatrix();
+
+        /* Deckelflaeche */
+        glPushMatrix();
+        {
+            glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+            glTranslatef(0.0f, 0.0f, 0.5f);
+            if (type == P_BOX) {
+                drawBox();
+            } else if (type == P_WALL) {
+                drawWall();
+            }
+        }
+        glPopMatrix();
+
+        /* Bodenflaeche */
+        glPushMatrix();
+        {
+            glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+            glTranslatef(0.0f, 0.0f, 0.5f);
+            if (type == P_BOX) {
+                drawBox();
+            } else if (type == P_WALL) {
+                drawWall();
+            }
+        }
+        glPopMatrix();
+    }
+    glPopMatrix();
+}
+
 /**
  * Zeichnet den freien Block
  */
@@ -372,32 +464,35 @@ void drawFinish() {
  * Zeichnet einen Pfeil fuer den Tuerschalter
  */
 void drawDoorSwitchArrow() {
-    float width = BLOCK_WIDTH - 0.3f;
 
-    double arrowHeadWidth = width / 1.5;
-    double arrowHeadHeight = BLOCK_WIDTH / 4;
-    double arrowBodyWidth = arrowHeadWidth / 2;
-    double arrowBodyHeight = arrowHeadHeight / 2;
+//    glColor3f(0.498f, 1.000f, 0.831f);
 
-    glColor3f(0.498f, 1.000f, 0.831f);
 
     glPushMatrix();
     {
-        // Arrow Head
-        glPushMatrix();
-        {
-            glTranslatef(0, 0, 0.05f);
-            glScalef(arrowHeadWidth, 1.0f, arrowHeadHeight);
-            drawTriangle();
+        for (int i = 0; i < 2; ++i) {
+            float posX = i == 0 ? 0.02f : -0.1f;
+            int angle = i == 0 ? 90 : -90;
+
+            // Arrow Head
+            glPushMatrix();
+            {
+                glTranslatef(posX, 0.03f, 0);
+                glScalef(0.1f, 0.1f, 0.1f);
+                glRotatef(angle, 0, 0, 1);
+                drawTriangle();
+            }
+            glPopMatrix();
         }
-        glPopMatrix();
 
         // Arrow Body
         glPushMatrix();
         {
-            glTranslatef(0.0, 0, -0.009f);
-            glScalef(arrowBodyWidth, 1.0f, arrowBodyHeight * 1.5f);
-            drawSquare();
+            glColor3f(0, 0, 1);
+            glTranslatef(0.2f, 0, 0);
+            glRotatef(90, 0, 0,1);
+
+            // TODO: Verbindungsstueck
         }
         glPopMatrix();
     }
@@ -410,18 +505,15 @@ void drawDoorSwitchArrow() {
 void drawDoorSwitch() {
     drawFreeBlock();
 
-    for (int i = 0; i < 2; ++i) {
-        int angle = i == 0 ? 45 : 225;
-        float pos = i == 0 ? 0.03f : -0.03f;
-
-        glPushMatrix();
-        {
-            glTranslatef(pos, 0.0f, pos);
-            glRotatef(angle, 0, 1, 0);
-            drawDoorSwitchArrow();
-        }
-        glPopMatrix();
+    float scaleVal = 0.5f;
+    glPushMatrix();
+    {
+        glColor3f(1, 0, 0);
+        glScalef(scaleVal, scaleVal, scaleVal);
+        glTranslatef(-0.1f, 0.02f, 0.05f);
+        drawDoorSwitchArrow();
     }
+    glPopMatrix();
 }
 
 /**
@@ -481,7 +573,7 @@ void drawHouse() {
     glPushMatrix();
     {
         glTranslatef(0, 0.0f, -0.025f);
-        glScalef(1.5f, 0, 1.5f);
+        glScalef(1.5f, 1, 1.5f);
 
         // Hauskoerper
         glPushMatrix();
@@ -498,7 +590,7 @@ void drawHouse() {
         glPushMatrix();
         {
             glTranslatef(0, 0, 0.05f);
-            glScalef(0.08f, 1.0f, 0.05f);
+            glScalef(0.08f, 0.10f, 0.05f);
             glColor3f(houseColors[0], houseColors[1], houseColors[2]);
             drawTriangle();
         }
@@ -715,7 +807,7 @@ void drawPlayer() {
     glPushMatrix();
     {
         glTranslatef(0, 0.0f, 0.05f);
-        glScalef(0.05f, 0, 0.05f);
+        glScalef(0.05f, 0.5f, 0.05f);
 
         drawPlayerBody();
 
@@ -723,7 +815,7 @@ void drawPlayer() {
         glPushMatrix();
         {
             glTranslatef(0, 0, -0.8f);
-            glScalef(0.08f, 0, 0.3);
+            glScalef(0.08f, 0.5f, 0.3);
 
             glColor3f(1, 1, 1);
             drawTriangle();
@@ -735,97 +827,4 @@ void drawPlayer() {
     glPopMatrix();
 }
 
-
-void
-drawCube(pushyFieldType type) {
-    glPushMatrix();
-    {
-        glTranslatef(0, 0.1f, 0);
-        glScalef(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-
-        /* Frontflaeche */
-        glPushMatrix();
-        {
-            glTranslatef(0.0f, 0.0f, 0.5f);
-            glColor3f(1.0, 0.0, 0.0);
-            if (type == P_BOX) {
-                drawBox();
-            } else {
-                drawWall();
-            }
-        }
-        glPopMatrix();
-
-        /* rechte Seitenflaeche */
-        glPushMatrix();
-        {
-            glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-            glTranslatef(0.0f, 0.0f, 0.5f);
-            glColor3f(0.0, 1.0, 0.0);
-            if (type == P_BOX) {
-                drawBox();
-            } else {
-                drawWall();
-            }
-        }
-        glPopMatrix();
-
-        /* Rueckseitenflaeche */
-        glPushMatrix();
-        {
-            glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-            glTranslatef(0.0f, 0.0f, 0.5f);
-            glColor3f(0.0, 0.0, 1.0);
-            if (type == P_BOX) {
-                drawBox();
-            } else {
-                drawWall();
-            }
-        }
-        glPopMatrix();
-
-        /* linke Seitenflaeche */
-        glPushMatrix();
-        {
-            glRotatef(270.0f, 0.0f, 1.0f, 0.0f);
-            glTranslatef(0.0f, 0.0f, 0.5f);
-            glColor3f(0.0, 1.0, 1.0);
-            if (type == P_BOX) {
-                drawBox();
-            } else {
-                drawWall();
-            }
-        }
-        glPopMatrix();
-
-        /* Deckelflaeche */
-        glPushMatrix();
-        {
-            glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-            glTranslatef(0.0f, 0.0f, 0.5f);
-            glColor3f(1.0, 0.0, 1.0);
-            if (type == P_BOX) {
-                drawBox();
-            } else {
-                drawWall();
-            }
-        }
-        glPopMatrix();
-
-        /* Bodenflaeche */
-        glPushMatrix();
-        {
-            glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-            glTranslatef(0.0f, 0.0f, 0.5f);
-            glColor3f(1.0, 1.0, 0.0);
-            if (type == P_BOX) {
-                drawBox();
-            } else {
-                drawWall();
-            }
-        }
-        glPopMatrix();
-    }
-    glPopMatrix();
-}
 

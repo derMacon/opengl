@@ -52,7 +52,7 @@ void initDisplayList() {
                     break;
 
                 case (P_DOOR_SWITCH):
-                    //   drawDoorSwitch();
+                       drawDoorSwitch();
                     break;
 
                 case (P_TARGET):
