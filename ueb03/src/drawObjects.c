@@ -429,7 +429,7 @@ void drawDoorSwitch() {
     {
         glColor3f(1, 0, 0);
         glScalef(scaleVal, scaleVal, scaleVal);
-        glTranslatef(-0.1f, 0.05f, 0.05f);
+        glTranslatef(-0.1f, 0.06f, 0.05f);
         drawDoorSwitchArrow();
     }
     glPopMatrix();
@@ -516,19 +516,6 @@ drawCube(pushyFieldType type) {
                 // Tuer + Fenster
                 drawHouseFront();
                 drawSquare();
-
-                //todo Türknauf
-
-//         Tuerknauf
-//        glPushMatrix();
-//        {
-//            glTranslatef(-0.0055f, 0, -0.035f);
-//            glScalef(0.005f, 1.0f, 0.005);
-//
-//            glColor3f(0.663f, 0.663f, 0.663f);
-//            drawSquare();
-//        }
-//        glPopMatrix();
             }
         }
         glPopMatrix();
