@@ -2,81 +2,12 @@
 #include "debug.h"
 #include "types.h"
 #include "helper.h"
-#include "io.h"
 
 // Werte fuer Portal-Animation
 float shrinkVal = 0;
 GLboolean isIncreasing = GL_TRUE;
 
 GLfloat houseColors[3] = {1.0f, 0.0f, 1.0f};
-
-static void
-drawAxesArrow(void) {
-    glBegin(GL_LINE_STRIP);
-    {
-        /* Achse */
-        glVertex3f(0.0f, 0.0f, -0.5f);
-        glVertex3f(0.0f, 0.0f, 0.5f);
-        /* erster Pfeil */
-        glVertex3f(0.05f, 0.0f, 0.45f);
-        glVertex3f(-0.05f, 0.0f, 0.45f);
-        glVertex3f(0.0f, 0.0f, 0.5f);
-        /* zweiter Pfeil */
-        glVertex3f(0.0f, 0.05f, 0.45f);
-        glVertex3f(0.0f, -0.05f, 0.45f);
-        glVertex3f(0.0f, 0.0f, 0.5f);
-    }
-    glEnd();
-}
-
-/**
- * Zeichnet Koordinatenachsen (inklusive Beschriftung).
- */
-void
-drawAxes(void) {
-    /* Farben der Koordinatenachsen */
-    CGColor3f axesColor = {1.0f, 0.5f, 0.0f};
-    CGColor3f axesTextColor = {1.0f, 1.0f, 0.0f};
-
-    glColor3fv(axesColor);
-
-    /* x-Achse */
-    glPushMatrix();
-    {
-        glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-        glScalef(1.0f, 1.0f, 2.0f);
-        drawAxesArrow();
-    }
-    glPopMatrix();
-
-    /* y-Achse */
-    glPushMatrix();
-    {
-        glRotatef(270.0f, 1.0f, 0.0f, 0.0f);
-        glScalef(1.0f, 1.0f, 2.0f);
-        drawAxesArrow();
-    }
-    glPopMatrix();
-
-    /* z-Achse */
-    glPushMatrix();
-    {
-        glScalef(1.0f, 1.0f, 2.0f);
-        drawAxesArrow();
-    }
-    glPopMatrix();
-
-    /* Beschriftungen der Koordinatenachsen */
-
-    glColor3fv(axesTextColor);
-    glRasterPos3f(1.1f, 0.0f, 0.0f);
-    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, 'x');
-    glRasterPos3f(0.0f, 1.1f, 0.0f);
-    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, 'y');
-    glRasterPos3f(0.0f, 0.0f, 1.1f);
-    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, 'z');
-}
-
 
 /**
  * Aendert die Farbe des Hauses
@@ -790,7 +721,7 @@ void drawPlayerHead() {
     // Hutdeckel
     glPushMatrix();
     {
-        glTranslatef(0, 0.01f, 0);
+        glTranslatef(0, 0.02f, 0);
         glColor3f(0, 0, 0);
         glScalef(3.5f, 0.02f, 3);
         drawCube('a');
@@ -800,7 +731,7 @@ void drawPlayerHead() {
     // Hutkoerper
     glPushMatrix();
     {
-        glTranslatef(0, 0.01f, 0);
+        glTranslatef(0, 0.02f, 0);
         glColor3f(0, 0, 0);
         glScalef(2.5, 0.15, 2.5);
         drawCube('a');
@@ -840,11 +771,10 @@ void drawPlayerBody() {
     for (int i = 0; i < 2; ++i) {
         glPushMatrix();
         {
-            float xLegPos = i == 0 ? -0.5f : 0.5f;
+            float xLegPos = i == 0 ? -0.3f : 0.3f;
 
-            glTranslatef(xLegPos, 0.0f, -2.7f);
-            glColor3f(0, 0, 0);
-            glScalef(0.7f, 0, 0.2f);
+            glTranslatef(xLegPos, -0.18f, 0);
+            glScalef(0.35f, 0.05f, 0.4f);
             drawTetrahedron();
         }
         glPopMatrix();
@@ -852,16 +782,15 @@ void drawPlayerBody() {
 
     // Arme
     for (int i = 0; i < 2; ++i) {
-        glColor3f(0, 0, 0);
         glPushMatrix();
         {
-            float xArmPos = i == 0 ? -0.9f : 0.9f;
-            int angle = i == 0 ? -60 : 60;
+            float xArmPos = i == 0 ? -0.4f : 0.4f;
+            int angle = i == 0 ? 125 : -125;
 
-            glTranslatef(xArmPos, 0.0f, -0.9f);
-            glRotatef(angle, 0, -1, 0);
-            glScalef(0.3f, 0, 0.9f);
-            drawSquare();
+            glTranslatef(xArmPos, -0.09f, 0);
+            glRotatef(angle, 0,0,1);
+            glScalef(0.07f, 0.12, 0.2);
+            drawSphere();
         }
         glPopMatrix();
     }
@@ -871,13 +800,13 @@ void drawPlayerBody() {
         glColor3f(0.824f, 0.706f, 0.549f);
         glPushMatrix();
         {
-            float xHandPos = i == 0 ? -1.4f : 1.4f;
-            int angle = i == 0 ? -60 : 60;
+            float xHandPos = i == 0 ? -0.45f : 0.45f;
+//            int angle = i == 0 ? -60 : 60;
 
-            glTranslatef(xHandPos, 0.0f, -1.15f);
-            glRotatef(angle, 0, 0, 1);
-            glScalef(0.2f, 0, 0.2f);
-            drawCircle();
+            glTranslatef(xHandPos, -0.13f, 0);
+//            glRotatef(angle, 0, 0, 1);
+            glScalef(0.05f, 0.02, 0.05f);
+            drawSphere();
         }
         glPopMatrix();
     }
@@ -889,7 +818,7 @@ void drawPlayerBody() {
 void drawPlayer() {
     glPushMatrix();
     {
-        glTranslatef(0, 0.2f, 0.05f);
+        glTranslatef(0, 0.143f, 0);
         glScalef(0.08, 0.8f, 0.08f);
 
         drawPlayerBody();
