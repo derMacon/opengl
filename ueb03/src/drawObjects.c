@@ -576,8 +576,8 @@ void drawPortals() {
 
     // Portal animieren
     isIncreasing
-    ? (shrinkVal += 0.1f / shrinkInterval)
-    : (shrinkVal -= 0.1f / shrinkInterval);
+        ? (shrinkVal += 0.1f / shrinkInterval)
+        : (shrinkVal -= 0.1f / shrinkInterval);
 
     // Wenn das Portal auf 0 ist, wird es vergroessert
     // sonst verkleinert

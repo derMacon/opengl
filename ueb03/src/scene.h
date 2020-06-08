@@ -6,7 +6,8 @@
 /**
  * Zeichnet die gesamte Szene
  */
-void drawScene(void);
+void drawScene(GLboolean draw3D);
+
 
 /**
  * Initialisierung der Szene (inbesondere der OpenGL-Statusmaschine).

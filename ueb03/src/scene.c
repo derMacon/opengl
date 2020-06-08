@@ -16,6 +16,7 @@
 #include "scene.h"
 #include "levels.h"
 #include "stringOutput.h"
+#include <math.h>
 
 GLuint g_renderObjects;
 GLboolean showWireframe = GL_FALSE;
@@ -93,7 +94,7 @@ void showPlayer(int x, int y) {
 /**
  *  Zeichnen des gesamten Levels
  */
-void drawLevel() {
+void drawLevel(GLboolean draw3D) {
     pushyFieldType (*level)[LEVEL_SIZE] = getGame()->levelSettings.level;
 
     glPushMatrix();
@@ -118,7 +119,11 @@ void drawLevel() {
                     int levelField = level[y][x];
 
                     /* Kachel an Position x,y zeichnen. */
-                    glTranslatef(-xPos, 0.0f, yPos);
+                    if (draw3D) {
+                        glTranslatef(-xPos, 0.0f, yPos);
+                    } else {
+                        glTranslatef(xPos, yPos, 0);
+                    }
 
                     switch (levelField) {
                         case (P_FREE):
@@ -158,7 +163,7 @@ void drawLevel() {
 /**
  * Skalierung des Spielfelds und Spiel zeichnen
  */
-void drawGame() {
+void drawGame(GLboolean draw3D) {
 
     glPushMatrix();
     {
@@ -167,11 +172,30 @@ void drawGame() {
         // Spielfeld ist ein wenig zu groß, also um 20% kleiner machen
         //glScalef(1.0f, 1.0f,1.0f);
 
-        // Spielfeld ist ein wenig zu hoch, also bisschen tiefer setzen
-        glTranslatef(0.0f, -0.1f, 0.0f);
+        if (draw3D) {
+            // Spielfeld ist ein wenig zu hoch, also bisschen tiefer setzen
+            glTranslatef(0.0f, -0.1f, 0.0f);
+        } else {
+            // TODO
+//            glTranslatef(-0.5f, -0.7f, 0);
+        }
+
+        GLfloat radius = getGame()->camera.radius;
+        GLfloat polar = TO_RADIANS(getGame()->camera.polarAngle);
+        GLfloat azimuth = TO_RADIANS(getGame()->camera.azimuthAngle);
+
+        GLfloat eyeX = radius * sinf(azimuth) * cosf(polar);
+        GLfloat eyeY = radius * cosf(azimuth);
+        GLfloat eyeZ = radius * sinf(azimuth) * sinf(polar);
+
+        if (draw3D) {
+            gluLookAt(eyeX, eyeY, eyeZ,
+                      0.0, 0.0, 0.0,
+                      0.0, 1.0, 0.0);
+        }
 
         // Uebergebenes Level zeichnen
-        drawLevel();
+        drawLevel(draw3D);
     }
     glPopMatrix();
 
@@ -232,7 +256,6 @@ void drawPause() {
                getGame()->levelSettings.numberOfTriangles, getGame()->levelSettings.time);
 }
 
-
 /**
  * Zeichnen des Winning screens
  */
@@ -250,19 +273,22 @@ void drawWon() {
 /**
  * Zeichnet die gesamte Szene
  */
-void drawScene(void) {
+void drawScene(GLboolean draw3D) {
     Gamestatus gameStatus = getGame()->gameStatus;
 
     if (gameStatus == GAME_RUNNING) {
-        drawGame();
-        drawGameInfo();
-    } else if (gameStatus == GAME_LOST) {
+        drawGame(draw3D);
+
+        if (draw3D) {
+            drawGameInfo();
+        }
+    } else if (draw3D && gameStatus == GAME_LOST) {
         drawLost();
-    } else if (gameStatus == GAME_WON) {
+    } else if (draw3D && gameStatus == GAME_WON) {
         drawWon();
-    } else if (gameStatus == GAME_PAUSED) {
+    } else if (draw3D && gameStatus == GAME_PAUSED) {
         drawPause();
-    } else if (gameStatus == GAME_HELP) {
+    } else if (draw3D && gameStatus == GAME_HELP) {
         drawHelp();
     }
 }

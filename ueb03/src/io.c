@@ -176,42 +176,94 @@ decreaseTimer() {
 }
 
 /**
+ * Setzt einen Viewport fuer 2-dimensionale Darstellung.
+ *
+ * @param x, y Position des Viewports im Fenster - (0, 0) ist die untere linke Ecke
+ * @param width, height Breite und Hoehe des Viewports
+ */
+static void set2DViewport(GLint x, GLint y, GLint width, GLint height) {
+    /* Seitenverhaeltnis bestimmen */
+    double aspect = (double) width / height;
+
+    /* Folge Operationen beeinflussen die Projektionsmatrix */
+    glMatrixMode(GL_PROJECTION);
+
+    /* Einheitsmatrix laden */
+    glLoadIdentity();
+
+    /* Viewport-Position und -Ausdehnung bestimmen */
+    glViewport(x, y, width, height);
+
+    /* Das Koordinatensystem bleibt immer quadratisch */
+    if (aspect <= 1) {
+        gluOrtho2D(-1, 1,                     /* left, right */
+                   -1 / aspect, 1 / aspect); /* bottom, top */
+    } else {
+        gluOrtho2D(-1 * aspect, 1 * aspect, /* left, right */
+                   -1, 1);                    /* bottom, top */
+    }
+
+    /* Folge Operationen beeinflussen die Modelviewmatrix */
+    glMatrixMode(GL_MODELVIEW);
+
+    /* Einheitsmatrix laden */
+    glLoadIdentity();
+}
+
+/**
+ * Setzt einen Viewport fuer 3-dimensionale Darstellung
+ * mit perspektivischer Projektion und legt eine Kamera fest.
+ *
+ * @param x, y Position des Viewports im Fenster - (0, 0) ist die untere linke Ecke
+ * @param width, height Breite und Hoehe des Viewports
+ */
+static void set3DViewport(GLint x, GLint y, GLint width, GLint height) {
+    /* Seitenverhaeltnis bestimmen */
+    double aspect = (double) width / height;
+
+    /* Folge Operationen beeinflussen die Projektionsmatrix */
+    glMatrixMode(GL_PROJECTION);
+
+    /* Einheitsmatrix laden */
+    glLoadIdentity();
+
+    /* Viewport-Position und -Ausdehnung bestimmen */
+    glViewport(x, y, width, height);
+
+    /* Perspektivische Darstellung */
+    gluPerspective(70,        /* Oeffnungswinkel */
+                   aspect,  /* Seitenverhaeltnis */
+                   0.05,    /* nahe Clipping-Ebene */
+                   100);    /* ferne Clipping-Ebene */
+
+    /* Folge Operationen beeinflussen die Modelviewmatrix */
+    glMatrixMode(GL_MODELVIEW);
+
+    /* Einheitsmatrix laden */
+    glLoadIdentity();
+}
+
+/**
  * Zeichen-Callback.
  * Loescht die Buffer, ruft das Zeichnen der Szene auf und tauscht den Front-
  * und Backbuffer.
  */
 static void
 cbDisplay(void) {
-    // Kombiniert mit Leeren des Colorbuffers
+    /* Fensterdimensionen auslesen */
+    int width = glutGet(GLUT_WINDOW_WIDTH);
+    int height = glutGet(GLUT_WINDOW_HEIGHT);
+
+    /* Buffer zuruecksetzen */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    /* Nachfolgende Operationen beeinflussen Modelviewmatrix */
-    glMatrixMode(GL_MODELVIEW);
+    /* 3D Ansicht */
+    set3DViewport(0, 0, width, height);
+    drawScene(GL_TRUE);
 
-    /* Matrix zuruecksetzen - Einheitsmatrix laden */
-    glLoadIdentity();
-
-    /* Kameraposition */
-
-    // TODO: Neuschreiben
-    GLfloat radius = getGame()->camera.radius;
-    GLfloat polar = TO_RADIANS(getGame()->camera.polarAngle);
-    GLfloat azimuth = TO_RADIANS(getGame()->camera.azimuthAngle);
-
-    GLfloat eyeX = radius * sinf(azimuth) * cosf(polar);
-    GLfloat eyeY = radius * cosf(azimuth);
-    GLfloat eyeZ = radius * sinf(azimuth) * sinf(polar);
-
-    gluLookAt(eyeX, eyeY, eyeZ,   /* Augpunkt */
-              0.0, 0.0, 0.0,     /* Zentrum */
-              0.0, 1.0, 0.0);    /* Up-Vektor */
-
-//    gluLookAt (7.5, 10.0, 15.0,   /* Augpunkt */
-//               0.0, 0.0, 0.0,     /* Zentrum */
-//               0.0, 1.0, 0.0);    /* Up-Vektor */
-
-    /* Szene zeichnen */
-    drawScene();
+    /* 2D Minimap */
+    set2DViewport(width / 3 * 1.9, height / 2, width / 3, height /2);
+    drawScene(GL_FALSE);
 
     /* Objekt anzeigen */
     glutSwapBuffers();
