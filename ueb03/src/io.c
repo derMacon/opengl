@@ -12,44 +12,67 @@
 #include "logic.h"
 #include "variables.h"
 #include "helper.h"
+#include "types.h"
 
 enum e_Direction direction = dirNone;
 GLboolean showFullscreen = GL_FALSE;
 double cooldown = 0.0f;
 
-// TODO: Neuschreiben
-void changeCameraOrientation(GLfloat deltaRadius, GLfloat deltaPolar, GLfloat deltaAzimuth) {
-    getGame()->camera.radius += deltaRadius;
-    getGame()->camera.polarAngle += deltaPolar;
-    getGame()->camera.azimuthAngle += deltaAzimuth;
+/**
+ * Aendert die Sicht der Kamera anhand von Winkeln
+ * @param radius
+ * @param anglePolar
+ * @param angleAzimuth - ein nach einer Himmelsrichtung orientierter Horizontalwinkel
+ */
+void changeCameraView(GLfloat radius, GLfloat anglePolar, GLfloat angleAzimuth) {
 
-    if (getGame()->camera.radius < CAMERA_RADIUS_MIN) {
-        getGame()->camera.radius = CAMERA_RADIUS_MIN;
+    CameraView cam = getGame()->camera;
+
+    cam.radius += radius;
+    cam.anglePolar += anglePolar;
+    cam.angleAzimuth += angleAzimuth;
+
+    /* Begrenzungen */
+    if (cam.radius < CAMERA_RADIUS_MIN) {
+        cam.radius = CAMERA_RADIUS_MIN;
     }
 
-    if (getGame()->camera.radius > CAMERA_RADIUS_MAX) {
-        getGame()->camera.radius = CAMERA_RADIUS_MAX;
+    if (cam.radius > CAMERA_RADIUS_MAX) {
+        cam.radius = CAMERA_RADIUS_MAX;
     }
 
-    if (getGame()->camera.polarAngle < 0.0f) {
-        getGame()->camera.polarAngle += 360.0f;
+    if (cam.anglePolar < 0.0f) {
+        cam.anglePolar += 360.0f;
     }
 
-    if (getGame()->camera.polarAngle > 360.0f) {
-        getGame()->camera.polarAngle -= 360.0f;
+    if (cam.anglePolar > 360.0f) {
+        cam.anglePolar -= 360.0f;
     }
 
-    if (getGame()->camera.azimuthAngle < 5.0f) {
-        getGame()->camera.azimuthAngle = 5.0f;
+    if (cam.angleAzimuth < 5.0f) {
+        cam.angleAzimuth = 5.0f;
     }
 
-    if (getGame()->camera.azimuthAngle > 90.0f) {
-        getGame()->camera.azimuthAngle = 90.0f;
+    if (cam.angleAzimuth > 90.0f) {
+        cam.angleAzimuth = 90.0f;
     }
+
+    getGame()->camera = cam;
 }
 
-
 // TODO: Neuschreiben
+/**
+ * Verarbeitung eines Mausereignisses.
+ * Durch Bewegung der Maus bei gedrueckter Maustaste kann die aktuelle
+ * Zeichenfarbe beeinflusst werden.
+ * Falls Debugging aktiviert ist, wird jedes Mausereignis auf stdout
+ * ausgegeben.
+ * @param x x-Position des Mauszeigers zum Zeitpunkt der Ereignisausloesung.
+ * @param y y-Position des Mauszeigers zum Zeitpunkt der Ereignisausloesung.
+ * @param eventType Typ des Ereignisses.
+ * @param button ausloesende Maustaste (nur bei Ereignissen vom Typ mouseButton).
+ * @param buttonState Status der Maustaste (nur bei Ereignissen vom Typ mouseButton).
+ */
 void handleMouseEvent(int x, int y, CGMouseEventType eventType,
                       int button, int buttonState) {
     /* aktueller Status der linken Maustaste */
@@ -74,13 +97,13 @@ void handleMouseEvent(int x, int y, CGMouseEventType eventType,
 
                 case 3: /* Hoch-Scrollen */
                     if (buttonState == GLUT_UP) {
-                        radius -= SCROLL_SPEED;
+                        radius -= MOUSE_SCROLL_SPEED;
                     }
                     break;
 
                 case 4: /* Runter-Scrollen */
                     if (buttonState == GLUT_UP) {
-                        radius += SCROLL_SPEED;
+                        radius += MOUSE_SCROLL_SPEED;
                     }
                     break;
             }
@@ -91,8 +114,8 @@ void handleMouseEvent(int x, int y, CGMouseEventType eventType,
                 int deltaX = oldMousePos[0] - x;
                 int deltaY = oldMousePos[1] - y;
 
-                polar += ((float) deltaX) * POLAR_FACTOR;
-                azimuth += ((float) deltaY) * AZIMUTH_FACTOR;
+                polar += ((float) deltaX) * FACTOR_POLAR;
+                azimuth += ((float) deltaY) * FACTOR_AZIMUTH;
 
                 oldMousePos[0] = x;
                 oldMousePos[1] = y;
@@ -102,7 +125,7 @@ void handleMouseEvent(int x, int y, CGMouseEventType eventType,
             break;
     }
 
-    changeCameraOrientation(radius, polar, azimuth);
+    changeCameraView(radius, polar, azimuth);
 }
 
 /**
@@ -149,8 +172,8 @@ cbTimer(int lastCallTime) {
         cooldown -= interval;
     }
 
-    if (getGame()->movementCooldown > 0.0f){
-        getGame()->movementCooldown -= interval;
+    if (getGame()->movementCooldown > 0.0f) {
+        getGame()->movementCooldown -= (float) interval;
     }
 
     /* Wieder als Timer-Funktion registrieren */
@@ -215,35 +238,26 @@ static void set2DViewport(GLint x, GLint y, GLint width, GLint height) {
 }
 
 /**
- * Setzt einen Viewport fuer 3-dimensionale Darstellung
- * mit perspektivischer Projektion und legt eine Kamera fest.
- *
- * @param x, y Position des Viewports im Fenster - (0, 0) ist die untere linke Ecke
- * @param width, height Breite und Hoehe des Viewports
+ * Setzt den Viewport fuer die 3D-Darstellung
+ * @param x - Position x im Fenster
+ * @param y - Position y im Fenster
+ * @param width - Breite des Fensters
+ * @param height - Hoehe des Fensters
  */
 static void set3DViewport(GLint x, GLint y, GLint width, GLint height) {
-    /* Seitenverhaeltnis bestimmen */
     double aspect = (double) width / height;
-
-    /* Folge Operationen beeinflussen die Projektionsmatrix */
     glMatrixMode(GL_PROJECTION);
-
-    /* Einheitsmatrix laden */
     glLoadIdentity();
 
-    /* Viewport-Position und -Ausdehnung bestimmen */
+    gluPerspective(70,
+                   aspect,
+                   0.05,
+                   100);
+
+    /* Position und Groesse bestimmen */
     glViewport(x, y, width, height);
 
-    /* Perspektivische Darstellung */
-    gluPerspective(70,        /* Oeffnungswinkel */
-                   aspect,  /* Seitenverhaeltnis */
-                   0.05,    /* nahe Clipping-Ebene */
-                   100);    /* ferne Clipping-Ebene */
-
-    /* Folge Operationen beeinflussen die Modelviewmatrix */
     glMatrixMode(GL_MODELVIEW);
-
-    /* Einheitsmatrix laden */
     glLoadIdentity();
 }
 

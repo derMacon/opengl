@@ -4,7 +4,6 @@
 #else
 
 #include <GL/glut.h>
-
 #endif
 
 #include <time.h>
@@ -95,32 +94,58 @@ void showPlayer(int x, int y) {
     }
 }
 
-static void initLight(void) {
-    /* Globales, ambientes Licht */
-    float globalAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
+/**
+ * Initialisiert das Weltlicht
+ */
+static void initWorldLight(void) {
+
+    float one = 1.0f;
+
+    /* Globales Licht */
+    float globalAmbient[] = {one, one, one, one};
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 
-    /* Weltlichtquelle (Punktlicht) */
-    float worldlightPos[] = {2.0f, 2.0f, 0.0f, 1.0f};
-    glLightfv(GL_LIGHT0, GL_POSITION, worldlightPos);
-    float worldlightColorAmbDif[] = {1.0, 1.0, 1.0, 1.0};
-    float worldlightColorSpec[] = {1.0, 1.0, 1.0, 1.0};
-    glLightfv(GL_LIGHT0, GL_AMBIENT, worldlightColorAmbDif);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, worldlightColorAmbDif);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, worldlightColorSpec);
+    /* Weltlicht */
+    float pos[] = {2.0f, 2.0f, 0.0f, one};
+    float colorDiffus[] = {one, one, one, one};
+    float colorSpecular[] = {one, one, one, one};
+
+    glLightfv(GL_LIGHT0, GL_POSITION, pos);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, colorDiffus);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, colorDiffus);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, colorSpecular);
     glEnable(GL_LIGHT0);
+}
+
+/**
+ * Initialisiert das Taschenlampen-Licht
+ */
+static void initSpotLight(void) {
+    float one = 1.0f;
 
     /* Tachenlampe (Spotlight) */
-    float spotlightColorAmbDif[] = {1.0, 1.0, 0.8, 1.0};
-    float spotlightColorSpec[] = {1.0, 1.0, 1.0, 1.0};
-    glLightfv(GL_LIGHT1, GL_AMBIENT, spotlightColorAmbDif);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, spotlightColorAmbDif);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, spotlightColorSpec);
-    glLighti(GL_LIGHT1, GL_SPOT_EXPONENT, 15);
+    float colorDiffus[] = {one, one, one, one};
+    float colorSpecular[] = {one, one, one, one};
+
+    glLightfv(GL_LIGHT1, GL_SPECULAR, colorSpecular);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, colorDiffus);
+    glLightfv(GL_LIGHT1, GL_AMBIENT, colorDiffus);
     glLighti(GL_LIGHT1, GL_SPOT_CUTOFF, 40);
+    glLighti(GL_LIGHT1, GL_SPOT_EXPONENT, 15);
     glEnable(GL_LIGHT1);
 }
 
+/**
+ * Laesst das Welt- und Taschenlampen-Licht initialisieren
+ */
+static void initLight(void) {
+    initWorldLight();
+    initSpotLight();
+}
+
+/**
+ * Dreht den Spieler in die gewaehlte Richtung
+ */
 void changePlayerDirection() {
 
     switch (getGame()->lastDirection) {
@@ -128,16 +153,13 @@ void changePlayerDirection() {
             glRotatef(180, 0, 1, 0);
             break;
         case dirDown:
+        case dirNone:
             break;
-
         case dirLeft:
             glRotatef(-90, 0, 1, 0);
             break;
-
         case dirRight:
             glRotatef(90, 0, 1, 0);
-            break;
-        case dirNone:
             break;
     }
 }
@@ -201,6 +223,7 @@ void drawLevel(GLboolean draw3D) {
                             break;
                     }
 
+                    /* Spieler zeichnen */
                     changePlayerDirection();
                     showPlayer(x, y);
                 }
@@ -212,11 +235,11 @@ void drawLevel(GLboolean draw3D) {
 }
 
 /**
- * Hilft dabei, die Sichtrichtung in der Firstperson ansicht zu aendern
- * @param isX
- * @return
+ * Hilft dabei, die Sichtrichtung in der Firstperson-Ansicht zu aendern
+ * @param isX - links oder rechts
+ * @return die (evtl) veraenderte Variable
  */
-float setFPDirection(GLboolean isX) {
+float setFirstPersonView(GLboolean isX) {
 
     enum e_Direction lastDir = getGame()->lastDirection;
 
@@ -248,18 +271,16 @@ float setFPDirection(GLboolean isX) {
  */
 void drawGame(GLboolean draw3D) {
 
+    float playerX = (float) getGame()->levelSettings.playerPosX;
+    float playerY = (float) getGame()->levelSettings.playerPosY;
+
+
     glPushMatrix();
     {
-        //todo maybe ändern
-
-        // Spielfeld ist ein wenig zu groß, also um 20% kleiner machen
-        //glScalef(1.0f, 1.0f,1.0f);
 
         if (draw3D) {
             // Spielfeld ist ein wenig zu hoch, also bisschen tiefer setzen
             glTranslatef(0.0f, -0.1f, 0.0f);
-            float playerX = getGame()->levelSettings.playerPosX;
-            float playerY = getGame()->levelSettings.playerPosY;
 
             float spotLightPos[] = {playerX,
                                     0.1f,
@@ -278,12 +299,13 @@ void drawGame(GLboolean draw3D) {
 
             if (getGame()->firstPerson) {
                 /* Firstperson */
-                float playerXOffset = (float) (LEVEL_SIZE - getGame()->levelSettings.playerPosX) / LEVEL_SIZE;
-                float playerYOffset = (float) (LEVEL_SIZE - getGame()->levelSettings.playerPosY) / LEVEL_SIZE;
+                float playerXOffset = (float) (LEVEL_SIZE - playerX) / LEVEL_SIZE;
+                float playerYOffset = (float) (LEVEL_SIZE - playerY) / LEVEL_SIZE;
 
-                float playerX = playerXOffset - ((float) (getGame()->levelSettings.playerPosX) / LEVEL_SIZE);
-                float playerY = playerYOffset - ((float) (getGame()->levelSettings.playerPosY) / LEVEL_SIZE);
+                playerX = playerXOffset - ((float) (getGame()->levelSettings.playerPosX) / LEVEL_SIZE);
+                playerY = playerYOffset - ((float) (getGame()->levelSettings.playerPosY) / LEVEL_SIZE);
 
+                // Kamera einstellen
                 GLfloat eyeX = playerX - 0.12f;
                 GLfloat eyeY = 0.15f;
                 GLfloat eyeZ = playerY;
@@ -293,14 +315,15 @@ void drawGame(GLboolean draw3D) {
                 }
 
                 gluLookAt(eyeX, eyeY, eyeZ,
-                          eyeX + setFPDirection(GL_TRUE), 0, eyeZ + setFPDirection(GL_FALSE),
+                          eyeX + setFirstPersonView(GL_TRUE), 0, eyeZ + setFirstPersonView(GL_FALSE),
                           0.0f, 1.0f, 0.0f);
             } else {
 
                 GLfloat radius = getGame()->camera.radius;
-                GLfloat polar = TO_RADIANS(getGame()->camera.polarAngle);
-                GLfloat azimuth = TO_RADIANS(getGame()->camera.azimuthAngle);
+                GLfloat polar = TO_RADIANS(getGame()->camera.anglePolar);
+                GLfloat azimuth = TO_RADIANS(getGame()->camera.angleAzimuth);
 
+                // Kamera einstellen
                 GLfloat eyeX = radius * sinf(azimuth) * cosf(polar);
                 GLfloat eyeY = radius * cosf(azimuth);
                 GLfloat eyeZ = radius * sinf(azimuth) * sinf(polar);
@@ -310,7 +333,6 @@ void drawGame(GLboolean draw3D) {
                           0.0, 0.0, 0.0,
                           0.0, 1.0, 0.0);
             }
-
         }
 
         // Uebergebenes Level zeichnen

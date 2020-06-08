@@ -3,14 +3,14 @@
 
 /* Globale Einstellungen */
 #define TIMER_CALLS_PS 144
+#define MOUSE_SCROLL_SPEED (0.6f)
 
-// TODO: Umbenennen
-#define SCROLL_SPEED (0.6f)
-#define POLAR_FACTOR (-0.25f)
-#define AZIMUTH_FACTOR (0.25f)
-#define CAMERA_RADIUS_MIN ( 1.0f)
-#define CAMERA_RADIUS_MAX (18.0f)
-#define EMPTY_CAMERA_ORIENTATION {8.0f, 45.0f, -90}
+/* Kamera */
+#define CAMERA_RADIUS_MIN ( 0.5f)
+#define CAMERA_RADIUS_MAX (5.0f)
+#define FACTOR_POLAR (-0.25f)
+#define FACTOR_AZIMUTH (0.25f)
+#define EMPTY_CAMERA_ORIENTATION {2.5f, 45.0f, -90}
 
 /* Hoehe/Breite des (quadratischen) Levels */
 #define LEVEL_SIZE (9)

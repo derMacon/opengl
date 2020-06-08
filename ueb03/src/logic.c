@@ -354,7 +354,7 @@ void loadLevel(int levelId) {
  * @param levelId - Dieses Level wird initialisiert
  */
 void initLevel(int levelId) {
-    CameraOrientation or = EMPTY_CAMERA_ORIENTATION;
+    CameraView or = EMPTY_CAMERA_ORIENTATION;
     game.gameStatus = GAME_RUNNING;
     game.levelId = levelId;
     game.camera = or;

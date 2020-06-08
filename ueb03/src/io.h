@@ -1,6 +1,8 @@
 #ifndef __IO_H__
 #define __IO_H__
 
+#include "types.h"
+
 /**
  * Setzen der Projektionsmatrix.
  * Setzt die Projektionsmatrix unter Berücksichtigung des Seitenverhaeltnisses
@@ -28,18 +30,9 @@ int
 initAndStartIO(char *title, int width, int height);
 
 
-// TODO: Umschreiben
-typedef enum {
-    mouseButton,
-    mouseMotion,
-    mousePassiveMotion
-} CGMouseEventType;
 
-// TODO: Umschreiben
 void handleMouseEvent(int x, int y, CGMouseEventType eventType,
                       int button, int buttonState);
-
-typedef GLfloat CGColor3f[3];
 
 enum e_Direction getDirection();
 

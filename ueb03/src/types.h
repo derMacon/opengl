@@ -54,12 +54,19 @@ typedef struct {
 #define TAU (acos(-1.0) * 2.f)
 #define TO_RADIANS(x) ((x) * TAU / 360.0f)
 
-// TODO: Neuschreiben
+/** Mausereignisse. */
+typedef enum {
+    mouseButton,
+    mouseMotion,
+    mousePassiveMotion
+} CGMouseEventType;
+
+/** Kamerasicht (wird verwendet, um mit der Maus die Ansicht zu aendern) */
 typedef struct {
     GLfloat radius;
-    GLfloat azimuthAngle;
-    GLfloat polarAngle;
-} CameraOrientation;
+    GLfloat angleAzimuth;
+    GLfloat anglePolar;
+} CameraView;
 
 /** Spieleinstellungen */
 typedef struct {
@@ -69,11 +76,9 @@ typedef struct {
     GLboolean firstPerson;
     GLboolean showWorldLight;
     GLboolean showAnimation;
-    enum e_Direction lastDirection;
+    CameraView camera;
     float movementCooldown;
-
-    // TODO: Umbenennen
-    CameraOrientation camera;
+    enum e_Direction lastDirection;
 } Game;
 
 /** Level des Spiels */
