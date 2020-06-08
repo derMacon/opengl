@@ -91,6 +91,32 @@ void showPlayer(int x, int y) {
     }
 }
 
+static void initLight(void) {
+    /* Globales, ambientes Licht */
+    float globalAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
+
+    /* Weltlichtquelle (Punktlicht) */
+    float worldlightPos[] = {2.0f, 2.0f, 0.0f, 1.0f};
+    glLightfv(GL_LIGHT0, GL_POSITION, worldlightPos);
+    float worldlightColorAmbDif[] = {1.0, 1.0, 1.0, 1.0};
+    float worldlightColorSpec[] = {1.0, 1.0, 1.0, 1.0};
+    glLightfv(GL_LIGHT0, GL_AMBIENT, worldlightColorAmbDif);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, worldlightColorAmbDif);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, worldlightColorSpec);
+    glEnable(GL_LIGHT0);
+
+    /* Tachenlampe (Spotlight) */
+    float spotlightColorAmbDif[] = {1.0, 1.0, 0.8, 1.0};
+    float spotlightColorSpec[] = {1.0, 1.0, 1.0, 1.0};
+    glLightfv(GL_LIGHT1, GL_AMBIENT, spotlightColorAmbDif);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, spotlightColorAmbDif);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, spotlightColorSpec);
+    glLighti(GL_LIGHT1, GL_SPOT_EXPONENT, 15);
+    glLighti(GL_LIGHT1, GL_SPOT_CUTOFF, 40);
+    glEnable(GL_LIGHT1);
+}
+
 /**
  *  Zeichnen des gesamten Levels
  */
@@ -104,10 +130,7 @@ void drawLevel(GLboolean draw3D) {
 
         /* Minimap ist initial spiegelverkehr, also nochmal drehen */
         if (draw3D) {
-            float worldlightPos[] = {0.0f, 2.0f, 0.0f, 1.0f};
-            glLightfv(GL_LIGHT0, GL_POSITION, worldlightPos);
             glEnable(GL_LIGHTING);
-            glEnable(GL_LIGHT0);
         } else {
             glRotatef(180, 0, 1, 0);
             glDisable(GL_LIGHTING);
@@ -180,6 +203,18 @@ void drawGame(GLboolean draw3D) {
         if (draw3D) {
             // Spielfeld ist ein wenig zu hoch, also bisschen tiefer setzen
             glTranslatef(0.0f, -0.1f, 0.0f);
+            float playerX = getGame()->levelSettings.playerPosX;
+            float playerY = getGame()->levelSettings.playerPosY;
+
+            float spotLightPos[] = {playerX,
+                                    0.1f,
+                                    playerY};
+
+            // TODO: Spielerrichtung
+            float spotlightDirection[] = {playerX, -0.5f, playerY};
+            glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotlightDirection);
+            glLightfv(GL_LIGHT1, GL_POSITION, spotLightPos);
+
         } else {
             // TODO mal sehen was hier geht
             glRotatef(90, 1, 0, 0);
@@ -319,7 +354,7 @@ initScene(void) {
     glLineWidth(2.0f);
 
     glEnable(GL_NORMALIZE);
-
+    initLight();
     initDisplayList();
 
     initLevel(1);
