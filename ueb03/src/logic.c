@@ -71,7 +71,7 @@ void handleTriangles() {
  */
 GLboolean
 checkForDoors(int x, int y, int newX, int newY, pushyFieldType currentType, pushyFieldType nextType,
-                        pushyFieldType doorType, GLboolean withNewX) {
+              pushyFieldType doorType, GLboolean withNewX) {
     int numberOfDoors = game.levelSettings.numberOfDoors;
     GLboolean hasMoved = GL_FALSE;
 

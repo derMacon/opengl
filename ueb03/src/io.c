@@ -392,6 +392,11 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     switchGameStatus(GAME_PAUSED);
                     break;
 
+                case 'c':
+                case 'C':
+                    getGame()->firstPerson = !getGame()->firstPerson;
+                    break;
+
                 case '1':
                     initLevel(1);
                     break;
@@ -430,6 +435,7 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case 'S':
                     setPlayerMovement(dirDown);
                     break;
+
                     /* Programm beenden */
                 case 'q':
                 case 'Q':

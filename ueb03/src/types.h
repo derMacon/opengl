@@ -36,6 +36,7 @@ typedef enum {
 enum e_Direction {
     dirLeft, dirRight, dirUp, dirDown, dirNone
 };
+
 /** Leveleinstellungen des Spiels */
 typedef struct {
     int
@@ -65,6 +66,7 @@ typedef struct {
     int levelId;
     Gamestatus gameStatus;
     LevelSettings levelSettings;
+    GLboolean firstPerson;
 
     // TODO: Umbenennen
     CameraOrientation camera;

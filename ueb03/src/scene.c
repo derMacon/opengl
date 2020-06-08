@@ -252,37 +252,42 @@ void drawGame(GLboolean draw3D) {
         }
 
         if (draw3D) {
-            GLfloat radius = getGame()->camera.radius;
-            GLfloat polar = TO_RADIANS(getGame()->camera.polarAngle);
-            GLfloat azimuth = TO_RADIANS(getGame()->camera.azimuthAngle);
 
-            GLfloat eyeX = radius * sinf(azimuth) * cosf(polar);
-            GLfloat eyeY = radius * cosf(azimuth);
-            GLfloat eyeZ = radius * sinf(azimuth) * sinf(polar);
+            if (getGame()->firstPerson) {
+                /* Firstperson */
+                float playerXOffset = (float) (LEVEL_SIZE - getGame()->levelSettings.playerPosX) / LEVEL_SIZE;
+                float playerYOffset = (float) (LEVEL_SIZE - getGame()->levelSettings.playerPosY) / LEVEL_SIZE;
 
-            /* Firstperson */
-            float playerXOffset = (float) (LEVEL_SIZE - getGame()->levelSettings.playerPosX) / LEVEL_SIZE;
-            float playerYOffset = (float) (LEVEL_SIZE - getGame()->levelSettings.playerPosY) / LEVEL_SIZE;
+                float playerX = playerXOffset - ((float) (getGame()->levelSettings.playerPosX) / LEVEL_SIZE);
+                float playerY = playerYOffset - ((float) (getGame()->levelSettings.playerPosY) / LEVEL_SIZE);
 
-            float playerX = playerXOffset - ((float) (getGame()->levelSettings.playerPosX) / LEVEL_SIZE);
-            float playerY = playerYOffset - ((float) (getGame()->levelSettings.playerPosY) / LEVEL_SIZE);
+                GLfloat eyeX = playerX - 0.12f;
+                GLfloat eyeY = 0.15f;
+                GLfloat eyeZ = playerY;
 
-            eyeX = playerX - 0.12f;
-            eyeY = 0.15f;
-            eyeZ = playerY;
+                if (getDirection() != dirNone) {
+                    lastDir = getDirection();
+                }
 
-            if (getDirection() != dirNone) {
-                lastDir = getDirection();
+                gluLookAt(eyeX, eyeY, eyeZ,
+                          eyeX + setFPDirection(GL_TRUE), 0, eyeZ + setFPDirection(GL_FALSE),
+                          0.0f, 1.0f, 0.0f);
+            } else {
+
+                GLfloat radius = getGame()->camera.radius;
+                GLfloat polar = TO_RADIANS(getGame()->camera.polarAngle);
+                GLfloat azimuth = TO_RADIANS(getGame()->camera.azimuthAngle);
+
+                GLfloat eyeX = radius * sinf(azimuth) * cosf(polar);
+                GLfloat eyeY = radius * cosf(azimuth);
+                GLfloat eyeZ = radius * sinf(azimuth) * sinf(polar);
+
+
+                gluLookAt(eyeX, eyeY, eyeZ,
+                          0.0, 0.0, 0.0,
+                          0.0, 1.0, 0.0);
             }
 
-            gluLookAt(eyeX, eyeY, eyeZ,
-                      eyeX + setFPDirection(GL_TRUE), 0, eyeZ + setFPDirection(GL_FALSE),
-                      0.0f, 1.0f, 0.0f);
-
-//            Vogel Person
-//            gluLookAt(eyeX, eyeY, eyeZ,
-//                      0.0, 0.0, 0.0,
-//                      0.0, 1.0, 0.0);
         }
 
         // Uebergebenes Level zeichnen
