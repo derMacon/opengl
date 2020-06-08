@@ -40,4 +40,7 @@ void handleMouseEvent(int x, int y, CGMouseEventType eventType,
                       int button, int buttonState);
 
 typedef GLfloat CGColor3f[3];
+
+enum e_Direction getDirection();
+
 #endif

@@ -12,7 +12,6 @@
 #include "logic.h"
 #include "variables.h"
 #include "helper.h"
-#include <math.h>
 
 enum e_Direction direction = dirNone;
 GLboolean showFullscreen = GL_FALSE;
@@ -181,34 +180,34 @@ decreaseTimer() {
  * @param x, y Position des Viewports im Fenster - (0, 0) ist die untere linke Ecke
  * @param width, height Breite und Hoehe des Viewports
  */
-//static void set2DViewport(GLint x, GLint y, GLint width, GLint height) {
-//    /* Seitenverhaeltnis bestimmen */
-//    double aspect = (double) width / height;
-//
-//    /* Folge Operationen beeinflussen die Projektionsmatrix */
-//    glMatrixMode(GL_PROJECTION);
-//
-//    /* Einheitsmatrix laden */
-//    glLoadIdentity();
-//
-//    /* Viewport-Position und -Ausdehnung bestimmen */
-//    glViewport(x, y, width, height);
-//
-//    /* Das Koordinatensystem bleibt immer quadratisch */
-//    if (aspect <= 1) {
-//        gluOrtho2D(-1, 1,                     /* left, right */
-//                   -1 / aspect, 1 / aspect); /* bottom, top */
-//    } else {
-//        gluOrtho2D(-1 * aspect, 1 * aspect, /* left, right */
-//                   -1, 1);                    /* bottom, top */
-//    }
-//
-//    /* Folge Operationen beeinflussen die Modelviewmatrix */
-//    glMatrixMode(GL_MODELVIEW);
-//
-//    /* Einheitsmatrix laden */
-//    glLoadIdentity();
-//}
+static void set2DViewport(GLint x, GLint y, GLint width, GLint height) {
+    /* Seitenverhaeltnis bestimmen */
+    double aspect = (double) width / height;
+
+    /* Folge Operationen beeinflussen die Projektionsmatrix */
+    glMatrixMode(GL_PROJECTION);
+
+    /* Einheitsmatrix laden */
+    glLoadIdentity();
+
+    /* Viewport-Position und -Ausdehnung bestimmen */
+    glViewport(x, y, width, height);
+
+    /* Das Koordinatensystem bleibt immer quadratisch */
+    if (aspect <= 1) {
+        gluOrtho2D(-1, 1,                     /* left, right */
+                   -1 / aspect, 1 / aspect); /* bottom, top */
+    } else {
+        gluOrtho2D(-1 * aspect, 1 * aspect, /* left, right */
+                   -1, 1);                    /* bottom, top */
+    }
+
+    /* Folge Operationen beeinflussen die Modelviewmatrix */
+    glMatrixMode(GL_MODELVIEW);
+
+    /* Einheitsmatrix laden */
+    glLoadIdentity();
+}
 
 /**
  * Setzt einen Viewport fuer 3-dimensionale Darstellung
@@ -262,8 +261,8 @@ cbDisplay(void) {
     drawScene(GL_TRUE);
 
     /* 2D Minimap */
-//    set2DViewport(width / 3 * 1.9, height / 2.2, width / 3, height / 2);
-//    drawScene(GL_FALSE);
+    set2DViewport(width / 3 * 1.9, height / 2.2, width / 3, height / 2);
+    drawScene(GL_FALSE);
 
     /* Objekt anzeigen */
     glutSwapBuffers();
@@ -361,7 +360,6 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
             switch (key) {
                 /* Bewegung des Rechtecks in entsprechende Richtung beenden */
                 case GLUT_KEY_LEFT:
-
                     direction = dirLeft;
                     break;
                 case GLUT_KEY_RIGHT:
@@ -606,4 +604,8 @@ initAndStartIO(char *title, int width, int height) {
     }
 
     return windowID;
+}
+
+enum e_Direction getDirection() {
+    return direction;
 }
