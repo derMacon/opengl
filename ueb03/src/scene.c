@@ -119,11 +119,11 @@ void drawLevel(GLboolean draw3D) {
                     int levelField = level[y][x];
 
                     /* Kachel an Position x,y zeichnen. */
-                    if (draw3D) {
+//                    if (draw3D) {
                         glTranslatef(-xPos, 0.0f, yPos);
-                    } else {
-                        glTranslatef(xPos, yPos, 0);
-                    }
+//                    } else {
+//                        glTranslatef(xPos, yPos, 0);
+//                    }
 
                     switch (levelField) {
                         case (P_FREE):
@@ -176,8 +176,8 @@ void drawGame(GLboolean draw3D) {
             // Spielfeld ist ein wenig zu hoch, also bisschen tiefer setzen
             glTranslatef(0.0f, -0.1f, 0.0f);
         } else {
-            // TODO
-//            glTranslatef(-0.5f, -0.7f, 0);
+            // TODO mal sehen was hier geht
+            glRotatef(90,1,0,0);
         }
 
         GLfloat radius = getGame()->camera.radius;
