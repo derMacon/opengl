@@ -9,6 +9,29 @@ GLboolean isIncreasing = GL_TRUE;
 
 GLfloat houseColors[3] = {1.0f, 0.0f, 1.0f};
 
+void setMaterialLightning(float r, float g, float b) {
+    float matDiffuse[] = {r, g, b, 1};
+    float matAmbient[] = {r * 0.1f, g * 0.1f, b * 0.1f, 1.0f};
+
+    float matSpecular[] = {r, g, b, 1.0f};
+    float matShininess = 20;
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, &matShininess);
+
+
+//    float lightColorAmbDif[] = {1.0, 1.0, 1.0, 1.0f};
+//    float lightColorSpec[] = {1.0, 1.0, 1.0, 1.0f};
+
+
+//    glLightfv(GL_LIGHT0, GL_AMBIENT, lightColorAmbDif);
+//    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColorAmbDif);
+//    glLightfv(GL_LIGHT0, GL_SPECULAR, lightColorSpec);
+
+}
+
 /**
  * Aendert die Farbe des Hauses
  * @param isGreenHouse - wenn True, dann Farbe Gruen
@@ -28,6 +51,7 @@ void changeColor(GLboolean isGreenHouse) {
 static void drawSquare() {
     glBegin(GL_QUADS);
     {
+        glNormal3f(0.0, 0.0, 1.0);
         glVertex3f(0.5f, 0.5f, 0.0f);
         glVertex3f(-0.5f, 0.5f, 0.0f);
         glVertex3f(-0.5f, -0.5f, 0.0f);
@@ -141,7 +165,7 @@ void drawDash(float width, float heigth, GLboolean isHorizontal) {
 void drawWall() {
 
     glColor3f(0.412f, 0.412f, 0.412f);
-
+    setMaterialLightning(0.412f, 0.412f, 0.412f);
 
     glPushMatrix();
     {
@@ -149,6 +173,7 @@ void drawWall() {
 
         // Fugenfarbe
         glColor3f(0.663f, 0.663f, 0.663f);
+        setMaterialLightning(0.663f, 0.663f, 0.663f);
 
         // Horizontal
         glPushMatrix();
@@ -198,23 +223,24 @@ void drawWall() {
  */
 void drawBox() {
     glColor3f(0.600f, 0.240f, 0.100f);
-//    float width = BLOCK_SIZE - 0.01f;
+    setMaterialLightning(0.600f, 0.240f, 0.100f);
 
     float bottom = -0.5f;
     float offset = 0.15f;
 
     glPushMatrix();
     {
-//        glScalef(width, BLOCK_SIZE - 0.01f, 1.0f);
         drawSquare();
 
         // Fugenfarbe
         glColor3f(0.1f, 0.1f, 0.1f);
+        setMaterialLightning(0.1f, 0.1f, 0.1f);
 
         // Horizontal
         glPushMatrix();
         {
             glTranslatef(0.0f, bottom + offset, 0.002f);
+
             // Horizontale Striche
             for (int i = 0; i < 2; i++) {
                 drawDash(0, 0, GL_TRUE);
@@ -243,6 +269,7 @@ void drawBox() {
  */
 void drawFreeBlock() {
     glColor3f(0.663f, 0.663f, 0.663f);
+    setMaterialLightning(0.663f, 0.663f, 0.663f);
 
     glPushMatrix();
     {
@@ -259,14 +286,15 @@ void drawFreeBlock() {
  */
 void drawDoor() {
     glColor3f(0.600f, 0.240f, 0.100f);
+    setMaterialLightning(0.600f, 0.240f, 0.100f);
 
     glPushMatrix();
     {
-        // glScalef(width, 1.0f, BLOCK_SIZE);
         drawSquare();
 
         // Braun
         glColor3f(0.1f, 0.1f, 0.1f);
+        setMaterialLightning(0.1f, 0.1f, 0.1f);
 
         // Horizontal
         glPushMatrix();
@@ -283,14 +311,13 @@ void drawDoor() {
  * Zeichnet ein Dreieckobjekt
  */
 void drawTriangleOject() {
-//    float width = BLOCK_WIDTH - 0.3f;
     drawFreeBlock();
+    glColor3f(0.137f, 0.137f, 0.557f);
+    setMaterialLightning(0.137f, 0.137f, 0.557f);
 
     glPushMatrix();
     {
         glScalef(0.12f, 0.12f, 0.12f);
-//        glRotatef(90, 0.0f, 1.0f, 0.0f);
-        glColor3f(0.137f, 0.137f, 0.557f);
         drawTetrahedron();
     }
     glPopMatrix();
@@ -302,6 +329,7 @@ void drawTriangleOject() {
  */
 void drawFinish() {
     glColor3f(0.137f, 0.137f, 0.557f);
+    setMaterialLightning(0.137f, 0.137f, 0.557f);
 
     glPushMatrix();
     {
@@ -317,8 +345,8 @@ void drawFinish() {
  * Zeichnet einen Pfeil fuer den Tuerschalter
  */
 void drawDoorSwitchArrow() {
-
-    glColor3f(0.498f, 1.000f, 0.831f);
+    glColor4f(0.498f, 1.000f, 0.831f, 10);
+    setMaterialLightning(0.498f, 1.000f, 0.831f);
 
     glPushMatrix();
     {
@@ -354,17 +382,6 @@ drawSphere(void) {
     /* Quadric erzuegen */
     GLUquadricObj *qobj = gluNewQuadric();
     if (qobj != 0) {
-        /* Material */
-        float matAmbient[] = {1.0f, 0.0f, 0.0f};
-        float matDiffuse[] = {1.0f, 0.0f, 0.0f};
-        float matSpecular[] = {1.0f, 0.7f, 0.7f};
-        float matShininess[] = {20.0f};
-
-        /* Setzen der Material-Parameter */
-        glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
-        glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
-        glMaterialfv(GL_FRONT, GL_SHININESS, matShininess);
 
         /* Normalen fuer Quadrics berechnen lassen */
         gluQuadricNormals(qobj, GLU_SMOOTH);
@@ -384,11 +401,12 @@ drawSphere(void) {
  */
 void drawDoorSwitch() {
     drawFreeBlock();
+    glColor3f(1, 0, 0);
+    setMaterialLightning(1, 0, 0);
 
     float scaleVal = 0.5f;
     glPushMatrix();
     {
-        glColor3f(1, 0, 0);
         glScalef(scaleVal, scaleVal, scaleVal);
         glTranslatef(-0.1f, 0.06f, 0.05f);
         drawDoorSwitchArrow();
@@ -400,15 +418,17 @@ void drawDoorSwitch() {
  * Zeichnet die Tür und die Fenster des Hauses
  */
 void drawHouseFront() {
+    glColor3f(houseColors[0], houseColors[1], houseColors[2]);
+    setMaterialLightning(houseColors[0], houseColors[1], houseColors[2]);
 
     // Tür
     glPushMatrix();
     {
         glTranslatef(0, -0.34, 0.03f);
         glScalef(0.18f, 0.3f, 0.03f);
-        glColor3f(houseColors[0], houseColors[1], houseColors[2]);
         drawSquare();
         glColor3f(1, 1, 1);
+        setMaterialLightning(1, 1, 1);
     }
     glPopMatrix();
 
@@ -417,14 +437,18 @@ void drawHouseFront() {
         float x = i == 0 ? -0.3f : 0.3f;
         glPushMatrix();
         {
+            glColor3f(0.529f, 0.808f, 0.922f);
+            setMaterialLightning(0.529f, 0.808f, 0.922f);
+
             glTranslatef(x, 0.16, 0.003);
             glScalef(0.24f, 0.24f, 0.015f);
-            glColor3f(0.529f, 0.808f, 0.922f);
+
             drawSquare();
-            glColor3f(1, 1, 1);
         }
         glPopMatrix();
     }
+    glColor3f(1, 1, 1);
+    setMaterialLightning(1, 1, 1);
 }
 
 void
@@ -576,8 +600,8 @@ void drawPortals() {
 
     // Portal animieren
     isIncreasing
-        ? (shrinkVal += 0.1f / shrinkInterval)
-        : (shrinkVal -= 0.1f / shrinkInterval);
+    ? (shrinkVal += 0.1f / shrinkInterval)
+    : (shrinkVal -= 0.1f / shrinkInterval);
 
     // Wenn das Portal auf 0 ist, wird es vergroessert
     // sonst verkleinert
@@ -595,6 +619,7 @@ void drawPortals() {
         for (int i = 0; i < 5; ++i) {
             float *colors = selectColor(i);
             glColor3f(colors[0], colors[1], colors[2]);
+            setMaterialLightning(colors[0], colors[1], colors[2]);
             glTranslatef(0.0f, 0.01f, 0.0f);
 
             glPushMatrix();
@@ -617,13 +642,15 @@ void drawPortals() {
  */
 void drawHouse() {
     drawFreeBlock();
+    glColor3f(1.0f, 1.0f, 1.0f);
+    setMaterialLightning(1, 1, 1);
+
     glPushMatrix();
     {
         glPushMatrix();
         {
             // Hauskoerper
             glScalef(0.8f, 1, 0.8);
-            glColor3f(1.0f, 1.0f, 1.0f);
             drawCube(P_HOUSE);
         }
         glPopMatrix();
@@ -634,6 +661,7 @@ void drawHouse() {
             glTranslatef(0, 0.305, 0.0f);
             glScalef(0.18f, 0.18f, 0.18f);
             glColor3f(houseColors[0], houseColors[1], houseColors[2]);
+            setMaterialLightning(houseColors[0], houseColors[1], houseColors[2]);
             drawPyramid();
         }
         glPopMatrix();
@@ -649,6 +677,7 @@ void drawPlayerEyes() {
 
     // Augenbrauen
     glColor3f(0, 0, 0);
+    setMaterialLightning(0, 0, 0);
     for (int i = 0; i < 2; ++i) {
         glPushMatrix();
         {
@@ -666,6 +695,7 @@ void drawPlayerEyes() {
 
     // Augen
     glColor3f(1, 1, 1);
+    setMaterialLightning(1, 1, 1);
     for (int i = 0; i < 2; ++i) {
         glPushMatrix();
         {
@@ -679,6 +709,7 @@ void drawPlayerEyes() {
 
     // Pupillen
     glColor3f(0, 0, 0);
+    setMaterialLightning(0, 0, 0);
     for (int j = 0; j < 2; ++j) {
         glPushMatrix();
         {
@@ -699,6 +730,7 @@ void drawPlayerHead() {
     glPushMatrix();
     {
         glColor3f(0.824f, 0.706f, 0.549f);
+        setMaterialLightning(0.824f, 0.706f, 0.549f);
         glScalef(0.5f, 0.07, 0.5f);
         drawSphere();
     }
@@ -711,6 +743,7 @@ void drawPlayerHead() {
     glPushMatrix();
     {
         glColor3f(1, 1, 1);
+        setMaterialLightning(1, 1, 1);
 
         glTranslatef(0, -0.02f, -0.22f);
         glScalef(1, 0.02f, 0.1f);
@@ -723,6 +756,7 @@ void drawPlayerHead() {
     {
         glTranslatef(0, 0.02f, 0);
         glColor3f(0, 0, 0);
+        setMaterialLightning(0, 0, 0);
         glScalef(3.5f, 0.02f, 3);
         drawCube('a');
     }
@@ -733,6 +767,7 @@ void drawPlayerHead() {
     {
         glTranslatef(0, 0.02f, 0);
         glColor3f(0, 0, 0);
+        setMaterialLightning(0, 0, 0);
         glScalef(2.5, 0.15, 2.5);
         drawCube('a');
     }
@@ -744,6 +779,7 @@ void drawPlayerHead() {
  */
 void drawPlayerBody() {
     glColor3f(0, 0, 0);
+    setMaterialLightning(0, 0, 0);
 
     // Korpus
     glPushMatrix();
@@ -788,7 +824,7 @@ void drawPlayerBody() {
             int angle = i == 0 ? 125 : -125;
 
             glTranslatef(xArmPos, -0.09f, 0);
-            glRotatef(angle, 0,0,1);
+            glRotatef(angle, 0, 0, 1);
             glScalef(0.07f, 0.12, 0.2);
             drawSphere();
         }
@@ -798,13 +834,14 @@ void drawPlayerBody() {
     // "Haende"
     for (int i = 0; i < 2; ++i) {
         glColor3f(0.824f, 0.706f, 0.549f);
+        setMaterialLightning(0.824f, 0.706f, 0.549f);
+
         glPushMatrix();
         {
             float xHandPos = i == 0 ? -0.45f : 0.45f;
-//            int angle = i == 0 ? -60 : 60;
 
             glTranslatef(xHandPos, -0.13f, 0);
-//            glRotatef(angle, 0, 0, 1);
+
             glScalef(0.05f, 0.02, 0.05f);
             drawSphere();
         }
@@ -822,21 +859,7 @@ void drawPlayer() {
         glScalef(0.08, 0.8f, 0.08f);
 
         drawPlayerBody();
-//
-//        // Krawatte
-//        glPushMatrix();
-//        {
-//            glTranslatef(0, 0, -0.8f);
-//            glScalef(0.08f, 0.5f, 0.3);
-//
-//            glColor3f(1, 1, 1);
-//            drawTetrahedron();
-//        }
-//        glPopMatrix();
-
         drawPlayerHead();
     }
     glPopMatrix();
 }
-
-

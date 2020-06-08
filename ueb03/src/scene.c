@@ -103,8 +103,14 @@ void drawLevel(GLboolean draw3D) {
         glTranslatef(0.0f, 0.1f, 0.0f);
 
         /* Minimap ist initial spiegelverkehr, also nochmal drehen */
-        if (!draw3D) {
+        if (draw3D) {
+            float worldlightPos[] = {0.0f, 2.0f, 0.0f, 1.0f};
+            glLightfv(GL_LIGHT0, GL_POSITION, worldlightPos);
+            glEnable(GL_LIGHTING);
+            glEnable(GL_LIGHT0);
+        } else {
             glRotatef(180, 0, 1, 0);
+            glDisable(GL_LIGHTING);
         }
 
         for (int y = 0; y < LEVEL_SIZE; y++) {
@@ -312,6 +318,8 @@ initScene(void) {
     /* Breite von Linien */
     glLineWidth(2.0f);
 
+    glEnable(GL_NORMALIZE);
+
     initDisplayList();
 
     initLevel(1);
@@ -319,7 +327,6 @@ initScene(void) {
     // Zeit fuer Random einbeziehen, um Zufallsfarben zu generieren
     // srand steht hier, weil es nur einmal aufgerufen werden darf
     srand(time(NULL));
-
 
     /* Z-Buffer-Test aktivieren */
     glEnable(GL_DEPTH_TEST);
