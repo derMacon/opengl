@@ -67,7 +67,7 @@ typedef struct {
     Gamestatus gameStatus;
     LevelSettings levelSettings;
     GLboolean firstPerson;
-
+    GLboolean showWorldLight;
     // TODO: Umbenennen
     CameraOrientation camera;
 } Game;

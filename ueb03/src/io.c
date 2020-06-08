@@ -377,6 +377,9 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case GLUT_KEY_F2:
                     toggleFullscreen();
                     break;
+                case GLUT_KEY_F3:
+                    toggleWorldLight();
+                    break;
             }
         }
             /* normale Taste gedrueckt */

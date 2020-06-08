@@ -130,12 +130,9 @@ void drawLevel(GLboolean draw3D) {
         /* Skalierung und Positionierung des Spielfelds. */
         glTranslatef(0.0f, 0.1f, 0.0f);
 
-        /* Minimap ist initial spiegelverkehr, also nochmal drehen */
-        if (draw3D) {
-            glEnable(GL_LIGHTING);
-        } else {
+        if (!draw3D) {
+            /* Minimap ist initial spiegelverkehr, also nochmal drehen */
             glRotatef(180, 0, 1, 0);
-            glDisable(GL_LIGHTING);
         }
 
         for (int y = 0; y < LEVEL_SIZE; y++) {
@@ -372,8 +369,17 @@ void drawScene(GLboolean draw3D) {
     Gamestatus gameStatus = getGame()->gameStatus;
 
     if (gameStatus == GAME_RUNNING) {
+
+        /* Weltlicht an- oder ausschalten */
+        if (draw3D) {
+            glEnable(GL_LIGHTING);
+        } else {
+            glDisable(GL_LIGHTING);
+        }
+
         drawGame(draw3D);
 
+        /* Infos, wie Zeit verbleibend nur beim 3D-Viewport anzeigen */
         if (draw3D) {
             drawGameInfo();
         }
@@ -409,6 +415,7 @@ initScene(void) {
     glLineWidth(2.0f);
 
     glEnable(GL_NORMALIZE);
+
     initLight();
     initDisplayList();
 
@@ -454,3 +461,12 @@ void toggleFullscreen() {
     }
 }
 
+void toggleWorldLight() {
+    getGame()->showWorldLight = !getGame()->showWorldLight;
+
+    if (getGame()->showWorldLight) {
+        glEnable(GL_LIGHT0);
+    } else {
+        glDisable(GL_LIGHT0);
+    }
+}

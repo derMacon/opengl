@@ -27,5 +27,7 @@ void toggleWireframe();
  */
 void toggleFullscreen();
 
+void toggleWorldLight();
+
 
 #endif
