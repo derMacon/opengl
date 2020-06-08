@@ -101,8 +101,11 @@ void drawLevel(GLboolean draw3D) {
     {
         /* Skalierung und Positionierung des Spielfelds. */
         glTranslatef(0.0f, 0.1f, 0.0f);
-        //todo maybe ändern
-//        glScalef(0.9f,1.0f, 0.9f);
+
+        /* Minimap ist initial spiegelverkehr, also nochmal drehen */
+        if (!draw3D) {
+            glRotatef(180, 0, 1, 0);
+        }
 
         for (int y = 0; y < LEVEL_SIZE; y++) {
             for (int x = 0; x < LEVEL_SIZE; x++) {
@@ -119,11 +122,7 @@ void drawLevel(GLboolean draw3D) {
                     int levelField = level[y][x];
 
                     /* Kachel an Position x,y zeichnen. */
-//                    if (draw3D) {
-                        glTranslatef(-xPos, 0.0f, yPos);
-//                    } else {
-//                        glTranslatef(xPos, yPos, 0);
-//                    }
+                    glTranslatef(-xPos, 0.0f, yPos);
 
                     switch (levelField) {
                         case (P_FREE):
@@ -177,7 +176,7 @@ void drawGame(GLboolean draw3D) {
             glTranslatef(0.0f, -0.1f, 0.0f);
         } else {
             // TODO mal sehen was hier geht
-            glRotatef(90,1,0,0);
+            glRotatef(90, 1, 0, 0);
         }
 
         GLfloat radius = getGame()->camera.radius;
