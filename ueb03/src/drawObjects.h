@@ -59,9 +59,7 @@ void drawPlayer();
  */
 void changeColor(GLboolean isGreenHouse);
 
-
 void drawCube(pushyFieldType fieldType);
 
-void drawAxes();
 
 #endif //UEB02_DRAWOBJECTS_H

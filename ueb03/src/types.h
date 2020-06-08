@@ -68,6 +68,8 @@ typedef struct {
     LevelSettings levelSettings;
     GLboolean firstPerson;
     GLboolean showWorldLight;
+    enum e_Direction lastDirection;
+
     // TODO: Umbenennen
     CameraOrientation camera;
 } Game;

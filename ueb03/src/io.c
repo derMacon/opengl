@@ -322,6 +322,11 @@ cbMousePassiveMotion(int x, int y) {
     handleMouseEvent(x, y, mousePassiveMotion, 0, 0);
 }
 
+void setLastDirection(enum e_Direction dir) {
+    direction = dir;
+    getGame()->lastDirection = dir;
+}
+
 /**
  * Verarbeitung eines Tasturereignisses.
  * Pfeiltasten steuern die Position des angezeigten Rechtecks.
@@ -360,16 +365,16 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
             switch (key) {
                 /* Bewegung des Rechtecks in entsprechende Richtung beenden */
                 case GLUT_KEY_LEFT:
-                    direction = dirLeft;
+                    setLastDirection(dirLeft);
                     break;
                 case GLUT_KEY_RIGHT:
-                    direction = dirRight;
+                    setLastDirection(dirRight);
                     break;
                 case GLUT_KEY_UP:
-                    direction = dirUp;
+                    setLastDirection(dirUp);
                     break;
                 case GLUT_KEY_DOWN:
-                    direction = dirDown;
+                    setLastDirection(dirDown);
                     break;
                 case GLUT_KEY_F1:
                     toggleWireframe();

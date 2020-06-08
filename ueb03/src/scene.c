@@ -19,7 +19,6 @@
 #include "stringOutput.h"
 #include <math.h>
 
-enum e_Direction lastDir = 0;
 GLuint g_renderObjects;
 GLboolean showWireframe = GL_FALSE;
 
@@ -119,6 +118,27 @@ static void initLight(void) {
     glEnable(GL_LIGHT1);
 }
 
+void changePlayerDirection() {
+
+    switch (getGame()->lastDirection) {
+        case dirUp:
+            glRotatef(180, 0, 1, 0);
+            break;
+        case dirDown:
+            break;
+
+        case dirLeft:
+            glRotatef(-90, 0, 1, 0);
+            break;
+
+        case dirRight:
+            glRotatef(90, 0, 1, 0);
+            break;
+        case dirNone:
+            break;
+    }
+}
+
 /**
  *  Zeichnen des gesamten Levels
  */
@@ -178,6 +198,7 @@ void drawLevel(GLboolean draw3D) {
                             break;
                     }
 
+                    changePlayerDirection();
                     showPlayer(x, y);
                 }
                 glPopMatrix();
@@ -193,6 +214,8 @@ void drawLevel(GLboolean draw3D) {
  * @return
  */
 float setFPDirection(GLboolean isX) {
+
+    enum e_Direction lastDir = getGame()->lastDirection;
 
     if (lastDir == dirNone) {
         return 0;
@@ -263,7 +286,7 @@ void drawGame(GLboolean draw3D) {
                 GLfloat eyeZ = playerY;
 
                 if (getDirection() != dirNone) {
-                    lastDir = getDirection();
+                    getGame()->lastDirection = getDirection();
                 }
 
                 gluLookAt(eyeX, eyeY, eyeZ,

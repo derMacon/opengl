@@ -358,6 +358,8 @@ void initLevel(int levelId) {
     game.levelSettings.time = levels[levelId - 1].time;
     game.levelSettings.playerPosX = levels[levelId - 1].startPos[0];
     game.levelSettings.playerPosY = levels[levelId - 1].startPos[1];
+    game.lastDirection = 0;
+
     loadLevel(levelId);
 
     // Hausfarbe auf Pink setzen
