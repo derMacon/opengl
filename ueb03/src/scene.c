@@ -50,7 +50,6 @@ void initDisplayList() {
                     break;
 
                 case (P_DOOR):
-                    //drawDoor();
                     drawCube(P_DOOR);
                     break;
 
@@ -87,7 +86,11 @@ void initDisplayList() {
  * @param y y Pos des Spielers
  */
 void showPlayer(int x, int y) {
+
     if (getGame()->levelSettings.playerPosX == x && getGame()->levelSettings.playerPosY == y) {
+        if (getGame()->showAnimation) {
+            glTranslatef(0, 0, (float) ((getGame()->movementCooldown / 10) / COOLDOWN_TIME));
+        }
         glCallList(g_renderObjects + P_PLAYER);
     }
 }

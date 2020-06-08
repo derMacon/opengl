@@ -116,10 +116,12 @@ int moveObject(enum e_Direction direction, int x, int y, pushyFieldType currentT
     pushyFieldType targetTileType = getBlockOfPos(newX, newY);
 
     if (targetTileType == P_FREE && currentTileType != P_BOX_DOOR_SWITCH) {
+
         // Objekt bewegen (Box, Triangle)
         game.levelSettings.level[y][x] = P_FREE;
         game.levelSettings.level[newY][newX] = currentTileType;
         hasMoved = GL_TRUE;
+
 
     } else if (targetTileType == P_DOOR_SWITCH && currentTileType == P_BOX) {
         // pruefen, welche Tuer geoeffnet werden kann
@@ -254,6 +256,7 @@ GLboolean playerMovementAllowed(enum e_Direction direction) {
 void
 setPlayerMovement(enum e_Direction direction) {
     if (playerMovementAllowed(direction)) {
+        game.movementCooldown = COOLDOWN_TIME;
         if (direction == dirLeft) {
             game.levelSettings.playerPosX -= 1;
         } else if (direction == dirRight) {
@@ -355,6 +358,7 @@ void initLevel(int levelId) {
     game.gameStatus = GAME_RUNNING;
     game.levelId = levelId;
     game.camera = or;
+    game.movementCooldown = COOLDOWN_TIME;
     game.levelSettings.time = levels[levelId - 1].time;
     game.levelSettings.playerPosX = levels[levelId - 1].startPos[0];
     game.levelSettings.playerPosY = levels[levelId - 1].startPos[1];

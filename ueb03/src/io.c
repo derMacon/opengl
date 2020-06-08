@@ -140,12 +140,17 @@ static void
 cbTimer(int lastCallTime) {
     /* Seit dem Programmstart vergangene Zeit in Millisekunden */
     int thisCallTime = glutGet(GLUT_ELAPSED_TIME);
+    double interval = (double) (thisCallTime - lastCallTime) / 1000.0f;
 
     if (cooldown < 0) {
         setPlayerMovement(direction);
         cooldown = COOLDOWN_TIME;
     } else {
-        cooldown -= (double) (thisCallTime - lastCallTime) / 1000.0f;
+        cooldown -= interval;
+    }
+
+    if (getGame()->movementCooldown > 0.0f){
+        getGame()->movementCooldown -= interval;
     }
 
     /* Wieder als Timer-Funktion registrieren */
@@ -426,22 +431,9 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     initLevel(getGame()->levelId);
                     break;
 
-                case 'a':
-                case 'A':
-                    setPlayerMovement(dirLeft);
-                    break;
-                case 'd':
-                case 'D':
-                    setPlayerMovement(dirRight);
-                    break;
                 case 'w':
                 case 'W':
-                    setPlayerMovement(dirUp);
-                    break;
-
-                case 's':
-                case 'S':
-                    setPlayerMovement(dirDown);
+                    getGame()->showAnimation = !getGame()->showAnimation;
                     break;
 
                     /* Programm beenden */
