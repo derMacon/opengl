@@ -285,13 +285,6 @@ void drawGame(GLboolean draw3D) {
     glPushMatrix();
     {
         if (draw3D) {
-            // Spielfeld ist ein wenig zu hoch, also bisschen tiefer setzen
-            glTranslatef(0.0f, -0.1f, 0.0f);
-        } else {
-            glRotatef(90, 1, 0, 0);
-        }
-
-        if (draw3D) {
 
             if (getGame()->firstPerson) {
 
@@ -328,12 +321,19 @@ void drawGame(GLboolean draw3D) {
             /* Taschenlampe setzen */
 
 //            float spotLightPos[] = {playerX, playerY, 0.05f, 1};
+
+
+            // playerx bei oben und unten -> versetzt links und rechts
+            // playery bei links rechts -> versetzt oben und unten
+            // y wert = Hoehe
             float spotLightPos[] = {playerX, 0.3f, playerY, 1};
             float spotlightDirection[] = {setFirstPersonView(GL_TRUE), -0.5f, setFirstPersonView(GL_FALSE)};
 
             glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotlightDirection);
             glLightfv(GL_LIGHT1, GL_POSITION, spotLightPos);
 
+        } else {
+            glRotatef(90, 1, 0, 0);
         }
 
         // Uebergebenes Level zeichnen
