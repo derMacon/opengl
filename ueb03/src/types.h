@@ -75,6 +75,7 @@ typedef struct {
     LevelSettings levelSettings;
     GLboolean firstPerson;
     GLboolean showWorldLight;
+    GLboolean showSpotLight;
     GLboolean showAnimation;
     CameraView camera;
     float movementCooldown;

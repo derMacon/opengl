@@ -107,7 +107,7 @@ static void initWorldLight(void) {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 
     /* Weltlicht */
-    float pos[] = {2.0f, 2.0f, 0.0f, one};
+    float pos[] = {2.0f, 0.5f, 0.0f, one};
     float colorDiffus[] = {one, one, one, one};
     float colorSpecular[] = {one, one, one, one};
 
@@ -115,7 +115,7 @@ static void initWorldLight(void) {
     glLightfv(GL_LIGHT0, GL_AMBIENT, colorDiffus);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, colorDiffus);
     glLightfv(GL_LIGHT0, GL_SPECULAR, colorSpecular);
-//    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT0);
 }
 
 /**
@@ -133,7 +133,6 @@ static void initSpotLight(void) {
     glLightfv(GL_LIGHT1, GL_AMBIENT, colorDiffus);
     glLighti(GL_LIGHT1, GL_SPOT_CUTOFF, 40);
     glLighti(GL_LIGHT1, GL_SPOT_EXPONENT, 15);
-    glEnable(GL_LIGHT1);
 }
 
 /**
@@ -288,9 +287,9 @@ void drawGame(GLboolean draw3D) {
 
             if (getGame()->firstPerson) {
 
-                // Kamera einstelleni
+                // Kamera einstellen
                 GLfloat eyeX = playerX - 0.12f;
-                GLfloat eyeY = 0.15f;
+                GLfloat eyeY = 0.25f;
                 GLfloat eyeZ = playerY;
 
                 if (getDirection() != dirNone) {
@@ -511,5 +510,15 @@ void toggleWorldLight() {
         glEnable(GL_LIGHT0);
     } else {
         glDisable(GL_LIGHT0);
+    }
+}
+
+void toggleSpotLight() {
+    getGame()->showSpotLight = !getGame()->showSpotLight;
+
+    if (getGame()->showSpotLight) {
+        glEnable(GL_LIGHT1);
+    } else {
+        glDisable(GL_LIGHT1);
     }
 }

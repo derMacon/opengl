@@ -404,6 +404,9 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case GLUT_KEY_F3:
                     toggleWorldLight();
                     break;
+                case GLUT_KEY_F4:
+                    toggleSpotLight();
+                    break;
             }
         }
             /* normale Taste gedrueckt */

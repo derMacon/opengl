@@ -29,5 +29,7 @@ void toggleFullscreen();
 
 void toggleWorldLight();
 
+void toggleSpotLight();
+
 
 #endif
