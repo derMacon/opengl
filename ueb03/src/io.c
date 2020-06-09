@@ -396,16 +396,19 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     setLastDirection(dirDown);
                     break;
                 case GLUT_KEY_F1:
-                    toggleWireframe();
+                    toggle(WIREFRAME);
                     break;
                 case GLUT_KEY_F2:
-                    toggleFullscreen();
+                    toggle(NORMALS);
                     break;
                 case GLUT_KEY_F3:
-                    toggleWorldLight();
+                    toggle(WORLDLIGHT);
                     break;
                 case GLUT_KEY_F4:
-                    toggleSpotLight();
+                    toggle(SPOTLIGHT);
+                    break;
+                case GLUT_KEY_F5:
+                    toggle(FULLSCREEN);
                     break;
             }
         }
@@ -424,7 +427,7 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
 
                 case 'c':
                 case 'C':
-                    getGame()->firstPerson = !getGame()->firstPerson;
+                    toggle(FIRSTPERSON);
                     break;
 
                 case '1':
@@ -450,7 +453,7 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
 
                 case 'w':
                 case 'W':
-                    getGame()->showAnimation = !getGame()->showAnimation;
+                    toggle(ANIMATION);
                     break;
 
                     /* Programm beenden */

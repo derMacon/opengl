@@ -20,7 +20,6 @@
 #include <math.h>
 
 GLuint g_renderObjects;
-GLboolean showWireframe = GL_FALSE;
 
 /**
  *  Initialisiert die Displaylisten
@@ -479,46 +478,57 @@ initScene(void) {
 }
 
 /**
- * Schaltet den Wireframe-Modus an oder aus
+ * Togglet verschiedene Dinge (z.B. FirstPerson oder Weltlich)
+ * @param type - Das angegebene soll getoggled werden
  */
-void toggleWireframe() {
-    showWireframe = !showWireframe;
-    if (showWireframe) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    } else {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    }
-}
+void toggle(enum e_ToggleTypes type) {
+    switch (type) {
+        case FULLSCREEN:
+            showFullscreen = !showFullscreen;
 
-/**
- * Schaltet den Fullscreen an oder aus
- */
-void toggleFullscreen() {
-    showFullscreen = !showFullscreen;
+            if (showFullscreen) {
+                glutFullScreen();
+            } else {
+                glutPositionWindow(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
+            }
+            break;
+        case FIRSTPERSON:
+            getGame()->firstPerson = !getGame()->firstPerson;
+            break;
+        case WORLDLIGHT:
+            getGame()->showWorldLight = !getGame()->showWorldLight;
 
-    if (showFullscreen) {
-        glutFullScreen();
-    } else {
-        glutPositionWindow(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
-    }
-}
+            if (getGame()->showWorldLight) {
+                glEnable(GL_LIGHT0);
+            } else {
+                glDisable(GL_LIGHT0);
+            }
+            break;
+        case SPOTLIGHT:
+            getGame()->showSpotLight = !getGame()->showSpotLight;
 
-void toggleWorldLight() {
-    getGame()->showWorldLight = !getGame()->showWorldLight;
+            if (getGame()->showSpotLight) {
+                glEnable(GL_LIGHT1);
+            } else {
+                glDisable(GL_LIGHT1);
+            }
+            break;
+        case ANIMATION:
+            getGame()->showAnimation = !getGame()->showAnimation;
+            break;
 
-    if (getGame()->showWorldLight) {
-        glEnable(GL_LIGHT0);
-    } else {
-        glDisable(GL_LIGHT0);
-    }
-}
+        case WIREFRAME:
+            getGame()->showWireframe = !getGame()->showWireframe;
+            if (getGame()->showWireframe) {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            } else {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            }
+            break;
 
-void toggleSpotLight() {
-    getGame()->showSpotLight = !getGame()->showSpotLight;
-
-    if (getGame()->showSpotLight) {
-        glEnable(GL_LIGHT1);
-    } else {
-        glDisable(GL_LIGHT1);
+        case NORMALS:
+            getGame()->showNormals = !getGame()->showNormals;
+            initDisplayList();
+            break;
     }
 }

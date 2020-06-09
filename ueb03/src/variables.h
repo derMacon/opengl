@@ -4,6 +4,7 @@
 /* Globale Einstellungen */
 #define TIMER_CALLS_PS 144
 #define MOUSE_SCROLL_SPEED (0.6f)
+#define SQUARE_REFINEMENT_COUNT 40
 
 /* Kamera */
 #define CAMERA_RADIUS_MIN ( 0.5f)

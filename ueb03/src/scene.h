@@ -25,11 +25,7 @@ void toggleWireframe();
 /**
  * Schaltet den Fullscreen-Modus an oder aus
  */
-void toggleFullscreen();
-
-void toggleWorldLight();
-
-void toggleSpotLight();
+ void toggle(enum e_ToggleTypes type);
 
 
 #endif

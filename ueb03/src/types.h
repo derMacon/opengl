@@ -77,6 +77,8 @@ typedef struct {
     GLboolean showWorldLight;
     GLboolean showSpotLight;
     GLboolean showAnimation;
+    GLboolean showNormals;
+    GLboolean showWireframe;
     CameraView camera;
     float movementCooldown;
     enum e_Direction lastDirection;
@@ -92,5 +94,15 @@ typedef struct {
     pushyLevel
             field;
 } Level;
+
+enum e_ToggleTypes {
+    FULLSCREEN,
+    NORMALS,
+    FIRSTPERSON,
+    WORLDLIGHT,
+    SPOTLIGHT,
+    ANIMATION,
+    WIREFRAME
+};
 
 #endif //UEB01_TYPES_H

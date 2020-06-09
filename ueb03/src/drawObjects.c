@@ -1,6 +1,7 @@
 #include <math.h>
 #include "debug.h"
 #include "types.h"
+#include "logic.h"
 #include "helper.h"
 
 // Werte fuer Portal-Animation
@@ -49,15 +50,37 @@ void changeColor(GLboolean isGreenHouse) {
 }
 
 static void drawSquare() {
-    glBegin(GL_QUADS);
+
+    int x, y;
+
+    // Normalen
+    if (getGame()->showNormals)
     {
-        glNormal3f(0.0, 0.0, 1.0);
-        glVertex3f(0.5f, 0.5f, 0.0f);
-        glVertex3f(-0.5f, 0.5f, 0.0f);
-        glVertex3f(-0.5f, -0.5f, 0.0f);
-        glVertex3f(0.5f, -0.5f, 0.0f);
+        glBegin(GL_LINES);
+        {
+            glVertex3f(0.0f, 0.0f, 0.0f);
+            glVertex3f(0.0f, 0.0f, 1.0f);
+        }
+        glEnd();
     }
-    glEnd();
+
+// TODO: Neuschreiben
+    for (y = 0; y < SQUARE_REFINEMENT_COUNT; y++) {
+        glBegin(GL_QUAD_STRIP);
+        {
+            glNormal3f(0.0f, 0.0f, 1.0f);
+            for (x = 0; x <= SQUARE_REFINEMENT_COUNT; x++) {
+                glVertex3f(-0.5f + (float) x / (SQUARE_REFINEMENT_COUNT),
+                           0.5f - (float) y / (SQUARE_REFINEMENT_COUNT),
+                           0.0f);
+
+                glVertex3f(-0.5f + (float) x / (SQUARE_REFINEMENT_COUNT),
+                           0.5f - (float) (y + 1) / (SQUARE_REFINEMENT_COUNT),
+                           0.0f);
+            }
+        }
+        glEnd();
+    }
 }
 
 /**
