@@ -276,11 +276,11 @@ cbDisplay(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     /* 3D Ansicht */
-    set3DViewport(0, 0, width, height);
+    set3DViewport(0, 0, width / 2, height);
     drawScene(GL_TRUE);
 
     /* 2D Minimap */
-    set2DViewport(width / 3 * 1.9, height / 2.2, width / 3, height / 2);
+    set2DViewport(width / 1.5, 0, width / 4, height);
     drawScene(GL_FALSE);
 
     /* Objekt anzeigen */
