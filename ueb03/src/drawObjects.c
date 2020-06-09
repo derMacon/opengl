@@ -49,12 +49,16 @@ void changeColor(GLboolean isGreenHouse) {
     }
 }
 
+/**
+ * Zeichnet ein 3D-Viereck
+ */
 static void drawSquare() {
 
     int x, y;
+    float w = 0.5f;
 
-    // Normalen
-    if (getGame()->showNormals) {
+    /* Normalen zeichnen */
+    if (getGame()->settings.showNormals) {
         glBegin(GL_LINES);
         {
             glVertex3f(0.0f, 0.0f, 0.0f);
@@ -63,18 +67,18 @@ static void drawSquare() {
         glEnd();
     }
 
-// TODO: Neuschreiben
+    /* Viele kleine Squares erstellen */
     for (y = 0; y < SQUARE_REFINEMENT_COUNT; y++) {
         glBegin(GL_QUAD_STRIP);
         {
             glNormal3f(0.0f, 0.0f, 1.0f);
             for (x = 0; x <= SQUARE_REFINEMENT_COUNT; x++) {
-                glVertex3f(-0.5f + (float) x / (SQUARE_REFINEMENT_COUNT),
-                           0.5f - (float) y / (SQUARE_REFINEMENT_COUNT),
+                glVertex3f(-w + (float) x / (SQUARE_REFINEMENT_COUNT),
+                           w - (float) y / (SQUARE_REFINEMENT_COUNT),
                            0.0f);
 
-                glVertex3f(-0.5f + (float) x / (SQUARE_REFINEMENT_COUNT),
-                           0.5f - (float) (y + 1) / (SQUARE_REFINEMENT_COUNT),
+                glVertex3f(-w + (float) x / (SQUARE_REFINEMENT_COUNT),
+                           w - (float) (y + 1) / (SQUARE_REFINEMENT_COUNT),
                            0.0f);
             }
         }
@@ -140,9 +144,9 @@ static void drawTetrahedron() {
 static void drawCircle() {
 
     float radius = 1.0f;
-
     GLUquadric *quad = gluNewQuadric();
 
+    /* TODO: weird */
 //    gluQuadricDrawStyle(quad, GLU_SILHOUETTE);
     gluDisk(quad, 0, radius, 64, 2);
 

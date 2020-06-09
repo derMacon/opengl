@@ -389,45 +389,45 @@ Game *getGame(void) {
 void toggle(enum e_ToggleTypes type) {
     switch (type) {
         case FIRSTPERSON:
-            getGame()->firstPerson = !getGame()->firstPerson;
+            getGame()->settings.showFirstPerson = !getGame()->settings.showFirstPerson;
             break;
         case ANIMATION:
-            getGame()->showAnimation = !getGame()->showAnimation;
+            getGame()->settings.showAnimation = ! getGame()->settings.showAnimation;
             break;
         case NORMALS:
-            getGame()->showNormals = !getGame()->showNormals;
+            getGame()->settings.showNormals = !getGame()->settings.showNormals;
             initDisplayList();
             break;
         case WORLDLIGHT:
-            getGame()->showWorldLight = !getGame()->showWorldLight;
+            getGame()->settings.showWorldLight = !getGame()->settings.showWorldLight;
 
-            if (getGame()->showWorldLight) {
+            if ( getGame()->settings.showWorldLight) {
                 glEnable(GL_LIGHT0);
             } else {
                 glDisable(GL_LIGHT0);
             }
             break;
         case SPOTLIGHT:
-            getGame()->showSpotLight = !getGame()->showSpotLight;
+            getGame()->settings.showSpotLight = !getGame()->settings.showSpotLight;
 
-            if (getGame()->showSpotLight) {
+            if (getGame()->settings.showSpotLight) {
                 glEnable(GL_LIGHT1);
             } else {
                 glDisable(GL_LIGHT1);
             }
             break;
         case WIREFRAME:
-            getGame()->showWireframe = !getGame()->showWireframe;
-            if (getGame()->showWireframe) {
+            getGame()->settings.showWireframe = !getGame()->settings.showWireframe;
+            if (getGame()->settings.showWireframe) {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             } else {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             }
             break;
         case FULLSCREEN:
-            getGame()->showFullScreen = !getGame()->showFullScreen;
+            getGame()->settings.showFullScreen = !getGame()->settings.showFullScreen;
 
-            if (getGame()->showFullScreen) {
+            if (getGame()->settings.showFullScreen) {
                 glutFullScreen();
             } else {
                 glutPositionWindow(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);

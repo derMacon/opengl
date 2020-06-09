@@ -4,15 +4,12 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
-
 #include <GL/glut.h>
-
 #endif
-
 #include "variables.h"
 
-GLboolean showWireframe;
-GLboolean showFullscreen;
+#define TAU (acos(-1.0) * 2.f)
+#define TO_RADIANS(x) ((x) * TAU / 360.0f)
 
 /** Art von Levelfeldern */
 typedef enum {
@@ -49,11 +46,6 @@ typedef struct {
             level;
 } LevelSettings;
 
-
-// TODO: Neuschreiben
-#define TAU (acos(-1.0) * 2.f)
-#define TO_RADIANS(x) ((x) * TAU / 360.0f)
-
 /** Mausereignisse. */
 typedef enum {
     mouseButton,
@@ -70,15 +62,21 @@ typedef struct {
 
 /** Spieleinstellungen */
 typedef struct {
-    int levelId;
-    Gamestatus gameStatus;
-    LevelSettings levelSettings;
-    GLboolean firstPerson;
+    GLboolean showFirstPerson;
     GLboolean showWorldLight;
     GLboolean showSpotLight;
     GLboolean showAnimation;
     GLboolean showNormals;
     GLboolean showWireframe;
+    GLboolean showFullScreen;
+} GameSettings;
+
+/** Spiel */
+typedef struct {
+    int levelId;
+    Gamestatus gameStatus;
+    GameSettings settings;
+    LevelSettings levelSettings;
     CameraView camera;
     float movementCooldown;
     enum e_Direction lastDirection;
@@ -95,6 +93,7 @@ typedef struct {
             field;
 } Level;
 
+/** Wird verwendet, um u.g. Einstellungen zu togglen */
 enum e_ToggleTypes {
     FULLSCREEN,
     NORMALS,

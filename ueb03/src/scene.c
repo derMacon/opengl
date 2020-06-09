@@ -87,7 +87,7 @@ void initDisplayList() {
 void showPlayer(int x, int y) {
 
     if (getGame()->levelSettings.playerPosX == x && getGame()->levelSettings.playerPosY == y) {
-        if (getGame()->showAnimation) {
+        if (getGame()->settings.showAnimation) {
             glTranslatef(0, 0, (float) ((getGame()->movementCooldown / 10) / COOLDOWN_TIME));
         }
         glCallList(g_renderObjects + P_PLAYER);
@@ -284,7 +284,7 @@ void drawGame(GLboolean draw3D) {
     {
         if (draw3D) {
 
-            if (getGame()->firstPerson) {
+            if (getGame()->settings.showFirstPerson) {
 
                 // Kamera einstellen
                 GLfloat eyeX = playerX - 0.12f;
