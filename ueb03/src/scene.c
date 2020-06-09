@@ -368,15 +368,19 @@ void drawLost() {
  */
 void drawHelp() {
     GLfloat textColor[3] = {1, 1, 1};
-    drawString(0.45f, 0.35f, textColor, "H I L F E ");
 
-    drawString(0.2f, 0.45f, textColor, "q, Q, ESC                              Spiel beenden");
-    drawString(0.2f, 0.50f, textColor, "r, R                                         Level neustarten");
-    drawString(0.2f, 0.55f, textColor, "h, H                                        Hilfe anzeigen");
-    drawString(0.2f, 0.60f, textColor, "F1                                          Wireframe an/aus");
-    drawString(0.2f, 0.65f, textColor, "F2                                          Vollbildmodus an/aus");
-    drawString(0.2f, 0.70f, textColor, "p, P                                        Pause an/aus");
-    drawString(0.2f, 0.75f, textColor, "1, 2, 3                                     Direkter Levelzugriff");
+    drawString(0.45f, 0.25f, textColor, "H I L F E ");
+
+    drawString(0.2f, 0.35f, textColor, "q, Q, ESC                              Spiel beenden");
+    drawString(0.2f, 0.40f, textColor, "r, R                                         Level neustarten");
+    drawString(0.2f, 0.45f, textColor, "h, H                                        Hilfe anzeigen");
+    drawString(0.2f, 0.50f, textColor, "F1                                          Wireframe an/aus");
+    drawString(0.2f, 0.55f, textColor, "F2                                          Normalen an/aus");
+    drawString(0.2f, 0.60f, textColor, "F3                                          Weltlich an/aus");
+    drawString(0.2f, 0.65f, textColor, "F4                                          Taschenlampe an/aus");
+    drawString(0.2f, 0.70f, textColor, "F5                                          Vollbild an/aus");
+    drawString(0.2f, 0.75f, textColor, "p, P                                        Pause an/aus");
+    drawString(0.2f, 0.80f, textColor, "1, 2, 3, 4                                 Direkter Levelzugriff");
 }
 
 /**
