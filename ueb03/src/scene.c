@@ -380,7 +380,8 @@ void drawHelp() {
     drawString(0.2f, 0.65f, textColor, "F4                                          Taschenlampe an/aus");
     drawString(0.2f, 0.70f, textColor, "F5                                          Vollbild an/aus");
     drawString(0.2f, 0.75f, textColor, "p, P                                        Pause an/aus");
-    drawString(0.2f, 0.80f, textColor, "1, 2, 3, 4                                 Direkter Levelzugriff");
+    drawString(0.2f, 0.80f, textColor, "a, A                                        Animation an/aus");
+    drawString(0.2f, 0.85f, textColor, "1, 2, 3, 4                                 Direkter Levelzugriff");
 }
 
 /**

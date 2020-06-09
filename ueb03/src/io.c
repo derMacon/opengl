@@ -450,8 +450,8 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     initLevel(getGame()->levelId);
                     break;
 
-                case 'w':
-                case 'W':
+                case 'a':
+                case 'A':
                     toggle(ANIMATION);
                     break;
 
