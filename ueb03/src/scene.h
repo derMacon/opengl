@@ -8,6 +8,7 @@
  */
 void drawScene(GLboolean draw3D);
 
+void initDisplayList();
 
 /**
  * Initialisierung der Szene (inbesondere der OpenGL-Statusmaschine).
@@ -15,17 +16,5 @@ void drawScene(GLboolean draw3D);
  * @return Rueckgabewert: im Fehlerfall 0, sonst 1.
  */
 int initScene(void);
-
-/**
- * Schaltet den Wireframe-Modus an oder aus
- */
-void toggleWireframe();
-
-
-/**
- * Schaltet den Fullscreen-Modus an oder aus
- */
- void toggle(enum e_ToggleTypes type);
-
 
 #endif

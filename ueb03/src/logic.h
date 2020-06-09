@@ -30,4 +30,10 @@ void initLevel(int levelId);
  */
 Game *getGame();
 
+/**
+ * Togglet verschiedene Dinge (z.B. FirstPerson oder Weltlich)
+ * @param type - Das angegebene soll getoggled werden
+ */
+void toggle(enum e_ToggleTypes type);
+
 #endif

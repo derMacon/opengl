@@ -11,6 +11,7 @@
 #include "types.h"
 #include "drawObjects.h"
 #include "levels.h"
+#include "scene.h"
 
 Game game;
 
@@ -379,4 +380,58 @@ void initLevel(int levelId) {
  */
 Game *getGame(void) {
     return &game;
+}
+
+/**
+ * Togglet verschiedene Dinge (z.B. FirstPerson oder Weltlich)
+ * @param type - Das angegebene soll getoggled werden
+ */
+void toggle(enum e_ToggleTypes type) {
+    switch (type) {
+        case FIRSTPERSON:
+            getGame()->firstPerson = !getGame()->firstPerson;
+            break;
+        case ANIMATION:
+            getGame()->showAnimation = !getGame()->showAnimation;
+            break;
+        case NORMALS:
+            getGame()->showNormals = !getGame()->showNormals;
+            initDisplayList();
+            break;
+        case WORLDLIGHT:
+            getGame()->showWorldLight = !getGame()->showWorldLight;
+
+            if (getGame()->showWorldLight) {
+                glEnable(GL_LIGHT0);
+            } else {
+                glDisable(GL_LIGHT0);
+            }
+            break;
+        case SPOTLIGHT:
+            getGame()->showSpotLight = !getGame()->showSpotLight;
+
+            if (getGame()->showSpotLight) {
+                glEnable(GL_LIGHT1);
+            } else {
+                glDisable(GL_LIGHT1);
+            }
+            break;
+        case WIREFRAME:
+            getGame()->showWireframe = !getGame()->showWireframe;
+            if (getGame()->showWireframe) {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            } else {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            }
+            break;
+        case FULLSCREEN:
+            showFullscreen = !showFullscreen;
+
+            if (showFullscreen) {
+                glutFullScreen();
+            } else {
+                glutPositionWindow(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
+            }
+            break;
+    }
 }
