@@ -360,27 +360,55 @@ void drawFinish() {
 }
 
 /**
+ * Setzt transparente (Material) Farben
+ * @param r - rot
+ * @param g - gruen
+ * @param b  - blaue
+ * @param alpha - alpha :)
+ */
+void setTransparentColors(float r, float g, float b, float alpha) {
+    float opacity = 0.1f;
+    float diffuse[] = {r, g, b, alpha};
+    float ambient[] = {
+            r * opacity,
+            g * opacity,
+            b * opacity,
+            alpha * opacity
+    };
+
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+
+    glColor4fv(diffuse);
+}
+
+/**
  * Zeichnet einen Pfeil fuer den Tuerschalter
  */
 void drawDoorSwitchArrow() {
-    glColor4f(0.498f, 1.000f, 0.831f, 10);
-    setMaterialLightning(0.498f, 1.000f, 0.831f);
+
+    /* Moeglichkeit fuer Transparenz anschalten */
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glPushMatrix();
     {
+        setTransparentColors(0.2f, 0.4f, 0.8f, 0.5f);
+
+        // 2x Tetraeder
         for (int i = 0; i < 2; ++i) {
             float posX = i == 0 ? 0.0f : 1.0f;
             int angle = i == 0 ? 90 : -90;
 
-            // 2x Tetraeder
             glPushMatrix();
             {
                 glScalef(0.1f, 0.1f, 0.1f);
                 glTranslatef(posX, 0.0f, 0.0f);
                 glRotatef(angle, 0, 0, 1);
                 drawTetrahedron();
-                glPopMatrix();
             }
+            glPopMatrix();
         }
 
         // Zylinder
@@ -391,8 +419,13 @@ void drawDoorSwitchArrow() {
             drawCylinder();
         }
         glPopMatrix();
+
     }
     glPopMatrix();
+
+    /* Transparenz ausschalten */
+    glDisable(GL_BLEND);
+    glEnable(GL_CULL_FACE);
 }
 
 static void
@@ -419,8 +452,6 @@ drawSphere(void) {
  */
 void drawDoorSwitch() {
     drawFreeBlock();
-    glColor3f(1, 0, 0);
-    setMaterialLightning(1, 0, 0);
 
     float scaleVal = 0.5f;
     glPushMatrix();
