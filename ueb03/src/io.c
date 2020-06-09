@@ -15,7 +15,6 @@
 #include "types.h"
 
 enum e_Direction direction = dirNone;
-GLboolean showFullscreen = GL_FALSE;
 double cooldown = 0.0f;
 
 /**

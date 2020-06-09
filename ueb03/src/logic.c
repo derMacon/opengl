@@ -425,9 +425,9 @@ void toggle(enum e_ToggleTypes type) {
             }
             break;
         case FULLSCREEN:
-            showFullscreen = !showFullscreen;
+            getGame()->showFullScreen = !getGame()->showFullScreen;
 
-            if (showFullscreen) {
+            if (getGame()->showFullScreen) {
                 glutFullScreen();
             } else {
                 glutPositionWindow(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
