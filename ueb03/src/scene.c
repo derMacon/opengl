@@ -4,6 +4,7 @@
 #else
 
 #include <GL/glut.h>
+
 #endif
 
 #include <time.h>
@@ -114,7 +115,7 @@ static void initWorldLight(void) {
     glLightfv(GL_LIGHT0, GL_AMBIENT, colorDiffus);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, colorDiffus);
     glLightfv(GL_LIGHT0, GL_SPECULAR, colorSpecular);
-    glEnable(GL_LIGHT0);
+//    glEnable(GL_LIGHT0);
 }
 
 /**
@@ -124,7 +125,7 @@ static void initSpotLight(void) {
     float one = 1.0f;
 
     /* Tachenlampe (Spotlight) */
-    float colorDiffus[] = {one, one, one, one};
+    float colorDiffus[] = {one, one, 0.9f, one};
     float colorSpecular[] = {one, one, one, one};
 
     glLightfv(GL_LIGHT1, GL_SPECULAR, colorSpecular);
@@ -274,23 +275,18 @@ void drawGame(GLboolean draw3D) {
     float playerX = (float) getGame()->levelSettings.playerPosX;
     float playerY = (float) getGame()->levelSettings.playerPosY;
 
+    /* Firstperson */
+    float playerXOffset = (float) (LEVEL_SIZE - playerX) / LEVEL_SIZE;
+    float playerYOffset = (float) (LEVEL_SIZE - playerY) / LEVEL_SIZE;
+
+    playerX = playerXOffset - ((float) (getGame()->levelSettings.playerPosX) / LEVEL_SIZE);
+    playerY = playerYOffset - ((float) (getGame()->levelSettings.playerPosY) / LEVEL_SIZE);
 
     glPushMatrix();
     {
-
         if (draw3D) {
             // Spielfeld ist ein wenig zu hoch, also bisschen tiefer setzen
             glTranslatef(0.0f, -0.1f, 0.0f);
-
-            float spotLightPos[] = {playerX,
-                                    0.1f,
-                                    playerY};
-
-            // TODO: Spielerrichtung einbinden
-            float spotlightDirection[] = {playerX, -0.5f, playerY};
-            glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotlightDirection);
-            glLightfv(GL_LIGHT1, GL_POSITION, spotLightPos);
-
         } else {
             glRotatef(90, 1, 0, 0);
         }
@@ -298,14 +294,8 @@ void drawGame(GLboolean draw3D) {
         if (draw3D) {
 
             if (getGame()->firstPerson) {
-                /* Firstperson */
-                float playerXOffset = (float) (LEVEL_SIZE - playerX) / LEVEL_SIZE;
-                float playerYOffset = (float) (LEVEL_SIZE - playerY) / LEVEL_SIZE;
 
-                playerX = playerXOffset - ((float) (getGame()->levelSettings.playerPosX) / LEVEL_SIZE);
-                playerY = playerYOffset - ((float) (getGame()->levelSettings.playerPosY) / LEVEL_SIZE);
-
-                // Kamera einstellen
+                // Kamera einstelleni
                 GLfloat eyeX = playerX - 0.12f;
                 GLfloat eyeY = 0.15f;
                 GLfloat eyeZ = playerY;
@@ -333,6 +323,17 @@ void drawGame(GLboolean draw3D) {
                           0.0, 0.0, 0.0,
                           0.0, 1.0, 0.0);
             }
+
+
+            /* Taschenlampe setzen */
+
+//            float spotLightPos[] = {playerX, playerY, 0.05f, 1};
+            float spotLightPos[] = {playerX, 0.3f, playerY, 1};
+            float spotlightDirection[] = {setFirstPersonView(GL_TRUE), -0.5f, setFirstPersonView(GL_FALSE)};
+
+            glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotlightDirection);
+            glLightfv(GL_LIGHT1, GL_POSITION, spotLightPos);
+
         }
 
         // Uebergebenes Level zeichnen
