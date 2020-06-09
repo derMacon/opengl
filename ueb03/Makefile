@@ -1,4 +1,4 @@
-PROG = ueb02
+PROG = ueb03
 
 SRCDIR = src/
 BUILDDIR = build/
