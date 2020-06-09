@@ -54,8 +54,7 @@ static void drawSquare() {
     int x, y;
 
     // Normalen
-    if (getGame()->showNormals)
-    {
+    if (getGame()->showNormals) {
         glBegin(GL_LINES);
         {
             glVertex3f(0.0f, 0.0f, 0.0f);
@@ -120,13 +119,12 @@ static void drawPyramid() {
     glEnd();
 }
 
-
 /**
  * Zeichnet einen Thyreophora
  */
 static void drawTetrahedron() {
-
     glBegin(GL_TRIANGLE_STRIP);
+
     glVertex3f(0, 1, 0);
     glVertex3f(-0.5, 0, 0.5);
     glVertex3f(0.5, 0, 0.5);
@@ -143,19 +141,12 @@ static void drawCircle() {
 
     float radius = 1.0f;
 
-    // Um diesen Wert, den Winkel erhoehen, um irgendwann auf 360 zu kommen
-    // je kleiner der Wert, desto runder der Ball
-    float increaseValue = 0.01f;
+    GLUquadric *quad = gluNewQuadric();
 
-    glBegin(GL_POLYGON);
+//    gluQuadricDrawStyle(quad, GLU_SILHOUETTE);
+    gluDisk(quad, 0, radius, 64, 2);
 
-    // Winkel immer minimal erhoehen und somit den Kreis zeichnen
-    // 2 * PI entsprechen 360°
-    for (float angle = 2 * M_PI; angle > 0; angle -= increaseValue) {
-        glVertex3f(radius * cosf(angle), 0, radius * sinf(angle));
-    }
-
-    glEnd();
+    gluDeleteQuadric(quad);
 }
 
 /**
@@ -648,6 +639,7 @@ void drawPortals() {
             glPushMatrix();
             {
                 glScalef(size, 0, size);
+                glRotatef(-90, 1, 0, 0);
                 drawCircle();
                 size -= 0.02f;
             }

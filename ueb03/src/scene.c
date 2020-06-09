@@ -349,7 +349,7 @@ void drawGameInfo() {
         textColor[2] = (float) timeLeft / 10.0f;
     }
 
-    drawString(0.14, 0.87, textColor, "Level %d | Verbleibende Dreiecke: %d | Verbleibende Zeit: %d",
+    drawString(0.02f, 0.8, textColor, "Level %d | Dreiecke: %d | Verbleibende Zeit: %d",
                getGame()->levelId, trianglesLeft,
                timeLeft);
 }
@@ -421,7 +421,7 @@ void drawScene(GLboolean draw3D) {
         drawGame(draw3D);
 
         /* Infos, wie Zeit verbleibend nur beim 3D-Viewport anzeigen */
-        if (draw3D) {
+        if (!draw3D) {
             drawGameInfo();
         }
     } else if (draw3D && gameStatus == GAME_LOST) {
