@@ -56,8 +56,8 @@ typedef enum {
 /** Kamerasicht (wird verwendet, um mit der Maus die Ansicht zu aendern) */
 typedef struct {
     GLfloat radius;
-    GLfloat angleAzimuth;
-    GLfloat anglePolar;
+    GLfloat angleVertical;
+    GLfloat angleHorizontal;
 } CameraView;
 
 /** Spieleinstellungen */

@@ -3,14 +3,9 @@
 
 /* Globale Einstellungen */
 #define TIMER_CALLS_PS 144
-#define MOUSE_SCROLL_SPEED (0.6f)
 #define SQUARE_REFINEMENT_COUNT 40
 
 /* Kamera */
-#define CAMERA_RADIUS_MIN ( 0.5f)
-#define CAMERA_RADIUS_MAX (5.0f)
-#define FACTOR_POLAR (-0.25f)
-#define FACTOR_AZIMUTH (0.25f)
 #define EMPTY_CAMERA_ORIENTATION {2.5f, 45.0f, -90}
 
 /* Hoehe/Breite des (quadratischen) Levels */

@@ -32,7 +32,7 @@ initAndStartIO(char *title, int width, int height);
 
 
 void handleMouseEvent(int x, int y, CGMouseEventType eventType,
-                      int button, int buttonState);
+                      int button, int state);
 
 enum e_Direction getDirection();
 

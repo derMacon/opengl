@@ -314,8 +314,8 @@ void drawGame(GLboolean draw3D) {
             } else {
 
                 GLfloat radius = getGame()->camera.radius;
-                GLfloat polar = TO_RADIANS(getGame()->camera.anglePolar);
-                GLfloat azimuth = TO_RADIANS(getGame()->camera.angleAzimuth);
+                GLfloat polar = TO_RADIANS(getGame()->camera.angleHorizontal);
+                GLfloat azimuth = TO_RADIANS(getGame()->camera.angleVertical);
 
                 // Kamera einstellen
                 GLfloat eyeX = radius * sinf(azimuth) * cosf(polar);

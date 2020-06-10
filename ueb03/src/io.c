@@ -20,46 +20,38 @@ double cooldown = 0.0f;
 /**
  * Aendert die Sicht der Kamera anhand von Winkeln
  * @param radius
- * @param anglePolar
- * @param angleAzimuth - ein nach einer Himmelsrichtung orientierter Horizontalwinkel
+ * @param anglehorizontal
+ * @param angleVertical - ein nach einer Himmelsrichtung orientierter Horizontalwinkel
  */
-void changeCameraView(GLfloat radius, GLfloat anglePolar, GLfloat angleAzimuth) {
+void changeCameraView(GLfloat radius, GLfloat anglehorizontal, GLfloat angleVertical) {
 
     CameraView cam = getGame()->camera;
 
     cam.radius += radius;
-    cam.anglePolar += anglePolar;
-    cam.angleAzimuth += angleAzimuth;
+    cam.angleHorizontal += anglehorizontal;
+    cam.angleVertical += angleVertical;
 
-    /* Begrenzungen */
-    if (cam.radius < CAMERA_RADIUS_MIN) {
-        cam.radius = CAMERA_RADIUS_MIN;
+    /* Begrenzungen Zoom */
+    if (cam.radius < 1) {
+        cam.radius = 1;
+    }
+    if (cam.radius > 4) {
+        cam.radius = 4;
     }
 
-    if (cam.radius > CAMERA_RADIUS_MAX) {
-        cam.radius = CAMERA_RADIUS_MAX;
+    // Vertikale Begrenzung für Sicht von oben
+    if (cam.angleVertical < 1.0f) {
+        cam.angleVertical = 1.0f;
     }
 
-    if (cam.anglePolar < 0.0f) {
-        cam.anglePolar += 360.0f;
-    }
-
-    if (cam.anglePolar > 360.0f) {
-        cam.anglePolar -= 360.0f;
-    }
-
-    if (cam.angleAzimuth < 5.0f) {
-        cam.angleAzimuth = 5.0f;
-    }
-
-    if (cam.angleAzimuth > 90.0f) {
-        cam.angleAzimuth = 90.0f;
+    // Keine Ansicht von Unten erlauben
+    if (cam.angleVertical > 80.0f) {
+        cam.angleVertical = 80.0f;
     }
 
     getGame()->camera = cam;
 }
 
-// TODO: Neuschreiben
 /**
  * Verarbeitung eines Mausereignisses.
  * Durch Bewegung der Maus bei gedrueckter Maustaste kann die aktuelle
@@ -70,62 +62,54 @@ void changeCameraView(GLfloat radius, GLfloat anglePolar, GLfloat angleAzimuth) 
  * @param y y-Position des Mauszeigers zum Zeitpunkt der Ereignisausloesung.
  * @param eventType Typ des Ereignisses.
  * @param button ausloesende Maustaste (nur bei Ereignissen vom Typ mouseButton).
- * @param buttonState Status der Maustaste (nur bei Ereignissen vom Typ mouseButton).
+ * @param state Status der Maustaste (nur bei Ereignissen vom Typ mouseButton).
  */
 void handleMouseEvent(int x, int y, CGMouseEventType eventType,
-                      int button, int buttonState) {
+                      int button, int state) {
 
-    /* aktueller Status der linken Maustaste */
-    static int leftMouseButtonState = GLUT_UP;
-
-    /* Position der Maus beim letzten Aendern der Kamera */
-    static int oldMousePos[2] = {0, 0};
+    static int mousePosition[2] = {0, 0};
+    static int mouseState = GLUT_UP;
 
     /* Veraenderung der Kameraausrichtung */
     float radius = 0.0f;
-    float polar = 0.0f;
-    float azimuth = 0.0f;
+    float horizontal = 0.0f;
+    float vertical = 0.0f;
 
     switch (eventType) {
         case mouseButton:
-            switch (button) {
-                case GLUT_LEFT_BUTTON:
-                    leftMouseButtonState = buttonState;
-                    oldMousePos[0] = x;
-                    oldMousePos[1] = y;
-                    break;
-
-                case 3: /* Hoch-Scrollen */
-                    if (buttonState == GLUT_UP) {
-                        radius -= MOUSE_SCROLL_SPEED;
-                    }
-                    break;
-
-                case 4: /* Runter-Scrollen */
-                    if (buttonState == GLUT_UP) {
-                        radius += MOUSE_SCROLL_SPEED;
-                    }
-                    break;
+            if (button == 3 && state == GLUT_UP) {
+                /* Hochscrollen */
+                radius -= 0.6f;
+            } else if (button == 4 && state == GLUT_UP) {
+                /* Runterscrollen */
+                radius += 0.6f;
+            } else if (button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON) {
+                /* Bei Mausklick die x- und YWerte setzen,
+                 * um bei "mousemotion" die Kamera zu bewegen */
+                mouseState = state;
+                mousePosition[0] = x;
+                mousePosition[1] = y;
             }
             break;
 
         case mouseMotion:
-            if (leftMouseButtonState == GLUT_DOWN) {
-                int deltaX = oldMousePos[0] - x;
-                int deltaY = oldMousePos[1] - y;
+            if (mouseState == GLUT_DOWN) {
+                int offsetX = mousePosition[0] - x;
+                int offsetY = mousePosition[1] - y;
 
-                polar += ((float) deltaX) * FACTOR_POLAR;
-                azimuth += ((float) deltaY) * FACTOR_AZIMUTH;
+                /* https://www.glprogramming.com/red/chapter03.html */
+                horizontal += ((float) offsetX) * -0.2f;
+                vertical += ((float) offsetY) * 0.2f;
 
-                oldMousePos[0] = x;
-                oldMousePos[1] = y;
+                mousePosition[0] = x;
+                mousePosition[1] = y;
             }
             break;
         default:
             break;
     }
 
-    changeCameraView(radius, polar, azimuth);
+    changeCameraView(radius, horizontal, vertical);
 }
 
 /**
@@ -167,7 +151,7 @@ cbTimer(int lastCallTime) {
 
     if (cooldown < 0) {
         setPlayerMovement(direction);
-        if(direction != dirNone){
+        if (direction != dirNone) {
             cooldown = COOLDOWN_TIME;
         }
     } else {
