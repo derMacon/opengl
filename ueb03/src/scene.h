@@ -8,6 +8,9 @@
  */
 void drawScene(GLboolean draw3D);
 
+/**
+ *  Initialisiert die Displaylisten
+ */
 void initDisplayList();
 
 /**

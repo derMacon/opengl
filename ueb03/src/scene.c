@@ -110,7 +110,7 @@ static void initWorldLight(void) {
     float value = 0.5f;
 
     /* Globales Licht */
-    float globalAmbient[] = {0.3, 0.2, 0.4, 1.0};
+    float globalAmbient[] = {0.3f, 0.2f, 0.4f, 1.0f};
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 
     /* Weltlicht */
@@ -159,14 +159,15 @@ void changePlayerDirection() {
         case dirUp:
             glRotatef(180, 0, 1, 0);
             break;
-        case dirDown:
-        case dirNone:
-            break;
         case dirLeft:
             glRotatef(-90, 0, 1, 0);
             break;
         case dirRight:
             glRotatef(90, 0, 1, 0);
+            break;
+        case dirDown:
+        case dirNone:
+        default:
             break;
     }
 }
@@ -288,6 +289,8 @@ void drawGame(GLboolean draw3D) {
 
     playerX = playerXOffset - ((float) (getGame()->levelSettings.playerPosX) / LEVEL_SIZE);
     playerY = playerYOffset - ((float) (getGame()->levelSettings.playerPosY) / LEVEL_SIZE);
+
+    /* Animation anzeigen */
     if (getGame()->settings.showAnimation) {
         playerX -= (setFirstPersonView(GL_TRUE)) * animationCooldown;
         playerY -= (setFirstPersonView(GL_FALSE)) * animationCooldown;
@@ -295,47 +298,51 @@ void drawGame(GLboolean draw3D) {
 
     glPushMatrix();
     {
+        /* 3D-Welt */
         if (draw3D) {
-
+            /* First Person-Ansicht */
             if (getGame()->settings.showFirstPerson) {
 
                 // Kamera einstellen
-                GLfloat eyeX = playerX - 0.12f;
-                GLfloat eyeY = 0.25f;
-                GLfloat eyeZ = playerY;
+                GLfloat camX = playerX - 0.12f;
+                GLfloat camY = 0.25f;
+                GLfloat camZ = playerY;
 
                 if (getDirection() != dirNone) {
                     getGame()->lastDirection = getDirection();
                 }
 
-                gluLookAt(eyeX, eyeY, eyeZ,
-                          eyeX + setFirstPersonView(GL_TRUE), 0, eyeZ + setFirstPersonView(GL_FALSE),
+                gluLookAt(camX, camY, camZ,
+                          camX + setFirstPersonView(GL_TRUE), 0, camZ + setFirstPersonView(GL_FALSE),
                           0.0f, 1.0f, 0.0f);
             } else {
-
+                /* "Third" Person Ansicht */
                 GLfloat radius = getGame()->camera.radius;
-                GLfloat polar = TO_RADIANS(getGame()->camera.angleHorizontal);
-                GLfloat azimuth = TO_RADIANS(getGame()->camera.angleVertical);
+                GLfloat angleHorizontal = TO_RADIANS(getGame()->camera.angleHorizontal);
+                GLfloat angleVertical = TO_RADIANS(getGame()->camera.angleVertical);
 
                 // Kamera einstellen
-                GLfloat eyeX = radius * sinf(azimuth) * cosf(polar);
-                GLfloat eyeY = radius * cosf(azimuth);
-                GLfloat eyeZ = radius * sinf(azimuth) * sinf(polar);
+                GLfloat camX = radius * sinf(angleVertical) * cosf(angleHorizontal);
+                GLfloat camY = radius * cosf(angleVertical);
+                GLfloat camZ = radius * sinf(angleVertical) * sinf(angleHorizontal);
 
-                gluLookAt(eyeX, eyeY, eyeZ,
+                gluLookAt(camX, camY, camZ,
                           0.0, 0.0, 0.0,
                           0.0, 1.0, 0.0);
             }
 
             /* Taschenlampe setzen */
-            // playerx bei oben und unten -> versetzt links und rechts
-            // playery bei links rechts -> versetzt oben und unten
-            // y wert = Hoehe
-            float spotLightPos[] = {playerX - 0.1f, 0.2f, playerY, 1};
-            float spotlightDirection[] = {setFirstPersonView(GL_TRUE), 0, setFirstPersonView(GL_FALSE)};
+            if (getGame()->settings.showSpotLight) {
+                /* Taschenlampe setzen */
+                // playerx bei oben und unten -> versetzt links und rechts
+                // playery bei links rechts -> versetzt oben und unten
+                // y wert = Hoehe
+                float spotLightPos[] = {playerX - 0.1f, 0.2f, playerY, 1};
+                float spotlightDirection[] = {setFirstPersonView(GL_TRUE), 0, setFirstPersonView(GL_FALSE)};
 
-            glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotlightDirection);
-            glLightfv(GL_LIGHT1, GL_POSITION, spotLightPos);
+                glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotlightDirection);
+                glLightfv(GL_LIGHT1, GL_POSITION, spotLightPos);
+            }
 
         } else {
             /* Minimap richten */
@@ -345,8 +352,6 @@ void drawGame(GLboolean draw3D) {
         /* Weltlicht Pos erneut setzen,
          * sonst wuerde die Kameradrehung die Position falsch setzen */
         setWorldLightPos();
-
-        // Uebergebenes Level zeichnen
         drawLevel(draw3D);
     }
     glPopMatrix();
@@ -435,7 +440,7 @@ void drawScene(GLboolean draw3D) {
 
     if (gameStatus == GAME_RUNNING) {
 
-        /* Weltlicht an- oder ausschalten */
+        /* Licht nur bei 3D-Welt anschalten */
         if (draw3D) {
             glEnable(GL_LIGHTING);
         } else {
@@ -479,6 +484,7 @@ initScene(void) {
     /* Breite von Linien */
     glLineWidth(2.0f);
 
+    /* Normalen */
     glEnable(GL_NORMALIZE);
 
     initLight();

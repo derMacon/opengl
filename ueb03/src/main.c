@@ -16,7 +16,7 @@ main(int argc, char **argv) {
     /* Initialisierung des I/O-Sytems
        (inkl. Erzeugung des Fensters und Starten der Ereignisbehandlung). */
     if (!initAndStartIO
-            ("Pushy", 1500, 800)) {
+            ("Pushy 3D", 1500, 800)) {
         fprintf(stderr, "Initialisierung fehlgeschlagen!\n");
         return 1;
     } else {

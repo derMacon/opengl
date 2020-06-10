@@ -10,6 +10,8 @@
 
 /* Hoehe/Breite des (quadratischen) Levels */
 #define LEVEL_SIZE (9)
+
+/* Bloecke */
 #define BLOCK_WIDTH (2.f / LEVEL_SIZE)
 #define BLOCK_OFFSET  0.005f
 #define BLOCK_SIZE BLOCK_WIDTH - BLOCK_OFFSET

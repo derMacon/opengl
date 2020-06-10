@@ -110,6 +110,14 @@ checkForDoors(int x, int y, int newX, int newY, pushyFieldType currentType, push
     return hasMoved;
 }
 
+/**
+ * Bewegt ggf. ein Objekt
+ * @param direction - in diese Richtung
+ * @param x - an dieser X-Koordinate
+ * @param y - an dieser Y-Koordinate
+ * @param currentTileType - z.B. P_FREE
+ * @return True, wenn bewegt
+ */
 int moveObject(enum e_Direction direction, int x, int y, pushyFieldType currentTileType) {
     int newX = newPos(x, direction, GL_TRUE);
     int newY = newPos(y, direction, GL_FALSE);
@@ -392,7 +400,7 @@ void toggle(enum e_ToggleTypes type) {
             getGame()->settings.showFirstPerson = !getGame()->settings.showFirstPerson;
             break;
         case ANIMATION:
-            getGame()->settings.showAnimation = ! getGame()->settings.showAnimation;
+            getGame()->settings.showAnimation = !getGame()->settings.showAnimation;
             break;
         case NORMALS:
             getGame()->settings.showNormals = !getGame()->settings.showNormals;
@@ -401,7 +409,7 @@ void toggle(enum e_ToggleTypes type) {
         case WORLDLIGHT:
             getGame()->settings.showWorldLight = !getGame()->settings.showWorldLight;
 
-            if ( getGame()->settings.showWorldLight) {
+            if (getGame()->settings.showWorldLight) {
                 glEnable(GL_LIGHT0);
             } else {
                 glDisable(GL_LIGHT0);
@@ -432,6 +440,8 @@ void toggle(enum e_ToggleTypes type) {
             } else {
                 glutPositionWindow(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
             }
+            break;
+        default:
             break;
     }
 }
