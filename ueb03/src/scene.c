@@ -95,22 +95,30 @@ void showPlayer(int x, int y) {
 }
 
 /**
+ * Setzt die Weltlicht-Position
+ */
+void setWorldLightPos() {
+    float pos[] = {0, 4, 0, 2};
+    glLightfv(GL_LIGHT0, GL_POSITION, pos);
+}
+
+/**
  * Initialisiert das Weltlicht
  */
 static void initWorldLight(void) {
 
-    float one = 1.0f;
+    float value = 0.5f;
 
     /* Globales Licht */
-    float globalAmbient[] = {one, one, one, one};
+    float globalAmbient[] = {0.3, 0.2, 0.4, 1.0};
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 
     /* Weltlicht */
-    float pos[] = {2.0f, 0.5f, 0.0f, one};
-    float colorDiffus[] = {one, one, one, one};
-    float colorSpecular[] = {one, one, one, one};
+    float colorDiffus[] = {value, value, value, value};
+    float colorSpecular[] = {value, value, value, value};
 
-    glLightfv(GL_LIGHT0, GL_POSITION, pos);
+    setWorldLightPos();
+
     glLightfv(GL_LIGHT0, GL_AMBIENT, colorDiffus);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, colorDiffus);
     glLightfv(GL_LIGHT0, GL_SPECULAR, colorSpecular);
@@ -330,8 +338,13 @@ void drawGame(GLboolean draw3D) {
             glLightfv(GL_LIGHT1, GL_POSITION, spotLightPos);
 
         } else {
+            /* Minimap richten */
             glRotatef(90, 1, 0, 0);
         }
+
+        /* Weltlicht Pos erneut setzen,
+         * sonst wuerde die Kameradrehung die Position falsch setzen */
+        setWorldLightPos();
 
         // Uebergebenes Level zeichnen
         drawLevel(draw3D);
