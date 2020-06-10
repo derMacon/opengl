@@ -7,13 +7,20 @@
 // Werte fuer Portal-Animation
 float shrinkVal = 0;
 GLboolean isIncreasing = GL_TRUE;
-
 GLfloat houseColors[3] = {1.0f, 0.0f, 1.0f};
 
+/**
+ * Setzt das Materiallicht fuer die gezeichnetetn Objekte
+ * @param r - rot
+ * @param g - gruen
+ * @param b - blau
+ */
 void setMaterialLightning(float r, float g, float b) {
-    float matDiffuse[] = {r, g, b, 1};
-    float matAmbient[] = {r * 0.1f, g * 0.1f, b * 0.1f, 1.0f};
+    /* Verringert die Saetting der Farben, sodass nur noch x% angzeigt werden */
+    float multiplier = 0.15f;
 
+    float matDiffuse[] = {r, g, b, 1};
+    float matAmbient[] = {r * multiplier, g * multiplier, b * multiplier, 1.0f};
     float matSpecular[] = {r, g, b, 1.0f};
     float matShininess = 20;
 
@@ -21,16 +28,6 @@ void setMaterialLightning(float r, float g, float b) {
     glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
     glMaterialfv(GL_FRONT, GL_SHININESS, &matShininess);
-
-
-//    float lightColorAmbDif[] = {1.0, 1.0, 1.0, 1.0f};
-//    float lightColorSpec[] = {1.0, 1.0, 1.0, 1.0f};
-
-
-//    glLightfv(GL_LIGHT0, GL_AMBIENT, lightColorAmbDif);
-//    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColorAmbDif);
-//    glLightfv(GL_LIGHT0, GL_SPECULAR, lightColorSpec);
-
 }
 
 /**
@@ -96,27 +93,49 @@ static void drawCylinder() {
     gluCylinder(quadratic, 0.2f, 0.2f, 1.0f, 32, 32);
 }
 
+void drawNormals(float x, float y, float z) {
+    if (getGame()->settings.showNormals) {
+        glBegin(GL_LINES);
+        {
+            glVertex3f(0.0f, 0.0f, 0.0f);
+            glVertex3f(x, y, z);
+        }
+        glEnd();
+    }
+}
+
 /**
  * Zeichnet eine Pyramide
  */
 static void drawPyramid() {
+    drawNormals(0.5f, 0, 1.0f);
+    drawNormals(1.0f, 0.0f, 0.5f);
+    drawNormals(0.0f, 1, -1);
+    drawNormals(-1, 0.5f, 0.5f);
+
     glBegin(GL_TRIANGLES);
+
     // Vorne
+    glNormal3f(0.5f, 0.1f, 1.0);
     glVertex3f(0.0f, 0.5f, 0.0f);
     glVertex3f(-0.5f, -0.5f, 0.5f);
     glVertex3f(0.5f, -0.5f, 0.5f);
 
+
     // Rechts
+    glNormal3f(1.0f, 0.0f, 0.5f);
     glVertex3f(0.0f, 0.5f, 0.0f);
     glVertex3f(0.5f, -0.5f, 0.5f);
     glVertex3f(0.5f, -0.5f, -0.5f);
 
     // Hinten
+    glNormal3f(0.0, 1.0, -1.0);
     glVertex3f(0.0f, 0.5f, 0.0f);
     glVertex3f(0.5f, -0.5f, -0.5f);
     glVertex3f(-0.5f, -0.5f, -0.5f);
 
     // Links
+    glNormal3f(-1.0, 0.5, 0.5);
     glVertex3f(0.0f, 0.5f, 0.0f);
     glVertex3f(-0.5f, -0.5f, -0.5f);
     glVertex3f(-0.5f, -0.5f, 0.5f);
@@ -127,14 +146,28 @@ static void drawPyramid() {
  * Zeichnet einen Thyreophora
  */
 static void drawTetrahedron() {
+    if (getGame()->settings.showNormals) {
+        drawNormals(0, 1, 1);
+        drawNormals(1, 1, -1);
+        drawNormals(-1, 1, -1);
+    }
+
     glBegin(GL_TRIANGLE_STRIP);
+
+    glNormal3f(0, 1, 1);
 
     glVertex3f(0, 1, 0);
     glVertex3f(-0.5, 0, 0.5);
     glVertex3f(0.5, 0, 0.5);
+
+    glNormal3f(1, 1, -1);
+
     glVertex3f(0, 0, -0.7);
     glVertex3f(0, 1, 0);
     glVertex3f(-0.5, 0, 0.5);
+
+    glNormal3f(-1, 1, -1);
+
     glEnd();
 }
 
@@ -646,8 +679,8 @@ void drawPortals() {
 
     // Portal animieren
     isIncreasing
-        ? (shrinkVal += 0.1f / shrinkInterval)
-        : (shrinkVal -= 0.1f / shrinkInterval);
+    ? (shrinkVal += 0.1f / shrinkInterval)
+    : (shrinkVal -= 0.1f / shrinkInterval);
 
     // Wenn das Portal auf 0 ist, wird es vergroessert
     // sonst verkleinert
