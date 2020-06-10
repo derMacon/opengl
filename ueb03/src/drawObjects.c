@@ -62,7 +62,7 @@ static void drawSquare() {
         glBegin(GL_LINES);
         {
             glVertex3f(0.0f, 0.0f, 0.0f);
-            glVertex3f(0.0f, 0.0f, 1.0f);
+            glVertex3f(0.0f, 0.0f, 0.3f);
         }
         glEnd();
     }
@@ -145,10 +145,7 @@ static void drawCircle() {
 
     float radius = 1.0f;
     GLUquadric *quad = gluNewQuadric();
-
-    /* TODO: weird */
-//    gluQuadricDrawStyle(quad, GLU_SILHOUETTE);
-    gluDisk(quad, 0, radius, 64, 2);
+    gluDisk(quad, 0, radius, 32, 1);
 
     gluDeleteQuadric(quad);
 }
@@ -649,8 +646,8 @@ void drawPortals() {
 
     // Portal animieren
     isIncreasing
-    ? (shrinkVal += 0.1f / shrinkInterval)
-    : (shrinkVal -= 0.1f / shrinkInterval);
+        ? (shrinkVal += 0.1f / shrinkInterval)
+        : (shrinkVal -= 0.1f / shrinkInterval);
 
     // Wenn das Portal auf 0 ist, wird es vergroessert
     // sonst verkleinert
@@ -673,7 +670,7 @@ void drawPortals() {
 
             glPushMatrix();
             {
-                glScalef(size, 0, size);
+                glScalef(size, size, size);
                 glRotatef(-90, 1, 0, 0);
                 drawCircle();
                 size -= 0.02f;
