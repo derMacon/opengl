@@ -276,9 +276,14 @@ void drawGame(GLboolean draw3D) {
     /* Firstperson */
     float playerXOffset = (float) (LEVEL_SIZE - playerX) / LEVEL_SIZE;
     float playerYOffset = (float) (LEVEL_SIZE - playerY) / LEVEL_SIZE;
+    float animationCooldown = getGame()->movementCooldown / 10 / COOLDOWN_TIME;
 
     playerX = playerXOffset - ((float) (getGame()->levelSettings.playerPosX) / LEVEL_SIZE);
     playerY = playerYOffset - ((float) (getGame()->levelSettings.playerPosY) / LEVEL_SIZE);
+    if (getGame()->settings.showAnimation) {
+        playerX -= (setFirstPersonView(GL_TRUE)) * animationCooldown;
+        playerY -= (setFirstPersonView(GL_FALSE)) * animationCooldown;
+    }
 
     glPushMatrix();
     {
