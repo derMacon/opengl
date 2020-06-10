@@ -166,7 +166,9 @@ cbTimer(int lastCallTime) {
 
     if (cooldown < 0) {
         setPlayerMovement(direction);
-        cooldown = COOLDOWN_TIME;
+        if(direction != dirNone){
+            cooldown = COOLDOWN_TIME;
+        }
     } else {
         cooldown -= interval;
     }
