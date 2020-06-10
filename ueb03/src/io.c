@@ -235,10 +235,10 @@ static void set3DViewport(GLint x, GLint y, GLint width, GLint height) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    gluPerspective(70,
+    gluPerspective(80,
                    aspect,
                    0.05,
-                   100);
+                   50);
 
     /* Position und Groesse bestimmen */
     glViewport(x, y, width, height);
@@ -288,6 +288,9 @@ cbReshape(int w, int h) {
     setProjection((GLdouble) w / (GLdouble) h);
 }
 
+/*
+ * Aendert den Spielstatus
+ */
 void switchGameStatus(Gamestatus status) {
     if (getGame()->gameStatus == GAME_RUNNING) {
         getGame()->gameStatus = status;
@@ -296,7 +299,6 @@ void switchGameStatus(Gamestatus status) {
     }
 }
 
-// TODO: Neuschreiben
 /**
  * Mouse-Button-Callback.
  * @param button Taste, die den Callback ausgeloest hat.
@@ -307,7 +309,7 @@ void switchGameStatus(Gamestatus status) {
 static void cbMouseButton(int button, int state, int x, int y) {
     handleMouseEvent(x, y, mouseButton, button, state);
 }
-// TODO: Neuschreiben
+
 /**
  * Mouse-Motion-Callback.
  * @param x X-Position des Mauszeigers.
@@ -316,7 +318,7 @@ static void cbMouseButton(int button, int state, int x, int y) {
 static void cbMouseMotion(int x, int y) {
     handleMouseEvent(x, y, mouseMotion, 0, 0);
 }
-// TODO: Neuschreiben
+
 /**
  * Mouse-Passive-Motion-Callback.
  * @param x X-Position des Mauszeigers.
@@ -327,6 +329,10 @@ cbMousePassiveMotion(int x, int y) {
     handleMouseEvent(x, y, mousePassiveMotion, 0, 0);
 }
 
+/**
+ * Setzt die letzte Richtung des Spielers
+ * @param dir - Richtung
+ */
 void setLastDirection(enum e_Direction dir) {
     direction = dir;
     getGame()->lastDirection = dir;
@@ -618,6 +624,10 @@ initAndStartIO(char *title, int width, int height) {
     return windowID;
 }
 
+/**
+ * Getter fuer die Richtung des Spielers
+ * @return
+ */
 enum e_Direction getDirection() {
     return direction;
 }

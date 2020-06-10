@@ -30,10 +30,25 @@ int
 initAndStartIO(char *title, int width, int height);
 
 
-
+/**
+ * Verarbeitung eines Mausereignisses.
+ * Durch Bewegung der Maus bei gedrueckter Maustaste kann die aktuelle
+ * Zeichenfarbe beeinflusst werden.
+ * Falls Debugging aktiviert ist, wird jedes Mausereignis auf stdout
+ * ausgegeben.
+ * @param x x-Position des Mauszeigers zum Zeitpunkt der Ereignisausloesung.
+ * @param y y-Position des Mauszeigers zum Zeitpunkt der Ereignisausloesung.
+ * @param eventType Typ des Ereignisses.
+ * @param button ausloesende Maustaste (nur bei Ereignissen vom Typ mouseButton).
+ * @param state Status der Maustaste (nur bei Ereignissen vom Typ mouseButton).
+ */
 void handleMouseEvent(int x, int y, CGMouseEventType eventType,
                       int button, int state);
 
+/**
+ * Getter fuer die Richtung des Spielers
+ * @return
+ */
 enum e_Direction getDirection();
 
 #endif

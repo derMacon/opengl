@@ -59,7 +59,10 @@ void drawPlayer();
  */
 void changeColor(GLboolean isGreenHouse);
 
+/**
+ * Zeichnet einen Cube
+ * @param type - Typ des Feldes (z.B. P_WALL)
+ */
 void drawCube(pushyFieldType fieldType);
-
 
 #endif //UEB02_DRAWOBJECTS_H

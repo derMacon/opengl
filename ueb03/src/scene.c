@@ -387,19 +387,20 @@ void drawLost() {
 void drawHelp() {
     GLfloat textColor[3] = {1, 1, 1};
 
-    drawString(0.45f, 0.25f, textColor, "H I L F E ");
+    drawString(0.4f, 0.10f, textColor, "H I L F E ");
 
-    drawString(0.2f, 0.35f, textColor, "q, Q, ESC                              Spiel beenden");
-    drawString(0.2f, 0.40f, textColor, "r, R                                         Level neustarten");
-    drawString(0.2f, 0.45f, textColor, "h, H                                        Hilfe anzeigen");
+    drawString(0.2f, 0.20f, textColor, "q, Q, ESC                              Spiel beenden");
+    drawString(0.2f, 0.25f, textColor, "r, R                                         Level neustarten");
+    drawString(0.2f, 0.30f, textColor, "h, H                                        Hilfe anzeigen");
+    drawString(0.2f, 0.35f, textColor, "w, W                                      FirstPerson an/aus");
+    drawString(0.2f, 0.40f, textColor, "p, P                                        Pause an/aus");
+    drawString(0.2f, 0.45f, textColor, "a, A                                        Animation an/aus");
     drawString(0.2f, 0.50f, textColor, "F1                                          Wireframe an/aus");
     drawString(0.2f, 0.55f, textColor, "F2                                          Normalen an/aus");
     drawString(0.2f, 0.60f, textColor, "F3                                          Weltlich an/aus");
     drawString(0.2f, 0.65f, textColor, "F4                                          Taschenlampe an/aus");
     drawString(0.2f, 0.70f, textColor, "F5                                          Vollbild an/aus");
-    drawString(0.2f, 0.75f, textColor, "p, P                                        Pause an/aus");
-    drawString(0.2f, 0.80f, textColor, "a, A                                        Animation an/aus");
-    drawString(0.2f, 0.85f, textColor, "1, 2, 3, 4                                 Direkter Levelzugriff");
+    drawString(0.2f, 0.75f, textColor, "1, 2, 3, 4                                 Direkter Levelzugriff");
 }
 
 /**
