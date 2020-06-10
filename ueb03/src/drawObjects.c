@@ -93,6 +93,12 @@ static void drawCylinder() {
     gluCylinder(quadratic, 0.2f, 0.2f, 1.0f, 32, 32);
 }
 
+/**
+ * Zeichnet ggf. die Normalen an der angegebenen Stelle
+ * @param x - Wert
+ * @param y - Wert
+ * @param z - Wert
+ */
 void drawNormals(float x, float y, float z) {
     if (getGame()->settings.showNormals) {
         glBegin(GL_LINES);
@@ -153,7 +159,6 @@ static void drawTetrahedron() {
     }
 
     glBegin(GL_TRIANGLE_STRIP);
-
     glNormal3f(0, 1, 1);
 
     glVertex3f(0, 1, 0);
@@ -530,6 +535,40 @@ void drawHouseFront() {
     setMaterialLightning(1, 1, 1);
 }
 
+/**
+ * Zeichnen der einzelnen Seiten des Quaders
+ * @param type Typ des fieldtypes
+ * @param specialCase Sonderbehandlung, z.B. Tür an Hauswand
+ */
+void paintCube(const pushyFieldType *type, GLboolean specialCase) {
+
+    if ((*type) == P_BOX) {
+        drawBox();
+    } else if ((*type) == P_WALL) {
+        drawWall();
+    } else if ((*type) == P_DOOR) {
+
+        /* Tuer drehen, damit Schlitz an der richtigen Stelle ist */
+        if (specialCase == 1) {
+            glRotatef(90, 0, 0, 1);
+        }
+
+        drawDoor();
+    } else if ((*type) == P_HOUSE) {
+
+        if (specialCase == 1) {
+            drawHouseFront();
+        }
+        drawSquare();
+    } else {
+        drawSquare();
+    }
+}
+
+/**
+ * Zeichnet einen Cube
+ * @param type - Typ des Feldes (z.B. P_WALL)
+ */
 void
 drawCube(pushyFieldType type) {
 
@@ -551,17 +590,7 @@ drawCube(pushyFieldType type) {
         glPushMatrix();
         {
             glTranslatef(0.0f, 0.0f, 0.5f);
-            if (type == P_BOX) {
-                drawBox();
-            } else if (type == P_WALL) {
-                drawWall();
-            } else if (type == P_DOOR) {
-                drawDoor();
-            } else if (type == P_HOUSE) {
-                drawSquare();
-            } else {
-                drawSquare();
-            }
+            paintCube(&type, GL_FALSE);
         }
         glPopMatrix();
 
@@ -570,20 +599,8 @@ drawCube(pushyFieldType type) {
         {
             glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
             glTranslatef(0.0f, 0.0f, 0.5f);
-            if (type == P_BOX) {
-                drawBox();
-            } else if (type == P_WALL) {
-                drawWall();
-            } else if (type == P_DOOR) {
-                glRotatef(90, 0, 0, 1);
-                drawDoor();
-            } else if (type == P_HOUSE) {
-                // Tuer + Fenster
-                drawHouseFront();
-                drawSquare();
-            } else {
-                drawSquare();
-            }
+
+            paintCube(&type, GL_TRUE);
         }
         glPopMatrix();
 
@@ -592,18 +609,7 @@ drawCube(pushyFieldType type) {
         {
             glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
             glTranslatef(0.0f, 0.0f, 0.5f);
-            if (type == P_BOX) {
-                drawBox();
-            } else if (type == P_WALL) {
-                drawWall();
-            } else if (type == P_DOOR) {
-
-                drawDoor();
-            } else if (type == P_HOUSE) {
-                drawSquare();
-            } else {
-                drawSquare();
-            }
+            paintCube(&type, GL_FALSE);
         }
         glPopMatrix();
 
@@ -612,18 +618,7 @@ drawCube(pushyFieldType type) {
         {
             glRotatef(270.0f, 0.0f, 1.0f, 0.0f);
             glTranslatef(0.0f, 0.0f, 0.5f);
-            if (type == P_BOX) {
-                drawBox();
-            } else if (type == P_WALL) {
-                drawWall();
-            } else if (type == P_DOOR) {
-                glRotatef(90, 0, 0, 1);
-                drawDoor();
-            } else if (type == P_HOUSE) {
-                drawSquare();
-            } else {
-                drawSquare();
-            }
+            paintCube(&type, GL_TRUE);
         }
         glPopMatrix();
 
@@ -632,17 +627,7 @@ drawCube(pushyFieldType type) {
         {
             glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
             glTranslatef(0.0f, 0.0f, 0.5f);
-            if (type == P_BOX) {
-                drawBox();
-            } else if (type == P_WALL) {
-                drawWall();
-            } else if (type == P_DOOR) {
-                drawDoor();
-            } else if (type == P_HOUSE) {
-                drawSquare();
-            } else {
-                drawSquare();
-            }
+            paintCube(&type, GL_FALSE);
         }
         glPopMatrix();
 
@@ -651,15 +636,7 @@ drawCube(pushyFieldType type) {
         {
             glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
             glTranslatef(0.0f, 0.0f, 0.5f);
-            if (type == P_BOX) {
-                drawBox();
-            } else if (type == P_WALL) {
-                drawWall();
-            } else if (type == P_DOOR) {
-                drawDoor();
-            } else {
-                drawSquare();
-            }
+            paintCube(&type, GL_FALSE);
         }
         glPopMatrix();
     }
@@ -756,12 +733,10 @@ void drawHouse() {
 void drawPlayerEyes() {
 
     // Augenbrauen
-    glColor3f(0, 0, 0);
-    setMaterialLightning(0, 0, 0);
+    setMaterialLightning(0.8f, 0.8f, 0.8f);
     for (int i = 0; i < 2; ++i) {
         glPushMatrix();
         {
-
             int angle = i == 0 ? 10 : -10;
             float x = i == 0 ? 0.4f : -0.4f;
 

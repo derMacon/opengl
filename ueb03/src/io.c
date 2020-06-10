@@ -74,6 +74,7 @@ void changeCameraView(GLfloat radius, GLfloat anglePolar, GLfloat angleAzimuth) 
  */
 void handleMouseEvent(int x, int y, CGMouseEventType eventType,
                       int button, int buttonState) {
+
     /* aktueller Status der linken Maustaste */
     static int leftMouseButtonState = GLUT_UP;
 
