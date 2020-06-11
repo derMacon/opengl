@@ -11,6 +11,7 @@
 #include "types.h"
 #include "drawObjects.h"
 #include "levels.h"
+#include "scene.h"
 
 Game game;
 
@@ -71,7 +72,7 @@ void handleTriangles() {
  */
 GLboolean
 checkForDoors(int x, int y, int newX, int newY, pushyFieldType currentType, pushyFieldType nextType,
-                        pushyFieldType doorType, GLboolean withNewX) {
+              pushyFieldType doorType, GLboolean withNewX) {
     int numberOfDoors = game.levelSettings.numberOfDoors;
     GLboolean hasMoved = GL_FALSE;
 
@@ -109,6 +110,14 @@ checkForDoors(int x, int y, int newX, int newY, pushyFieldType currentType, push
     return hasMoved;
 }
 
+/**
+ * Bewegt ggf. ein Objekt
+ * @param direction - in diese Richtung
+ * @param x - an dieser X-Koordinate
+ * @param y - an dieser Y-Koordinate
+ * @param currentTileType - z.B. P_FREE
+ * @return True, wenn bewegt
+ */
 int moveObject(enum e_Direction direction, int x, int y, pushyFieldType currentTileType) {
     int newX = newPos(x, direction, GL_TRUE);
     int newY = newPos(y, direction, GL_FALSE);
@@ -116,10 +125,12 @@ int moveObject(enum e_Direction direction, int x, int y, pushyFieldType currentT
     pushyFieldType targetTileType = getBlockOfPos(newX, newY);
 
     if (targetTileType == P_FREE && currentTileType != P_BOX_DOOR_SWITCH) {
+
         // Objekt bewegen (Box, Triangle)
         game.levelSettings.level[y][x] = P_FREE;
         game.levelSettings.level[newY][newX] = currentTileType;
         hasMoved = GL_TRUE;
+
 
     } else if (targetTileType == P_DOOR_SWITCH && currentTileType == P_BOX) {
         // pruefen, welche Tuer geoeffnet werden kann
@@ -254,6 +265,7 @@ GLboolean playerMovementAllowed(enum e_Direction direction) {
 void
 setPlayerMovement(enum e_Direction direction) {
     if (playerMovementAllowed(direction)) {
+        game.movementCooldown = COOLDOWN_TIME;
         if (direction == dirLeft) {
             game.levelSettings.playerPosX -= 1;
         } else if (direction == dirRight) {
@@ -351,11 +363,16 @@ void loadLevel(int levelId) {
  * @param levelId - Dieses Level wird initialisiert
  */
 void initLevel(int levelId) {
+    CameraView or = EMPTY_CAMERA_ORIENTATION;
     game.gameStatus = GAME_RUNNING;
     game.levelId = levelId;
+    game.camera = or;
+    game.movementCooldown = COOLDOWN_TIME;
     game.levelSettings.time = levels[levelId - 1].time;
     game.levelSettings.playerPosX = levels[levelId - 1].startPos[0];
     game.levelSettings.playerPosY = levels[levelId - 1].startPos[1];
+    game.lastDirection = 0;
+
     loadLevel(levelId);
 
     // Hausfarbe auf Pink setzen
@@ -371,4 +388,60 @@ void initLevel(int levelId) {
  */
 Game *getGame(void) {
     return &game;
+}
+
+/**
+ * Togglet verschiedene Dinge (z.B. FirstPerson oder Weltlich)
+ * @param type - Das angegebene soll getoggled werden
+ */
+void toggle(enum e_ToggleTypes type) {
+    switch (type) {
+        case FIRSTPERSON:
+            getGame()->settings.showFirstPerson = !getGame()->settings.showFirstPerson;
+            break;
+        case ANIMATION:
+            getGame()->settings.showAnimation = !getGame()->settings.showAnimation;
+            break;
+        case NORMALS:
+            getGame()->settings.showNormals = !getGame()->settings.showNormals;
+            initDisplayList();
+            break;
+        case WORLDLIGHT:
+            getGame()->settings.showWorldLight = !getGame()->settings.showWorldLight;
+
+            if (getGame()->settings.showWorldLight) {
+                glEnable(GL_LIGHT0);
+            } else {
+                glDisable(GL_LIGHT0);
+            }
+            break;
+        case SPOTLIGHT:
+            getGame()->settings.showSpotLight = !getGame()->settings.showSpotLight;
+
+            if (getGame()->settings.showSpotLight) {
+                glEnable(GL_LIGHT1);
+            } else {
+                glDisable(GL_LIGHT1);
+            }
+            break;
+        case WIREFRAME:
+            getGame()->settings.showWireframe = !getGame()->settings.showWireframe;
+            if (getGame()->settings.showWireframe) {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            } else {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            }
+            break;
+        case FULLSCREEN:
+            getGame()->settings.showFullScreen = !getGame()->settings.showFullScreen;
+
+            if (getGame()->settings.showFullScreen) {
+                glutFullScreen();
+            } else {
+                glutPositionWindow(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
+            }
+            break;
+        default:
+            break;
+    }
 }
