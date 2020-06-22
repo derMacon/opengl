@@ -8,6 +8,7 @@
 #endif
 
 #include "io.h"
+#include <stdio.h>
 #include "scene.h"
 #include "logic.h"
 #include "variables.h"
@@ -44,10 +45,6 @@ float frameRate(void) {
         /* Zureuecksetzen */
         timebase = time;
         frameCount = 0;
-    }
-
-    if (fps > TIMER_CALLS_PS) {
-        fps = TIMER_CALLS_PS;
     }
 
     /* Aktuellen FPS-Wert zurueckgeben */
@@ -241,6 +238,8 @@ static void setViewport(GLint x, GLint y, GLint width, GLint height) {
  */
 static void
 cbDisplay(void) {
+    /* Frames pro Sekunde */
+    static GLfloat fps = 0.0f;
 
     /* Fensterdimensionen auslesen */
     int width = glutGet(GLUT_WINDOW_WIDTH);
@@ -255,6 +254,14 @@ cbDisplay(void) {
 
     /* Objekt anzeigen */
     glutSwapBuffers();
+
+    /* Framerate berechnen */
+    fps = frameRate();
+
+    char title[100];
+
+    sprintf((char *) title, "Wasser-Animation | FPS: %.2f", (double) fps);
+    glutSetWindowTitle(title);
 }
 
 /**

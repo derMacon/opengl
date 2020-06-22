@@ -161,15 +161,6 @@ void drawGame() {
 }
 
 /**
- * Zeichnen der Info des Spiels
- */
-void drawGameInfo() {
-    GLfloat textColor[3] = {1, 1, 1};
-
-    drawString(0.49f, 0.8, textColor, "FPS: %.0f", frameRate());
-}
-
-/**
  * Hilfe zeichnen
  */
 void drawHelp() {
@@ -191,7 +182,6 @@ void drawHelp() {
     drawString(0.2f, 0.75f, textColor, "1, 2, 3, 4                                Direkter Levelzugriff");
 }
 
-
 /**
  * Zeichnet die gesamte Szene
  */
@@ -200,9 +190,6 @@ void drawScene() {
 
     if (gameStatus == GAME_RUNNING) {
         drawGame();
-        /* Infos, wie Zeit verbleibend nur beim 3D-Viewport anzeigen */
-        drawGameInfo();
-
     } else if (gameStatus == GAME_HELP) {
         drawHelp();
     }
