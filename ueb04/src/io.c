@@ -13,7 +13,46 @@
 #include "variables.h"
 #include "helper.h"
 #include "types.h"
+#include "stringOutput.h"
 
+
+/**
+ * Berechnung der Frames pro Sekunde.
+ * @return aktuelle Framerate.
+ */
+float frameRate(void) {
+    /* Zeitpunkt der letzten Neuberechnung */
+    static int timebase = 0;
+    /* Anzahl der Aufrufe seit letzter Neuberechnung */
+    static int frameCount = 0;
+    /* Zuletzt berechneter FPS-Wert */
+    static float fps = 0;
+    /* aktuelle "Zeit" */
+    static int time = 0;
+
+    /* Diesen Aufruf hinzuzaehlen */
+    frameCount++;
+
+    /* seit dem Start von GLUT vergangene Zeit ermitteln */
+    time = glutGet(GLUT_ELAPSED_TIME);
+
+    /* Eine Sekunde ist vergangen */
+    if (time - timebase > 1000) {
+        /* FPS-Wert neu berechnen */
+        fps = frameCount * 1000.0f / (time - timebase);
+
+        /* Zureuecksetzen */
+        timebase = time;
+        frameCount = 0;
+    }
+
+    if (fps > TIMER_CALLS_PS) {
+        fps = TIMER_CALLS_PS;
+    }
+
+    /* Aktuellen FPS-Wert zurueckgeben */
+    return fps;
+}
 
 /**
  * Aendert die Sicht der Kamera anhand von Winkeln
@@ -202,6 +241,7 @@ static void setViewport(GLint x, GLint y, GLint width, GLint height) {
  */
 static void
 cbDisplay(void) {
+
     /* Fensterdimensionen auslesen */
     int width = glutGet(GLUT_WINDOW_WIDTH);
     int height = glutGet(GLUT_WINDOW_HEIGHT);

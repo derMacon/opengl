@@ -166,8 +166,7 @@ void drawGame() {
 void drawGameInfo() {
     GLfloat textColor[3] = {1, 1, 1};
 
-    drawString(0.4f, 0.8, textColor, "Level %d | Dreiecke: %d | Verbleibende Zeit: %d", 3, 3, 3);
-
+    drawString(0.49f, 0.8, textColor, "FPS: %.0f", frameRate());
 }
 
 /**
