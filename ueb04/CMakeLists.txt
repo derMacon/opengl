@@ -2,7 +2,7 @@
 cmake_minimum_required (VERSION 3.3)
 
 # Project Name
-project(ueb04)
+project(ueb03)
 
 set(RuntimeOutputDir ${CMAKE_CURRENT_SOURCE_DIR}/build)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${RuntimeOutputDir})
@@ -79,7 +79,7 @@ file(GLOB src_files
 )
 
 # erstellen des Targets ${PROJECT_NAME} 
-add_executable(${PROJECT_NAME} ${src_files} src/debug.h src/debug.c src/variables.h src/types.h src/helper.h src/helper.c)
+add_executable(${PROJECT_NAME} ${src_files} src/debug.h src/debug.c src/types.h src/variables.h src/drawObjects.c src/drawObjects.h src/stringOutput.c src/stringOutput.h)
 
 #Visual Studio
 # erstellen der filter fuer die content-files
