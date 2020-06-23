@@ -40,9 +40,9 @@ void initGrid(Grid *grid, GLuint size) {
             grid->vertices[idx][NY] = 1.0f;
             grid->vertices[idx][NZ] = 0.0f;
 
-            grid->vertices[idx][R] = 0.5f;
-            grid->vertices[idx][G] = 0.5f;
-            grid->vertices[idx][B] = 0.5f;
+            grid->vertices[idx][R] = 0.2f;
+            grid->vertices[idx][G] = 0.3f;
+            grid->vertices[idx][B] = 0.8f;
 
             // todo wtf
             if (y < size - 1 && x < size - 1) {
