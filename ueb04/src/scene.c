@@ -84,28 +84,8 @@ void drawLevel() {
 
     glPushMatrix();
     {
-        /* Skalierung und Positionierung des Spielfelds. */
-        glTranslatef(0.0f, 0.1f, 0.0f);
-        glRotatef(90, 0, 0, 1);
-
-        float length = 0.5f;
-
-        glBegin(GL_QUADS);
-        {
-            // Links unten
-            glVertex2f(-length, -length);
-
-            // Rechts unten
-            glVertex2f(length, -length);
-
-            // Links oben
-            glVertex2f(length, length);
-
-            // Rechts oben
-            glVertex2f(-length, length);
-        }
-
-        glEnd();
+        glScalef(5, 5, 5);
+        drawWater();
     }
     glPopMatrix();
 }
@@ -184,7 +164,6 @@ void drawScene() {
 
     if (gameStatus == GAME_RUNNING) {
         drawGame();
-        drawWater();
     } else if (gameStatus == GAME_HELP) {
         drawHelp();
     }
