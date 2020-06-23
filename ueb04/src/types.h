@@ -42,12 +42,26 @@ typedef struct {
     GLboolean showFullScreen;
 } Settings;
 
+typedef enum {
+    X, Y, Z, R, G, B, NX, NY, NZ
+} vertexIndices;
+
+typedef GLdouble Vertex[9];
+
+typedef struct {
+    Vertex *vertices;
+    GLuint *indices;
+    double *velocities;
+    GLuint length;
+} Grid;
+
 /** Spiel */
 typedef struct {
     Status gameStatus;
     Settings settings;
+    Grid grid;
     CameraView camera;
-} Game;
+} State;
 
 /** Wird verwendet, um u.g. Einstellungen zu togglen */
 enum e_ToggleTypes {
@@ -58,5 +72,6 @@ enum e_ToggleTypes {
     ANIMATION,
     WIREFRAME
 };
+
 
 #endif //UEB04_TYPES_H

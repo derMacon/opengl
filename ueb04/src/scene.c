@@ -10,6 +10,7 @@
 #include <time.h>
 #include "debug.h"
 #include "types.h"
+#include "drawWater.h"
 #include "io.h"
 #include "logic.h"
 #include "helper.h"
@@ -118,9 +119,9 @@ void drawGame() {
     {
 
         /* "Third" Person Ansicht */
-        GLfloat radius = getGame()->camera.radius;
-        GLfloat angleHorizontal = TO_RADIANS(getGame()->camera.angleHorizontal);
-        GLfloat angleVertical = TO_RADIANS(getGame()->camera.angleVertical);
+        GLfloat radius = getState()->camera.radius;
+        GLfloat angleHorizontal = TO_RADIANS(getState()->camera.angleHorizontal);
+        GLfloat angleVertical = TO_RADIANS(getState()->camera.angleVertical);
 
         // Kamera einstellen
         GLfloat camX = radius * sinf(angleVertical) * cosf(angleHorizontal);
@@ -133,7 +134,7 @@ void drawGame() {
 
 
         /* Taschenlampe setzen */
-        if (getGame()->settings.showSpotLight) {
+        if (getState()->settings.showSpotLight) {
             /* Taschenlampe setzen */
             // playerx bei oben und unten -> versetzt links und rechts
             // playery bei links rechts -> versetzt oben und unten
@@ -179,10 +180,11 @@ void drawHelp() {
  * Zeichnet die gesamte Szene
  */
 void drawScene() {
-    Status gameStatus = getGame()->gameStatus;
+    Status gameStatus = getState()->gameStatus;
 
     if (gameStatus == GAME_RUNNING) {
         drawGame();
+        drawWater();
     } else if (gameStatus == GAME_HELP) {
         drawHelp();
     }
@@ -224,7 +226,12 @@ initScene(void) {
 
     /* Polygonrueckseiten nicht anzeigen */
     glCullFace(GL_BACK);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+//    glEnableClientState(GL_NORMAL_ARRAY);
+//    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
     /* Alles in Ordnung? */
     return (GLGETERROR == GL_NO_ERROR);

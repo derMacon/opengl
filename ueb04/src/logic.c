@@ -10,10 +10,9 @@
 #include <stdio.h>
 #include "types.h"
 #include "scene.h"
+#include "drawWater.h"
 
-Game game;
-
-
+State state;
 
 /**
  * Initialisiert das Level
@@ -21,16 +20,17 @@ Game game;
  */
 void initLevel() {
     CameraView or = EMPTY_CAMERA_ORIENTATION;
-    game.gameStatus = GAME_RUNNING;
-    game.camera = or;
+    state.gameStatus = GAME_RUNNING;
+    state.camera = or;
+    initGrid(&state.grid, 10);
 }
 
 /**
  * Getter fuer das Spiel
  * @return
  */
-Game *getGame(void) {
-    return &game;
+State *getState(void) {
+    return &state;
 }
 
 /**
@@ -40,41 +40,41 @@ Game *getGame(void) {
 void toggle(enum e_ToggleTypes type) {
     switch (type) {
         case ANIMATION:
-            getGame()->settings.showAnimation = !getGame()->settings.showAnimation;
+            getState()->settings.showAnimation = !getState()->settings.showAnimation;
             break;
         case NORMALS:
-            getGame()->settings.showNormals = !getGame()->settings.showNormals;
+            getState()->settings.showNormals = !getState()->settings.showNormals;
             break;
         case WORLDLIGHT:
-            getGame()->settings.showWorldLight = !getGame()->settings.showWorldLight;
+            getState()->settings.showWorldLight = !getState()->settings.showWorldLight;
 
-            if (getGame()->settings.showWorldLight) {
+            if (getState()->settings.showWorldLight) {
                 glEnable(GL_LIGHT0);
             } else {
                 glDisable(GL_LIGHT0);
             }
             break;
         case SPOTLIGHT:
-            getGame()->settings.showSpotLight = !getGame()->settings.showSpotLight;
+            getState()->settings.showSpotLight = !getState()->settings.showSpotLight;
 
-            if (getGame()->settings.showSpotLight) {
+            if (getState()->settings.showSpotLight) {
                 glEnable(GL_LIGHT1);
             } else {
                 glDisable(GL_LIGHT1);
             }
             break;
         case WIREFRAME:
-            getGame()->settings.showWireframe = !getGame()->settings.showWireframe;
-            if (getGame()->settings.showWireframe) {
+            getState()->settings.showWireframe = !getState()->settings.showWireframe;
+            if (getState()->settings.showWireframe) {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             } else {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             }
             break;
         case FULLSCREEN:
-            getGame()->settings.showFullScreen = !getGame()->settings.showFullScreen;
+            getState()->settings.showFullScreen = !getState()->settings.showFullScreen;
 
-            if (getGame()->settings.showFullScreen) {
+            if (getState()->settings.showFullScreen) {
                 glutFullScreen();
             } else {
                 glutPositionWindow(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);

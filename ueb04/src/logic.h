@@ -15,7 +15,7 @@ void initLevel();
  * Getter fuer das Spiel
  * @return
  */
-Game *getGame();
+State *getState();
 
 /**
  * Togglet verschiedene Dinge (z.B. FirstPerson oder Weltlich)

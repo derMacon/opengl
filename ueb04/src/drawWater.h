@@ -1,8 +1,8 @@
 #ifndef drawWater_h
 #define drawWater_g
 
-typedef enum {
-    X, Y, Z, R, G, B
-} vertexIndices;
+void initGrid(Grid *grid, int size);
+
+void drawWater();
 
 #endif

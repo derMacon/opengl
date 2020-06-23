@@ -59,7 +59,7 @@ float frameRate(void) {
  */
 void changeCameraView(GLfloat radius, GLfloat anglehorizontal, GLfloat angleVertical) {
 
-    CameraView cam = getGame()->camera;
+    CameraView cam = getState()->camera;
 
     cam.radius += radius;
     cam.angleHorizontal += anglehorizontal;
@@ -83,7 +83,7 @@ void changeCameraView(GLfloat radius, GLfloat anglehorizontal, GLfloat angleVert
         cam.angleVertical = 80.0f;
     }
 
-    getGame()->camera = cam;
+    getState()->camera = cam;
 }
 
 /**
@@ -250,7 +250,7 @@ cbDisplay(void) {
 
     /* 3D Ansicht */
     setViewport(0, 0, width, height);
-    drawScene(GL_TRUE);
+    drawScene();
 
     /* Objekt anzeigen */
     glutSwapBuffers();
@@ -283,10 +283,10 @@ cbReshape(int w, int h) {
  * Aendert den Spielstatus
  */
 void switchGameStatus(Status status) {
-    if (getGame()->gameStatus == GAME_RUNNING) {
-        getGame()->gameStatus = status;
-    } else if (getGame()->gameStatus == status) {
-        getGame()->gameStatus = GAME_RUNNING;
+    if (getState()->gameStatus == GAME_RUNNING) {
+        getState()->gameStatus = status;
+    } else if (getState()->gameStatus == status) {
+        getState()->gameStatus = GAME_RUNNING;
     }
 }
 
@@ -341,7 +341,7 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
     /* Taste gedrueckt */
     if (status == GLUT_DOWN) {
 
-        //Status s = getGame()->gameStatus;
+        //Status s = getState()->gameStatus;
 
         /* Spezialtaste gedrueckt */
         if (isSpecialKey) {
@@ -571,6 +571,8 @@ initAndStartIO(char *title, int width, int height) {
 
     //Tiefentest (in der init()) aktivieren
     glEnable(GL_DEPTH_TEST);
+
+
 
     // Auf dem aktuellen Bildschirm anzeigen
     glutInitWindowPosition(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
