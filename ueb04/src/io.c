@@ -282,7 +282,7 @@ cbReshape(int w, int h) {
 /*
  * Aendert den Spielstatus
  */
-void switchGameStatus(Gamestatus status) {
+void switchGameStatus(Status status) {
     if (getGame()->gameStatus == GAME_RUNNING) {
         getGame()->gameStatus = status;
     } else if (getGame()->gameStatus == status) {
@@ -341,7 +341,7 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
     /* Taste gedrueckt */
     if (status == GLUT_DOWN) {
 
-        //Gamestatus s = getGame()->gameStatus;
+        //Status s = getGame()->gameStatus;
 
         /* Spezialtaste gedrueckt */
         if (isSpecialKey) {
@@ -387,11 +387,6 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case 'p':
                 case 'P':
                     switchGameStatus(GAME_PAUSED);
-                    break;
-
-                case 'c':
-                case 'C':
-                    toggle(FIRSTPERSON);
                     break;
 
                 case '1':

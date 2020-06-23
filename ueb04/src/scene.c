@@ -13,38 +13,12 @@
 #include "io.h"
 #include "logic.h"
 #include "helper.h"
-#include "drawObjects.h"
 #include "scene.h"
 #include "stringOutput.h"
 #include <math.h>
 
 GLuint g_renderObjects;
 
-/**
- *  Initialisiert die Displaylisten
- */
-void initDisplayList() {
-
-    int numberOfTypes = (P_PLAYER - P_OUTER) + 1;
-
-    // Alle benoetigten Listen auf einmal erzeugen
-    g_renderObjects = glGenLists((GLsizei) numberOfTypes);
-    if (g_renderObjects != 0) {
-        for (GLuint index = 0; index < numberOfTypes; index++) {
-            // Displayliste bereit machen
-            glNewList(g_renderObjects + index, GL_COMPILE);
-
-            switch (index) {
-                default:
-                    break;
-            }
-            // Displayliste abschliessen
-            glEndList();
-        }
-    } else {
-        CG_ERROR(("Konnte Displaylisten nicht erzeugen\n"));
-    }
-}
 
 /**
  * Setzt die Weltlicht-Position
@@ -111,7 +85,26 @@ void drawLevel() {
     {
         /* Skalierung und Positionierung des Spielfelds. */
         glTranslatef(0.0f, 0.1f, 0.0f);
-        drawHouse();
+        glRotatef(90, 0, 0, 1);
+
+        float length = 0.5f;
+
+        glBegin(GL_QUADS);
+        {
+            // Links unten
+            glVertex2f(-length, -length);
+
+            // Rechts unten
+            glVertex2f(length, -length);
+
+            // Links oben
+            glVertex2f(length, length);
+
+            // Rechts oben
+            glVertex2f(-length, length);
+        }
+
+        glEnd();
     }
     glPopMatrix();
 }
@@ -186,7 +179,7 @@ void drawHelp() {
  * Zeichnet die gesamte Szene
  */
 void drawScene() {
-    Gamestatus gameStatus = getGame()->gameStatus;
+    Status gameStatus = getGame()->gameStatus;
 
     if (gameStatus == GAME_RUNNING) {
         drawGame();
@@ -219,7 +212,6 @@ initScene(void) {
     glEnable(GL_NORMALIZE);
 
     initLight();
-    initDisplayList();
 
     initLevel();
 

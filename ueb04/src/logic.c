@@ -9,7 +9,6 @@
 #include "variables.h"
 #include <stdio.h>
 #include "types.h"
-#include "drawObjects.h"
 #include "scene.h"
 
 Game game;
@@ -40,15 +39,11 @@ Game *getGame(void) {
  */
 void toggle(enum e_ToggleTypes type) {
     switch (type) {
-        case FIRSTPERSON:
-            getGame()->settings.showFirstPerson = !getGame()->settings.showFirstPerson;
-            break;
         case ANIMATION:
             getGame()->settings.showAnimation = !getGame()->settings.showAnimation;
             break;
         case NORMALS:
             getGame()->settings.showNormals = !getGame()->settings.showNormals;
-            initDisplayList();
             break;
         case WORLDLIGHT:
             getGame()->settings.showWorldLight = !getGame()->settings.showWorldLight;
