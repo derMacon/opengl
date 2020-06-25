@@ -52,5 +52,8 @@ float frameRate(void);
  * @return
  */
 enum e_Direction getDirection();
+void drawPicking();
+
+void setLookAt();
 
 #endif

@@ -9,6 +9,9 @@
 #include <GL/glu.h>
 #include "types.h"
 #include "logic.h"
+#include "math.h"
+#include "debug.h"
+#include "io.h"
 
 #endif
 
@@ -67,9 +70,66 @@ void initGrid(Grid *grid, GLuint size) {
 void drawWater() {
     unsigned int length = getState()->grid.length - 1;
 
-        glDrawElements(GL_TRIANGLES,             // Primitivtyp
-                       length * length * 6, // Anzahl Indizes zum Zeichnen
-                       GL_UNSIGNED_INT,             // Typ der Indizes
-                       getState()->grid.indices);   // Index Array
+    glDrawElements(GL_TRIANGLES,             // Primitivtyp
+                   length * length * 6, // Anzahl Indizes zum Zeichnen
+                   GL_UNSIGNED_INT,             // Typ der Indizes
+                   getState()->grid.indices);   // Index Array
+}
 
+void drawBall(int index) {
+    glPushName(index);
+    {
+        glPushMatrix();
+        {
+            glTranslatef(
+                    getState()->grid.vertices[index][X],
+                    getState()->grid.vertices[index][Y],
+                    getState()->grid.vertices[index][Z]);
+
+            /* Quadric erzuegen */
+            GLUquadricObj *qobj = gluNewQuadric();
+            if (qobj != 0) {
+
+                /* Normalen fuer Quadrics berechnen lassen */
+                gluQuadricNormals(qobj, GLU_SMOOTH);
+
+                /* Kugel zeichen */
+                gluSphere(qobj, 0.01, 20, 20);
+
+                /* Loeschen des Quadrics nicht vergessen */
+                gluDeleteQuadric(qobj);
+            } else {
+                CG_ERROR (("Could not create Quadric\n"));
+            }
+        }
+        glPopMatrix();
+    }
+    glPopName();
+}
+
+void drawSpheres() {
+    int length = getState()->grid.length;
+
+    for (int i = 0; i < length * length; i++) {
+        drawBall(i);
+    }
+}
+
+void drawPicking() {
+
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+
+    glPushMatrix();
+    {
+        setLookAt();
+
+        glPushMatrix();
+        {
+            glScalef(5, 5, 5);
+            drawSpheres();
+        }
+        glPopMatrix();
+    }
+    glPopMatrix();
 }

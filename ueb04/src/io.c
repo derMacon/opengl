@@ -14,7 +14,172 @@
 #include "variables.h"
 #include "helper.h"
 #include "types.h"
+#include "math.h"
 #include "stringOutput.h"
+#include "drawWater.h"
+
+void setLookAt() {
+    GLfloat radius = getState()->camera.radius;
+    GLfloat angleHorizontal = TO_RADIANS(getState()->camera.angleHorizontal);
+    GLfloat angleVertical = TO_RADIANS(getState()->camera.angleVertical);
+
+    // Kamera einstellen
+    GLfloat camX = radius * sinf(angleVertical) * cosf(angleHorizontal);
+    GLfloat camY = radius * cosf(angleVertical);
+    GLfloat camZ = radius * sinf(angleVertical) * sinf(angleHorizontal);
+
+    gluLookAt(camX, camY, camZ,
+              0.0, 0.0, 0.0,
+              0.0, 1.0, 0.0);
+}
+
+/**
+ * Verarbeitung der Picking-Ergebnisse.
+ * Findet den Treffer, der dem Betrachter am naechsten liegt und gibt die
+ * Namen dieses Treffers aus.
+ * @param numHits Anzahl der getroffenen Objekte (In).
+ * @param buffer Buffer, in dem die Treffer gespeichert sind (In).
+ */
+static void
+processHits(GLint numHits, GLuint buffer[]) {
+    /* Anzahl der Namen des Treffers, der am naechsten zum Betrachter ist */
+    GLint numOfClosestNames = 0;
+    /* Anzahl der Namen des Treffers, der am naechsten zum Betrachter ist */
+    GLuint *ptrClosestNames = NULL;
+
+    /* Laufvariable - Nummer des akt. verarbeiteten Treffers */
+    GLint i;
+    /* Laufvariable - Zeiger auf den Beginn des Hit-Records */
+    GLuint *ptr = (GLuint *) buffer;
+
+    /* DepthBuffer - Wert */
+    GLuint minZ = 0xffffffff;
+
+    if (numHits > 0) {
+        /* Alle Treffer verarbeiten */
+        for (i = 0; i < numHits; i++) {
+            /* Ist der Treffer naeher dran, als der bisher naechste? */
+            if (*(ptr + 1) < minZ) {
+                /* Anzahl der Namen merken */
+                numOfClosestNames = *ptr;
+                /* Zeiger auf den ersten Namen merken */
+                ptrClosestNames = ptr + 3;
+                /* als neuen minimalen Tiefenwert merken */
+                minZ = *(ptr + 1);
+            }
+            /* zum Beginn des naechsten Hit-Records springen */
+            /* Schrittweite: Anzahl-Feld + minZ-Feld + maxZ-Feld + Namen-Felder */
+            ptr += 3 + *ptr;
+        }
+
+        printf("The names of the closest hit are:\n\t");
+
+        /* Alle Namen des Treffers ausgeben, der am naechsten zum Betrachter liegt */
+        for (i = 0; i < numOfClosestNames; i++, ptrClosestNames++) {
+            int idx = *ptrClosestNames;
+            if (idx >= 0) {
+                getState()->grid.vertices[idx][Y] += 0.01f;
+            }
+            printf("Pick: %d", *ptrClosestNames);
+        }
+    }
+}
+
+
+/**
+ * Setzt den Viewport fuer die 3D-Darstellung
+ * @param x - Position x im Fenster
+ * @param y - Position y im Fenster
+ * @param width - Breite des Fensters
+ * @param height - Hoehe des Fensters
+ */
+static void setViewport(GLint x, GLint y, GLint width, GLint height) {
+    double aspect = (double) width / height;
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    gluPerspective(80,
+                   aspect,
+                   0.05,
+                   50);
+
+    /* Position und Groesse bestimmen */
+    glViewport(x, y, width, height);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+
+/**
+ * Picking. Auswahl von Szenenobjekten durch Klicken mit der Maus.
+ */
+static void
+pick(int x, int y) {
+/** Groesse des Buffers fuer Picking Ergebnisse */
+#define SELECTBUFSIZE 512
+
+    /* Fensterdimensionen auslesen */
+    int width = glutGet(GLUT_WINDOW_WIDTH);
+    int height = glutGet(GLUT_WINDOW_HEIGHT);
+
+    /* Buffer zuruecksetzen */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    /* 3D Ansicht */
+    setViewport(0, 0, width, height);
+
+    /* Viewport (Darstellungsbereich des Fensters) */
+    GLint viewport[4] = {0, 0, width, height};
+
+    /* Puffer fuer Picking-Ergebnis */
+    GLuint buffer[SELECTBUFSIZE];
+
+    /* Anzahl der getroffenen Namen beim Picking */
+    GLint numHits;
+
+    /* Puffer festlegen, Name-Stack leeren und Rendermode wechseln */
+    glSelectBuffer(SELECTBUFSIZE, buffer);
+    glInitNames();
+    glRenderMode(GL_SELECT);
+
+    /* Seitenverhaeltnis bestimmen */
+    double aspect = (double)width / height;
+
+    /* Folge Operationen beeinflussen die Projektionsmatrix */
+    glMatrixMode(GL_PROJECTION);
+
+    /* Einheitsmatrix laden */
+    glLoadIdentity();
+
+    /* Viewport-Position und -Ausdehnung bestimmen */
+    glViewport(x, y, width, height);
+
+    gluPickMatrix(x, height - y, 10, 10, viewport);
+
+    /* Perspektivische Darstellung */
+    gluPerspective(80, 		/* Oeffnungswinkel */
+                   aspect,  /* Seitenverhaeltnis */
+                   0.05,	/* nahe Clipping-Ebene */
+                   50);	/* ferne Clipping-Ebene */
+
+    /* Folge Operationen beeinflussen die Modelviewmatrix */
+    glMatrixMode(GL_MODELVIEW);
+
+    /* Einheitsmatrix laden */
+    glLoadIdentity();
+
+    drawPicking();
+
+    /* Zeichnen beenden und auswerten */
+    glFlush();
+
+    numHits = glRenderMode(GL_RENDER);
+
+
+
+    processHits(numHits, buffer);
+}
 
 
 /**
@@ -118,6 +283,11 @@ void handleMouseEvent(int x, int y, CGMouseEventType eventType,
                 /* Runterscrollen */
                 radius += 0.6f;
             } else if (button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON) {
+
+                if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
+                    pick(x, y);
+                }
+
                 /* Bei Mausklick die x- und YWerte setzen,
                  * um bei "mousemotion" die Kamera zu bewegen */
                 mouseState = state;
@@ -206,30 +376,6 @@ decreaseTimer() {
     glutPostRedisplay();
 }
 
-
-/**
- * Setzt den Viewport fuer die 3D-Darstellung
- * @param x - Position x im Fenster
- * @param y - Position y im Fenster
- * @param width - Breite des Fensters
- * @param height - Hoehe des Fensters
- */
-static void setViewport(GLint x, GLint y, GLint width, GLint height) {
-    double aspect = (double) width / height;
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    gluPerspective(80,
-                   aspect,
-                   0.05,
-                   50);
-
-    /* Position und Groesse bestimmen */
-    glViewport(x, y, width, height);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-}
 
 /**
  * Zeichen-Callback.

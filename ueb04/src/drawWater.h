@@ -5,4 +5,6 @@ void initGrid(Grid *grid, GLuint size);
 
 void drawWater();
 
+void drawSpheres();
+
 #endif

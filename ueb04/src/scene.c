@@ -86,8 +86,10 @@ void drawLevel() {
     {
         glScalef(5, 5, 5);
         drawWater();
+        drawSpheres();
     }
     glPopMatrix();
+
 }
 
 /**
@@ -97,21 +99,7 @@ void drawGame() {
 
     glPushMatrix();
     {
-
-        /* "Third" Person Ansicht */
-        GLfloat radius = getState()->camera.radius;
-        GLfloat angleHorizontal = TO_RADIANS(getState()->camera.angleHorizontal);
-        GLfloat angleVertical = TO_RADIANS(getState()->camera.angleVertical);
-
-        // Kamera einstellen
-        GLfloat camX = radius * sinf(angleVertical) * cosf(angleHorizontal);
-        GLfloat camY = radius * cosf(angleVertical);
-        GLfloat camZ = radius * sinf(angleVertical) * sinf(angleHorizontal);
-
-        gluLookAt(camX, camY, camZ,
-                  0.0, 0.0, 0.0,
-                  0.0, 1.0, 0.0);
-
+        setLookAt();
 
         /* Taschenlampe setzen */
         if (getState()->settings.showSpotLight) {
