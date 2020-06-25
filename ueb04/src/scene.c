@@ -99,7 +99,7 @@ void drawGame() {
 
     glPushMatrix();
     {
-        setLookAt();
+        setCamera();
 
         /* Taschenlampe setzen */
         if (getState()->settings.showSpotLight) {

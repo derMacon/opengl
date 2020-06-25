@@ -16,9 +16,8 @@
 #include "types.h"
 #include "math.h"
 #include "stringOutput.h"
-#include "drawWater.h"
 
-void setLookAt() {
+void setCamera() {
     GLfloat radius = getState()->camera.radius;
     GLfloat angleHorizontal = TO_RADIANS(getState()->camera.angleHorizontal);
     GLfloat angleVertical = TO_RADIANS(getState()->camera.angleVertical);
@@ -72,8 +71,6 @@ processHits(GLint numHits, GLuint buffer[]) {
             ptr += 3 + *ptr;
         }
 
-        printf("The names of the closest hit are:\n\t");
-
         /* Alle Namen des Treffers ausgeben, der am naechsten zum Betrachter liegt */
         for (i = 0; i < numOfClosestNames; i++, ptrClosestNames++) {
             int idx = *ptrClosestNames;
@@ -84,7 +81,6 @@ processHits(GLint numHits, GLuint buffer[]) {
         }
     }
 }
-
 
 /**
  * Setzt den Viewport fuer die 3D-Darstellung
@@ -110,41 +106,27 @@ static void setViewport(GLint x, GLint y, GLint width, GLint height) {
     glLoadIdentity();
 }
 
-
 /**
  * Picking. Auswahl von Szenenobjekten durch Klicken mit der Maus.
  */
 static void
 pick(int x, int y) {
-/** Groesse des Buffers fuer Picking Ergebnisse */
-#define SELECTBUFSIZE 512
+    /* Groesse des Buffers fuer Picking Ergebnisse */
+    #define SELECTBUFSIZE 512
 
     /* Fensterdimensionen auslesen */
     int width = glutGet(GLUT_WINDOW_WIDTH);
     int height = glutGet(GLUT_WINDOW_HEIGHT);
-
-    /* Buffer zuruecksetzen */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    /* 3D Ansicht */
-    setViewport(0, 0, width, height);
-
-    /* Viewport (Darstellungsbereich des Fensters) */
-    GLint viewport[4] = {0, 0, width, height};
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
 
     /* Puffer fuer Picking-Ergebnis */
     GLuint buffer[SELECTBUFSIZE];
-
-    /* Anzahl der getroffenen Namen beim Picking */
-    GLint numHits;
 
     /* Puffer festlegen, Name-Stack leeren und Rendermode wechseln */
     glSelectBuffer(SELECTBUFSIZE, buffer);
     glInitNames();
     glRenderMode(GL_SELECT);
-
-    /* Seitenverhaeltnis bestimmen */
-    double aspect = (double)width / height;
 
     /* Folge Operationen beeinflussen die Projektionsmatrix */
     glMatrixMode(GL_PROJECTION);
@@ -152,16 +134,13 @@ pick(int x, int y) {
     /* Einheitsmatrix laden */
     glLoadIdentity();
 
-    /* Viewport-Position und -Ausdehnung bestimmen */
-    glViewport(x, y, width, height);
-
     gluPickMatrix(x, height - y, 10, 10, viewport);
 
     /* Perspektivische Darstellung */
-    gluPerspective(80, 		/* Oeffnungswinkel */
-                   aspect,  /* Seitenverhaeltnis */
-                   0.05,	/* nahe Clipping-Ebene */
-                   50);	/* ferne Clipping-Ebene */
+    gluPerspective(80,                           /* Oeffnungswinkel */
+                   (double) width / height,    /* Seitenverhaeltnis */
+                   0.05,                        /* nahe Clipping-Ebene */
+                   50);                         /* ferne Clipping-Ebene */
 
     /* Folge Operationen beeinflussen die Modelviewmatrix */
     glMatrixMode(GL_MODELVIEW);
@@ -169,18 +148,16 @@ pick(int x, int y) {
     /* Einheitsmatrix laden */
     glLoadIdentity();
 
-    drawPicking();
+    /* Kamera richten */
+    setCamera();
+
+    /* Spheren zeichnen */
+    drawPickingSpheres();
 
     /* Zeichnen beenden und auswerten */
     glFlush();
-
-    numHits = glRenderMode(GL_RENDER);
-
-
-
-    processHits(numHits, buffer);
+    processHits(glRenderMode(GL_RENDER), buffer);
 }
-
 
 /**
  * Berechnung der Frames pro Sekunde.

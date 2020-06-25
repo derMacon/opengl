@@ -9,7 +9,6 @@
 #include <GL/glu.h>
 #include "types.h"
 #include "logic.h"
-#include "math.h"
 #include "debug.h"
 #include "io.h"
 
@@ -76,7 +75,7 @@ void drawWater() {
                    getState()->grid.indices);   // Index Array
 }
 
-void drawBall(int index) {
+void drawSphere(int index) {
     glPushName(index);
     {
         glPushMatrix();
@@ -111,25 +110,15 @@ void drawSpheres() {
     int length = getState()->grid.length;
 
     for (int i = 0; i < length * length; i++) {
-        drawBall(i);
+        drawSphere(i);
     }
 }
 
-void drawPicking() {
-
-    glEnable(GL_DEPTH_TEST);
-    glDisable(GL_LIGHTING);
-
+void drawPickingSpheres() {
     glPushMatrix();
     {
-        setLookAt();
-
-        glPushMatrix();
-        {
-            glScalef(5, 5, 5);
-            drawSpheres();
-        }
-        glPopMatrix();
+        glScalef(5, 5, 5);
+        drawSpheres();
     }
     glPopMatrix();
 }
