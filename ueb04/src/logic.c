@@ -31,7 +31,7 @@ State *getState(void) {
     return &state;
 }
 
-void freeWilly() {
+void freeWater() {
     free(getState()->grid.velocities);
     free(getState()->grid.vertices);
     free(getState()->grid.indices);
@@ -50,7 +50,7 @@ void changeGridSize(GLboolean increase) {
     }
 
     if (changed) {
-        freeWilly();
+        freeWater();
         initGrid(&getState()->grid, getState()->grid.length);
     }
 }

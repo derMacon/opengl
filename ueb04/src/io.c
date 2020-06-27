@@ -269,7 +269,7 @@ void handleMouseEvent(int x, int y, CGMouseEventType eventType,
                 radius += 0.6f;
             } else if (button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON) {
 
-                if (state == GLUT_UP) {
+                if (getState()->gameStatus != GAME_PAUSED && state == GLUT_UP) {
                     pick(x, y, button == GLUT_LEFT_BUTTON);
                 }
 

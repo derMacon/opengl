@@ -1,5 +1,5 @@
 #ifndef drawWater_h
-#define drawWater_g
+#define drawWater_h
 
 void initGrid(Grid *grid, GLuint size);
 

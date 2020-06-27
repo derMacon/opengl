@@ -150,10 +150,10 @@ void drawHelp() {
 void drawScene() {
     Status gameStatus = getState()->gameStatus;
 
-    if (gameStatus == GAME_RUNNING) {
-        drawGame();
-    } else if (gameStatus == GAME_HELP) {
+    if (gameStatus == GAME_HELP) {
         drawHelp();
+    } else {
+        drawGame();
     }
 }
 
