@@ -36,7 +36,7 @@ typedef struct {
 typedef struct {
     GLboolean showWorldLight;
     GLboolean showSpotLight;
-    GLboolean showAnimation;
+    GLboolean showSpheres;
     GLboolean showNormals;
     GLboolean showWireframe;
     GLboolean showFullScreen;
@@ -69,7 +69,7 @@ enum e_ToggleTypes {
     NORMALS,
     WORLDLIGHT,
     SPOTLIGHT,
-    ANIMATION,
+    SPHERES,
     WIREFRAME
 };
 

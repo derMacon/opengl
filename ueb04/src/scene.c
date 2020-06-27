@@ -86,7 +86,9 @@ void drawLevel() {
     {
         glScalef(5, 5, 5);
         drawWater();
-        drawSpheres();
+        if (getState()->settings.showSpheres){
+            drawSpheres();
+        }
     }
     glPopMatrix();
 

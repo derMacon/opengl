@@ -7,7 +7,7 @@
 #define INITIAL_GRID_SIZE 10
 #define MIN_GRID_SIZE 2
 #define MAX_GRID_SIZE 100
-#define WATER_INCREASE_VALUE 0.2f
+#define WATER_INCREASE_VALUE 0.15f
 
 /* Kamera */
 #define EMPTY_CAMERA_ORIENTATION {2.5f, 45.0f, -90}

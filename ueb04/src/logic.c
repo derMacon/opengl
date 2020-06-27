@@ -19,6 +19,7 @@ State state;
 void initLevel() {
     CameraView or = EMPTY_CAMERA_ORIENTATION;
     state.gameStatus = GAME_RUNNING;
+    state.settings.showSpheres = GL_TRUE;
     state.camera = or;
     initGrid(&state.grid, INITIAL_GRID_SIZE);
 }
@@ -39,7 +40,15 @@ void freeWater() {
 
 void changeGridSize(GLboolean increase) {
     int currentSize = getState()->grid.length;
+    double *vel = malloc(sizeof(double) * (currentSize * currentSize));
     GLboolean changed = GL_FALSE;
+
+    for (int y = 0; y < currentSize; y++) {
+        for (int x = 0; x < currentSize; x++) {
+            int idx = getIndex(x, y, currentSize);
+            vel[idx] = getState()->grid.vertices[idx][Y];
+        }
+    }
 
     if (increase && currentSize + 1 <= MAX_GRID_SIZE) {
         getState()->grid.length = (currentSize + 1);
@@ -51,8 +60,22 @@ void changeGridSize(GLboolean increase) {
 
     if (changed) {
         freeWater();
+
+        // Wenn wir increasen, ist das neue Array groesser als vals
+        int len = increase
+                  ? currentSize
+                  : getState()->grid.length;
+
         initGrid(&getState()->grid, getState()->grid.length);
+
+        for (int y = 0; y < len; y++) {
+            for (int x = 0; x < len; x++) {
+                int idx = getIndex(x, y, len);
+                getState()->grid.vertices[idx][Y] = vel[idx];
+            }
+        }
     }
+    free(vel);
 }
 
 /**
@@ -61,8 +84,8 @@ void changeGridSize(GLboolean increase) {
  */
 void toggle(enum e_ToggleTypes type) {
     switch (type) {
-        case ANIMATION:
-            getState()->settings.showAnimation = !getState()->settings.showAnimation;
+        case SPHERES:
+            getState()->settings.showSpheres = !getState()->settings.showSpheres;
             break;
         case NORMALS:
             getState()->settings.showNormals = !getState()->settings.showNormals;

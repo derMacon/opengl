@@ -160,7 +160,7 @@ pick(int x, int y, GLboolean isLeftMouse) {
     setCamera();
 
     /* Spheren zeichnen */
-    drawPickingSpheres();
+     drawPickingSpheres();
 
     /* Zeichnen beenden und auswerten */
     glFlush();
@@ -516,6 +516,11 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case 'h':
                 case 'H':
                     switchGameStatus(GAME_HELP);
+                    break;
+
+                case 's':
+                case 'S':
+                    toggle(SPHERES);
                     break;
 
                 case 'p':

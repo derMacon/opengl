@@ -7,5 +7,8 @@ void drawWater();
 
 void drawSpheres();
 
+int getIndex(int x, int y, int size);
+
 void simulateWater();
+
 #endif

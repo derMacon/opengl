@@ -84,7 +84,7 @@ void simulateWater() {
     float time = 0.99f; // force xD
 
     int len = getState()->grid.length;
-    GLdouble *vals = malloc(sizeof(GLdouble) * (len * len));
+    double *vals = malloc(sizeof(double) * (len * len));
 
     for (int y = 0; y < len; y++) {
         for (int x = 0; x < len; x++) {
