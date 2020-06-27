@@ -4,7 +4,9 @@
 /* Globale Einstellungen */
 #define TIMER_CALLS_PS 144
 
-#define GRID_SIZE 10
+#define INITIAL_GRID_SIZE 10
+#define MIN_GRID_SIZE 2
+#define MAX_GRID_SIZE 100
 #define WATER_INCREASE_VALUE 0.2f
 
 /* Kamera */

@@ -7,9 +7,7 @@
 #endif
 
 #include "variables.h"
-#include <stdio.h>
 #include "types.h"
-#include "scene.h"
 #include "drawWater.h"
 
 State state;
@@ -22,7 +20,7 @@ void initLevel() {
     CameraView or = EMPTY_CAMERA_ORIENTATION;
     state.gameStatus = GAME_RUNNING;
     state.camera = or;
-    initGrid(&state.grid, GRID_SIZE);
+    initGrid(&state.grid, INITIAL_GRID_SIZE);
 }
 
 /**
@@ -31,6 +29,30 @@ void initLevel() {
  */
 State *getState(void) {
     return &state;
+}
+
+void freeWilly() {
+    free(getState()->grid.velocities);
+    free(getState()->grid.vertices);
+    free(getState()->grid.indices);
+}
+
+void changeGridSize(GLboolean increase) {
+    int currentSize = getState()->grid.length;
+    GLboolean changed = GL_FALSE;
+
+    if (increase && currentSize + 1 <= MAX_GRID_SIZE) {
+        getState()->grid.length = (currentSize + 1);
+        changed = GL_TRUE;
+    } else if (!increase && currentSize - 1 >= MIN_GRID_SIZE) {
+        getState()->grid.length = (currentSize - 1);
+        changed = GL_TRUE;
+    }
+
+    if (changed) {
+        freeWilly();
+        initGrid(&getState()->grid, getState()->grid.length);
+    }
 }
 
 /**

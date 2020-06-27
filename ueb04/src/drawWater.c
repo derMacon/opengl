@@ -142,7 +142,7 @@ void drawSphere(int index) {
                 gluQuadricNormals(qobj, GLU_SMOOTH);
 
                 /* Kugel zeichen */
-                float radius = 1.0f / (GRID_SIZE * 5);
+                float radius = 1.0f / (getState()->grid.length * (float) 5);
                 gluSphere(qobj, radius, 20, 20);
 
                 /* Loeschen des Quadrics nicht vergessen */

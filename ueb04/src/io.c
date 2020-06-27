@@ -522,30 +522,12 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     switchGameStatus(GAME_PAUSED);
                     break;
 
-                case '1':
-                    initLevel(1);
+                case '+':
+                    changeGridSize(GL_TRUE);
                     break;
 
-                case '2':
-                    initLevel(2);
-                    break;
-
-                case '3':
-                    initLevel(3);
-                    break;
-
-                case '4':
-                    initLevel(4);
-                    break;
-
-                case 'r':
-                case 'R':
-                    initLevel();
-                    break;
-
-                case 'a':
-                case 'A':
-                    toggle(ANIMATION);
+                case '-':
+                    changeGridSize(GL_FALSE);
                     break;
 
                     /* Programm beenden */

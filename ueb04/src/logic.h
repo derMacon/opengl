@@ -23,4 +23,6 @@ State *getState();
  */
 void toggle(enum e_ToggleTypes type);
 
+void changeGridSize(GLboolean increase);
+
 #endif
