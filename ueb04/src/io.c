@@ -216,11 +216,11 @@ void changeCameraView(GLfloat radius, GLfloat anglehorizontal, GLfloat angleVert
     cam.angleVertical += angleVertical;
 
     /* Begrenzungen Zoom */
-    if (cam.radius < 1) {
-        cam.radius = 1;
+    if (cam.radius < CAMERA_MIN_RADIUS) {
+        cam.radius = CAMERA_MIN_RADIUS;
     }
-    if (cam.radius > 4) {
-        cam.radius = 4;
+    if (cam.radius > CAMERA_MAX_RADIUS) {
+        cam.radius = CAMERA_MAX_RADIUS;
     }
 
     // Vertikale Begrenzung für Sicht von oben
@@ -269,7 +269,7 @@ void handleMouseEvent(int x, int y, CGMouseEventType eventType,
                 radius += 0.6f;
             } else if (button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON) {
 
-                if (getState()->gameStatus != GAME_PAUSED && state == GLUT_UP) {
+                if (state == GLUT_UP) {
                     pick(x, y, button == GLUT_LEFT_BUTTON);
                 }
 
