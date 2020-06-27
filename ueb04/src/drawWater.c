@@ -98,9 +98,10 @@ void simulateWater() {
                     4 * getState()->grid.vertices[getIndex(x, y, len)][Y])
                           / (pillarSize * pillarSize);
 
+
             getState()->grid.velocities[index] =
-                    (getState()->grid.velocities[getIndex(x, y, len)] +force) * time;
-            vals[index] =( getState()->grid.vertices[index][Y] + getState()->grid.velocities[index]) * time;
+                    (getState()->grid.velocities[getIndex(x, y, len)] + force) * time;
+            vals[index] = (getState()->grid.vertices[index][Y] + getState()->grid.velocities[index]) * time;
         }
     }
 
@@ -124,15 +125,44 @@ void drawWater() {
                    getState()->grid.indices);   // Index Array
 }
 
+void setColors(int index, float r, float g, float b) {
+    glColor3f(r, g, b);
+    getState()->grid.vertices[index][R] = r;
+    getState()->grid.vertices[index][G] = g;
+    getState()->grid.vertices[index][B] = b;
+}
+
+void changeColors(int index, float height) {
+    // Initial
+    glColor3f(1, 1, 1);
+    getState()->grid.vertices[index][R] = 0.0f;
+    getState()->grid.vertices[index][G] = 0.3f;
+    getState()->grid.vertices[index][B] = 0.8f;
+
+    if (height >= COLOR_HEIGHT_1 && height < COLOR_HEIGHT_2) {
+        // Gold
+        setColors(index, 1.000f, 0.843f, 0.000f);
+    } else if (height >= COLOR_HEIGHT_2 && height < COLOR_HEIGHT_3) {
+        // Gruen
+        setColors(index, 0.180f, 0.545f, 0.341f);
+    } else if (height >= COLOR_HEIGHT_3) {
+        // Pink
+        setColors(index, 1.000f, 0.078f, 0.576f);
+    }
+}
+
 void drawSphere(int index) {
     glPushName(index);
     {
         glPushMatrix();
         {
+            float height = getState()->grid.vertices[index][Y];
             glTranslatef(
                     getState()->grid.vertices[index][X],
-                    getState()->grid.vertices[index][Y],
+                    height,
                     getState()->grid.vertices[index][Z]);
+
+            changeColors(index, height);
 
             /* Quadric erzuegen */
             GLUquadricObj *qobj = gluNewQuadric();

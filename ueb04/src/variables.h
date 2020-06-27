@@ -10,6 +10,10 @@
 #define MIN_GRID_SIZE 2
 #define MAX_GRID_SIZE 100
 
+#define COLOR_HEIGHT_1 0.2f
+#define COLOR_HEIGHT_2 0.3f
+#define COLOR_HEIGHT_3 0.5f
+
 /* Kamera */
 #define CAMERA_MIN_RADIUS 1
 #define CAMERA_MAX_RADIUS  10

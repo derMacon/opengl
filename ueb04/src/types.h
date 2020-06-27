@@ -51,8 +51,8 @@ typedef GLdouble Vertex[9];
 typedef struct {
     Vertex *vertices;
     GLuint *indices;
-    double *velocities;
     GLuint length;
+    double *velocities;
 } Grid;
 
 /** Spiel */
