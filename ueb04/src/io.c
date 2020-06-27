@@ -392,8 +392,9 @@ cbDisplay(void) {
     fps = frameRate();
 
     char title[100];
+    int len = getState()->grid.length;
 
-    sprintf((char *) title, "Wasser-Animation | FPS: %.2f", (double) fps);
+    sprintf((char *) title, "Wasser-Animation | Verticies: %d x %d | FPS: %.2f", len, len, (double) fps);
     glutSetWindowTitle(title);
 }
 
