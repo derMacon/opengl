@@ -7,4 +7,5 @@ void drawWater();
 
 void drawSpheres();
 
+void simulateWater();
 #endif

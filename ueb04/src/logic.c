@@ -22,7 +22,7 @@ void initLevel() {
     CameraView or = EMPTY_CAMERA_ORIENTATION;
     state.gameStatus = GAME_RUNNING;
     state.camera = or;
-    initGrid(&state.grid, 10);
+    initGrid(&state.grid, GRID_SIZE);
 }
 
 /**

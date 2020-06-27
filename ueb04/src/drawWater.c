@@ -18,6 +18,7 @@ int getIndex(int x, int y, int size) {
     return (y * size) + x;
 }
 
+
 void initGrid(Grid *grid, GLuint size) {
 
     GLuint gridSize = size * size;
@@ -66,6 +67,54 @@ void initGrid(Grid *grid, GLuint size) {
     glColorPointer(3, GL_DOUBLE, sizeof(Vertex), &(grid->vertices[0][R]));
 }
 
+int validateIndex(int i, GLboolean decrease) {
+    if (decrease && i > 0) {
+        i--;
+    } else if (!decrease
+               && i < getState()->grid.length - 1) {
+        i++;
+    }
+    return i;
+}
+
+void simulateWater() {
+    // TODO: Werte anpassen
+    const float speed = 0.1f; // auch speed
+    float pillarSize = 1.5f; // speed xD
+    float time = 0.99f; // force xD
+
+    int len = getState()->grid.length;
+    GLdouble *vals = malloc(sizeof(GLdouble) * (len * len));
+
+    for (int y = 0; y < len; y++) {
+        for (int x = 0; x < len; x++) {
+
+            int index = getIndex(x, y, len);
+            float force = (speed * speed) * (
+                    getState()->grid.vertices[getIndex(validateIndex(x, GL_FALSE), y, len)][Y] +
+                    getState()->grid.vertices[getIndex(validateIndex(x, GL_TRUE), y, len)][Y] +
+                    getState()->grid.vertices[getIndex(x, validateIndex(y, GL_FALSE), len)][Y] +
+                    getState()->grid.vertices[getIndex(x, validateIndex(y, GL_TRUE), len)][Y] -
+                    4 * getState()->grid.vertices[getIndex(x, y, len)][Y])
+                          / (pillarSize * pillarSize);
+
+            getState()->grid.velocities[index] =
+                    (getState()->grid.velocities[getIndex(x, y, len)] +force) * time;
+            vals[index] =( getState()->grid.vertices[index][Y] + getState()->grid.velocities[index]) * time;
+        }
+    }
+
+    for (int y = 0; y < len; y++) {
+        for (int x = 0; x < len; x++) {
+            int idx = getIndex(x, y, len);
+            getState()->grid.vertices[idx][Y] = vals[idx];
+        }
+    }
+
+    free(vals);
+}
+
+
 void drawWater() {
     unsigned int length = getState()->grid.length - 1;
 
@@ -93,7 +142,8 @@ void drawSphere(int index) {
                 gluQuadricNormals(qobj, GLU_SMOOTH);
 
                 /* Kugel zeichen */
-                gluSphere(qobj, 0.01, 20, 20);
+                float radius = 1.0f / (GRID_SIZE * 5);
+                gluSphere(qobj, radius, 20, 20);
 
                 /* Loeschen des Quadrics nicht vergessen */
                 gluDeleteQuadric(qobj);

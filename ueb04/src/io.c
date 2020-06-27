@@ -16,6 +16,7 @@
 #include "types.h"
 #include "math.h"
 #include "stringOutput.h"
+#include "drawWater.h"
 
 void setCamera() {
     GLfloat radius = getState()->camera.radius;
@@ -75,7 +76,7 @@ processHits(GLint numHits, GLuint buffer[]) {
         for (i = 0; i < numOfClosestNames; i++, ptrClosestNames++) {
             int idx = *ptrClosestNames;
             if (idx >= 0) {
-                getState()->grid.vertices[idx][Y] += 0.01f;
+                getState()->grid.vertices[idx][Y] += ADD_HEIGHT;
             }
             printf("Pick: %d", *ptrClosestNames);
         }
@@ -328,8 +329,10 @@ static void
 cbTimer(int lastCallTime) {
     /* Seit dem Programmstart vergangene Zeit in Millisekunden */
     int thisCallTime = glutGet(GLUT_ELAPSED_TIME);
-    //double interval = (double) (thisCallTime - lastCallTime) / 1000.0f;
+//    double interval = (double) (thisCallTime - lastCallTime) / 1000.0f;
 
+
+    simulateWater();
 
     /* Wieder als Timer-Funktion registrieren */
     glutTimerFunc(1000 / TIMER_CALLS_PS, cbTimer, thisCallTime);
