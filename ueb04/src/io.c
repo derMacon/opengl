@@ -18,6 +18,9 @@
 #include "stringOutput.h"
 #include "drawWater.h"
 
+double idleCounter = 0;
+double lastCallTimeIdle = 0;
+
 void setCamera() {
     GLfloat radius = getState()->camera.radius;
     GLfloat angleHorizontal = TO_RADIANS(getState()->camera.angleHorizontal);
@@ -113,7 +116,7 @@ static void setViewport(GLint x, GLint y, GLint width, GLint height) {
 static void
 pick(int x, int y) {
     /* Groesse des Buffers fuer Picking Ergebnisse */
-    #define SELECTBUFSIZE 512
+#define SELECTBUFSIZE 512
 
     /* Fensterdimensionen auslesen */
     int width = glutGet(GLUT_WINDOW_WIDTH);
@@ -318,6 +321,7 @@ setProjection(GLdouble aspect) {
                    40.0 /* ferne Clipping-Ebene */ );
 }
 
+
 /**
  * Timer-Callback.
  * Initiiert Berechnung der aktuellen Position und anschliessendes Neuzeichnen,
@@ -332,7 +336,6 @@ cbTimer(int lastCallTime) {
 //    double interval = (double) (thisCallTime - lastCallTime) / 1000.0f;
 
 
-    simulateWater();
 
     /* Wieder als Timer-Funktion registrieren */
     glutTimerFunc(1000 / TIMER_CALLS_PS, cbTimer, thisCallTime);
@@ -620,6 +623,27 @@ cbSpecialUp(int key, int x, int y) {
     handleKeyboardEvent(key, GLUT_UP, GL_TRUE, x, y);
 }
 
+static void cbIdle() {
+
+    /* Seit dem Programmstart vergangene Zeit in Millisekunden */
+    int thisCallTime = glutGet(GLUT_ELAPSED_TIME);
+
+    /* Seit dem letzten Funktionsaufruf vergangene Zeit in Sekunden */
+    double interval = (double) (thisCallTime - lastCallTimeIdle) / 1000.0f;
+
+    idleCounter += interval;
+
+    // TODO: Neuschreiben
+    while (idleCounter >= 1.0f / TIMER_CALLS_PS) {
+        if (getState()->gameStatus == GAME_RUNNING) {
+            simulateWater();
+        }
+        idleCounter -= 1.0f / TIMER_CALLS_PS;
+    }
+
+    lastCallTimeIdle = thisCallTime;
+}
+
 /**
  * Registrierung der GLUT-Callback-Routinen.
  */
@@ -661,7 +685,9 @@ void registerCallbacks(void) {
                   cbTimer,
                   glutGet(GLUT_ELAPSED_TIME));
 
-    glutTimerFunc(1000, decreaseTimer, glutGet(GLUT_ELAPSED_TIME));
+    glutIdleFunc(cbIdle),
+
+            glutTimerFunc(1000, decreaseTimer, glutGet(GLUT_ELAPSED_TIME));
 
     /* Reshape-Callback - wird ausgefuehrt, wenn neu gezeichnet wird (z.B. nach
      * Erzeugen oder Groessenaenderungen des Fensters) */
