@@ -44,7 +44,7 @@ void setCamera() {
  * @param buffer Buffer, in dem die Treffer gespeichert sind (In).
  */
 static void
-processHits(GLint numHits, GLuint buffer[], GLboolean leftMouseButton) {
+processHits(GLint numHits, GLuint buffer[], GLboolean isLeftMouse) {
     /* Anzahl der Namen des Treffers, der am naechsten zum Betrachter ist */
     GLint numOfClosestNames = 0;
     /* Anzahl der Namen des Treffers, der am naechsten zum Betrachter ist */
@@ -79,7 +79,7 @@ processHits(GLint numHits, GLuint buffer[], GLboolean leftMouseButton) {
         for (i = 0; i < numOfClosestNames; i++, ptrClosestNames++) {
             int idx = *ptrClosestNames;
             if (idx >= 0) {
-                if (leftMouseButton) {
+                if (isLeftMouse) {
                     getState()->grid.vertices[idx][Y] += WATER_INCREASE_VALUE;
                 } else {
                     getState()->grid.vertices[idx][Y] -= WATER_INCREASE_VALUE;
@@ -118,7 +118,7 @@ static void setViewport(GLint x, GLint y, GLint width, GLint height) {
  * Picking. Auswahl von Szenenobjekten durch Klicken mit der Maus.
  */
 static void
-pick(int x, int y, GLboolean leftMouse) {
+pick(int x, int y, GLboolean isLeftMouse) {
     /* Groesse des Buffers fuer Picking Ergebnisse */
 #define SELECTBUFSIZE 512
 
@@ -164,7 +164,7 @@ pick(int x, int y, GLboolean leftMouse) {
 
     /* Zeichnen beenden und auswerten */
     glFlush();
-    processHits(glRenderMode(GL_RENDER), buffer, leftMouse);
+    processHits(glRenderMode(GL_RENDER), buffer, isLeftMouse);
 }
 
 /**
