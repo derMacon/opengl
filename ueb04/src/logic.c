@@ -70,8 +70,9 @@ void changeGridSize(GLboolean increase) {
 
         for (int y = 0; y < len; y++) {
             for (int x = 0; x < len; x++) {
-                int idx = getIndex(x, y, len);
-                getState()->grid.vertices[idx][Y] = vel[idx];
+                int idx = getIndex(x, y, getState()->grid.length);
+                int idx2 = getIndex(x, y, currentSize);
+                getState()->grid.vertices[idx][Y] = vel[idx2];
             }
         }
     }
