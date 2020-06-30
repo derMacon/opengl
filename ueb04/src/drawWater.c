@@ -12,6 +12,7 @@
 #include "debug.h"
 #include "io.h"
 #include "scene.h"
+#include "texture.h"
 
 #endif
 
@@ -140,10 +141,11 @@ void simulateWater() {
 void drawWater() {
     unsigned int length = getState()->grid.length - 1;
 
+    bindTexture(texWater);
     glDrawElements(GL_TRIANGLES,             // Primitivtyp
                    length * length * 6, // Anzahl Indizes zum Zeichnen
                    GL_UNSIGNED_INT,             // Typ der Indizes
-                   getState()->grid.indices);   // Index Array
+                   getState()->grid.indices);   // Index Arrayq
 }
 
 

@@ -107,26 +107,26 @@ void drawLevel() {
 
     glPushMatrix();
     {
-
         drawBoat(GL_TRUE);
         drawBoat(GL_FALSE);
 
+        glPushMatrix();
+        {
+            glScalef(5, 5, 5);
+            if (getState()->settings.showSpheres) {
+                drawSpheres();
+            }
+            if (getState()->settings.showTextures) {
+                glEnable(GL_TEXTURE_2D);
+            } else {
+                glEnable(GL_COLOR_MATERIAL);
+            }
+            drawWater();
+        }
+        glPopMatrix();
+
         drawLighthouse();
-        glScalef(5, 5, 5);
-        if (getState()->settings.showSpheres) {
-            drawSpheres();
-        }
 
-        glColor3f(1, 1, 1);
-
-        if (getState()->settings.showTextures) {
-            glEnable(GL_TEXTURE_2D);
-        } else {
-            glEnable(GL_COLOR_MATERIAL);
-        }
-
-        bindTexture(texWater);
-        drawWater();
         glDisable(GL_TEXTURE_2D);
         glDisable(GL_COLOR_MATERIAL);
     }

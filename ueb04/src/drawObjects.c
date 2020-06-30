@@ -12,6 +12,7 @@
 #include "logic.h"
 #include "scene.h"
 #include "drawWater.h"
+#include "texture.h"
 
 /**
  * Zeichnet ein 3D-Viereck
@@ -195,6 +196,7 @@ void drawLeuchtturmRoof() {
 }
 
 void drawLighthouse() {
+    bindTexture(texLightHouse);
     glColor3f(0.9f, 0.9f, 0.9f);
     setMaterialLightning(0.9f, 0.9f, 0.9f);
 
