@@ -22,7 +22,12 @@ void initLevel() {
     state.gameStatus = GAME_RUNNING;
     state.settings.showTextures = GL_TRUE;
     state.settings.showSpheres = GL_TRUE;
+
     state.camera = or;
+    state.spotlight.posX = 1;
+    state.spotlight.posY = 0;
+    state.spotlight.xIncreasing = GL_FALSE;
+    state.spotlight.yIncreasing = GL_TRUE;
     initGrid(&state.grid, INITIAL_GRID_SIZE);
 }
 

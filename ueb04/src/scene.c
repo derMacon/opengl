@@ -147,14 +147,13 @@ void drawGame() {
         /* Taschenlampe setzen */
         if (getState()->settings.showSpotLight) {
             /* Taschenlampe setzen */
-            // playerx bei oben und unten -> versetzt links und rechts
-            // playery bei links rechts -> versetzt oben und unten
-            // y wert = Hoehe
-            // float spotLightPos[] = {4 - 0.1f, 0.2f, 4, 1}; //todo leuchtturm
-            //float spotlightDirection[] = {setFirstPersonView(GL_TRUE), 0, setFirstPersonView(GL_FALSE)};
+            float spotLightPos[] = {0.2f, 1, 0, 1};
 
-            // glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotlightDirection);
-            // glLightfv(GL_LIGHT1, GL_POSITION, spotLightPos);
+
+            float spotlightDirection[] = {getState()->spotlight.posX, -0.8f, getState()->spotlight.posY};
+
+            glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotlightDirection);
+            glLightfv(GL_LIGHT1, GL_POSITION, spotLightPos);
         }
 
         /* Weltlicht Pos erneut setzen,

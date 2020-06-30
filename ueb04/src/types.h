@@ -4,8 +4,11 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+
 #include <GL/glut.h>
+
 #endif
+
 #include "variables.h"
 
 #define TAU (acos(-1.0) * 2.f)
@@ -56,12 +59,20 @@ typedef struct {
     double *velocities;
 } Grid;
 
+typedef struct {
+    float posX;
+    float posY;
+    GLboolean xIncreasing;
+    GLboolean yIncreasing;
+} Spotlight;
+
 /** Spiel */
 typedef struct {
     Status gameStatus;
     Settings settings;
     Grid grid;
     CameraView camera;
+    Spotlight spotlight;
 } State;
 
 /** Wird verwendet, um u.g. Einstellungen zu togglen */

@@ -351,6 +351,42 @@ cbTimer(int lastCallTime) {
 }
 
 /**
+ * Funktion, um Codeverdopplung zu sparen.
+ * Andert die Richtung des Spotlights
+ * Links: 1,0
+ * Oben: 0, 1
+ * Rechts: -1,  0
+ * Unten: 0, -1
+ * @param isX True, x Wert wird geaendert
+ * @param val Der Wert, der entweder erhoeht oder verringert wird
+ */
+void changeSpotLightVal(GLboolean isX, float val) {
+    Spotlight s = getState()->spotlight;
+    GLboolean isIncreasing = isX ? s.xIncreasing : s.yIncreasing;
+    float incVal = 0.02f;
+
+    if (isIncreasing) {
+        val += incVal;
+        if (val >= 1) {
+            isIncreasing = GL_FALSE;
+        }
+    } else {
+        val -= incVal;
+        if (val <= -1) {
+            isIncreasing = GL_TRUE;
+        }
+    }
+
+    if (isX) {
+        getState()->spotlight.xIncreasing = isIncreasing;
+        getState()->spotlight.posX = val;
+    } else {
+        getState()->spotlight.yIncreasing = isIncreasing;
+        getState()->spotlight.posY = val;
+    }
+}
+
+/**
  * Wird aufgerufen, um die Zeit fuer das Spiel zu zeichnen
  */
 static void
@@ -359,7 +395,15 @@ decreaseTimer() {
     int thisCallTime = glutGet(GLUT_ELAPSED_TIME);
 
     /* Wieder als Timer-Funktion registrieren */
-    glutTimerFunc(1000, decreaseTimer, thisCallTime);
+    glutTimerFunc(50, decreaseTimer, thisCallTime);
+
+    if (getState()->settings.showSpotLight) {
+        float x = getState()->spotlight.posX;
+        float y = getState()->spotlight.posY;
+
+        changeSpotLightVal(GL_TRUE, x);
+        changeSpotLightVal(GL_FALSE, y);
+    }
 
     /* Neuzeichnen anstossen */
     glutPostRedisplay();
@@ -635,6 +679,8 @@ static void cbIdle() {
         if (getState()->gameStatus == GAME_RUNNING) {
             simulateWater();
         }
+
+
         idleCounter -= 1.0f / TIMER_CALLS_PS;
     }
 
@@ -682,9 +728,7 @@ void registerCallbacks(void) {
                   cbTimer,
                   glutGet(GLUT_ELAPSED_TIME));
 
-    glutIdleFunc(cbIdle),
-
-            glutTimerFunc(1000, decreaseTimer, glutGet(GLUT_ELAPSED_TIME));
+    glutIdleFunc(cbIdle), glutTimerFunc(50, decreaseTimer, glutGet(GLUT_ELAPSED_TIME));
 
     /* Reshape-Callback - wird ausgefuehrt, wenn neu gezeichnet wird (z.B. nach
      * Erzeugen oder Groessenaenderungen des Fensters) */
