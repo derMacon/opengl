@@ -8,8 +8,10 @@
 #include <OpenGL/glu.h>
 #endif
 
+#include <stdio.h>
 #include "logic.h"
 #include "scene.h"
+#include "drawWater.h"
 
 /**
  * Zeichnet ein 3D-Viereck
@@ -49,6 +51,7 @@ static void drawSquare() {
     }
 }
 
+/** Zeichnet ein 3d-Vierreck */
 void
 drawCube() {
     glPushMatrix();
@@ -109,6 +112,9 @@ drawCube() {
     glPopMatrix();
 }
 
+/**
+ * Zeichnet das vordere Dreieck eines Bootes
+ */
 void drawFront() {
     glPushMatrix();
     {
@@ -120,7 +126,10 @@ void drawFront() {
     glPopMatrix();
 }
 
-void drawDach() {
+/**
+ * Zeichnet das "Dach" eines Bootes
+ */
+void drawRoof() {
     glColor3f(0.8f, 0.8f, 0.8f);
     setMaterialLightning(0.8f, 0.8f, 0.8f);
     glPushMatrix();
@@ -132,23 +141,32 @@ void drawDach() {
     glPopMatrix();
 }
 
+/**
+ * Zeichnet ein Boot
+ * @param isFirst true, wenn es das erste sein soll
+ */
 void drawBoat(GLboolean isFirst) {
     glColor3f(0.600f, 0.240f, 0.100f);
     setMaterialLightning(0.600f, 0.240f, 0.100f);
+    int idx = isFirst ? 32 : 77;
+    float x = isFirst ? 1.7f : -1.7f;
+    double y = 0.05f + getState()->grid.vertices[idx][Y];
+    float z = isFirst ? 1 : -1.7f;
+
     glPushMatrix();
     {
         if (isFirst) {
-            glTranslatef(1.7, 0, 1);
+            glTranslatef(x, y, z);
             glRotatef(110, 0, 1, 0);
         } else {
-            glTranslatef(-1.5, 0, -1.7f);
+            glTranslatef(x, y, z);
             glRotatef(-20, 0, 1, 0);
         }
         glScalef(0.35f, 0.1, 0.25f);
         drawCube();
 
         drawFront();
-        drawDach();
+        drawRoof();
     }
     glPopMatrix();
 }
