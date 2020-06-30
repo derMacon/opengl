@@ -115,7 +115,7 @@ drawCube() {
 /**
  * Zeichnet das vordere Dreieck eines Bootes
  */
-void drawFront() {
+void drawBoatFront() {
     glPushMatrix();
     {
         glTranslatef(0.5f, -0.0001f, 0);
@@ -129,7 +129,7 @@ void drawFront() {
 /**
  * Zeichnet das "Dach" eines Bootes
  */
-void drawRoof() {
+void drawBoatRoof() {
     glColor3f(0.8f, 0.8f, 0.8f);
     setMaterialLightning(0.8f, 0.8f, 0.8f);
     glPushMatrix();
@@ -165,8 +165,49 @@ void drawBoat(GLboolean isFirst) {
         glScalef(0.35f, 0.1, 0.25f);
         drawCube();
 
-        drawFront();
-        drawRoof();
+        drawBoatFront();
+        drawBoatRoof();
     }
     glPopMatrix();
+}
+
+/**
+ * Zeichnet einen Zylinder
+ */
+//static void drawCylinder() {
+//}
+
+void drawLeuchtturmRoof() {
+    glColor3f(1, 0.1f, 0.1f);
+    setMaterialLightning(1, 0.1f, 0.1f);
+
+    glPushMatrix();
+    {
+        glTranslatef(0, 1, 0);
+        glScalef(1,1,1);
+        glRotatef(-90, 1, 0, 0);
+
+        GLUquadricObj *quadratic;
+        quadratic = gluNewQuadric();
+        gluCylinder(quadratic, 0.2f, 0.0f, 0.3f, 32, 32);
+    }
+    glPopMatrix();
+}
+
+void drawLighthouse() {
+    glColor3f(0.9f, 0.9f, 0.9f);
+    setMaterialLightning(0.9f, 0.9f, 0.9f);
+
+    glPushMatrix();
+    {
+        glTranslatef(0, 1, 0);
+        glScalef(1, 1, 1);
+        glRotatef(90.0f, 1.0f, 0, 0.0f);
+        GLUquadricObj *quadratic;
+        quadratic = gluNewQuadric();
+        gluCylinder(quadratic, 0.2f, 0.2f, 1.0f, 32, 32);
+    }
+    glPopMatrix();
+
+    drawLeuchtturmRoof();
 }

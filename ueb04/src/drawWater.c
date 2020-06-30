@@ -159,9 +159,7 @@ void drawSphere(int index) {
                     getState()->grid.vertices[index][Z]
             );
 
-
             changeColors(index, height);
-
 
             /* Quadric erzuegen */
             GLUquadricObj *qobj = gluNewQuadric();
@@ -186,6 +184,7 @@ void drawSphere(int index) {
 }
 
 void drawSpheres() {
+
     int length = getState()->grid.length;
 
     for (int i = 0; i < length * length; i++) {
