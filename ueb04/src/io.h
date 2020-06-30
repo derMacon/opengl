@@ -45,6 +45,7 @@ initAndStartIO(char *title, int width, int height);
 void handleMouseEvent(int x, int y, CGMouseEventType eventType,
                       int button, int state);
 
+
 float frameRate(void);
 
 /**

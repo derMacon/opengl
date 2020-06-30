@@ -12,23 +12,23 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${RuntimeOutputDir})
 
 # Compiler Flags
 if(MSVC)
-	# Setzten des Warnunglevels auf (Wall) unter Windows
-	# behandeln der Warnungen als Fehler (WX)
-	if(CMAKE_C_FLAGS MATCHES "/W[0-4]")
-		string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /WX")
-	else()
-		set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX")
-	endif()
+    # Setzten des Warnunglevels auf (Wall) unter Windows
+    # behandeln der Warnungen als Fehler (WX)
+    if(CMAKE_C_FLAGS MATCHES "/W[0-4]")
+        string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /WX")
+    else()
+        set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX")
+    endif()
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-	if(APPLE) 
-		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-long-long")
-	else()
-	  	# Setztes 
-	  	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-long-long -Werror")
-	endif()
+    if(APPLE)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-long-long")
+    else()
+        # Setztes
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-long-long -Werror")
+    endif()
 endif()
 
-# Optimierung 
+# Optimierung
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
@@ -41,45 +41,45 @@ find_package(OpenGL REQUIRED)
 
 #UNIX SYSTEM
 if(UNIX)
-	# Check ob glut installiert
-	find_package(GLUT REQUIRED)
+    # Check ob glut installiert
+    find_package(GLUT REQUIRED)
 
-	# setzten der Include Directories
+    # setzten der Include Directories
 
-	include_directories(${OPENGL_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)
-endif() 
+    include_directories(${OPENGL_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include)
+endif()
 
 #WINDOWS SYSTEM
 if(WIN32)
     if(MSVC)
-		# Setzten der Windows vorkompilierten Bibliotheken
-		if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")	#x32
-    			link_directories(${CMAKE_SOURCE_DIR}/../win/libs/)
-		endif()
-		add_compile_options(/wd4204)
+        # Setzten der Windows vorkompilierten Bibliotheken
+        if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")	#x32
+            link_directories(${CMAKE_SOURCE_DIR}/../win/libs/)
+        endif()
+        add_compile_options(/wd4204)
     endif()
 
-        include_directories(${OPENGL_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../win/include)
+    include_directories(${OPENGL_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../win/include)
 
-	# nicht ZERO_CHECK bauen
-	set(CMAKE_SUPPRESS_REGENERATION true)
-	# cmake Folder ALL_BUILD in Filter/Unterordner
-	set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+    # nicht ZERO_CHECK bauen
+    set(CMAKE_SUPPRESS_REGENERATION true)
+    # cmake Folder ALL_BUILD in Filter/Unterordner
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-	if(MSVC)
-		# ${PROJECT_NAME} als Startup-Projekt setzten
-		set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
-	endif()
+    if(MSVC)
+        # ${PROJECT_NAME} als Startup-Projekt setzten
+        set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+    endif()
 endif()
 
 # hinzufügen aller files im src Folder
 file(GLOB src_files
-	"src/*.h"
-	"src/*.c"
-)
+        "src/*.h"
+        "src/*.c"
+        )
 
-# erstellen des Targets ${PROJECT_NAME} 
-add_executable(${PROJECT_NAME} ${src_files} src/debug.h src/debug.c src/types.h src/variables.h src/stringOutput.c src/stringOutput.h src/drawWater.c src/drawWater.h)
+# erstellen des Targets ${PROJECT_NAME}
+add_executable(${PROJECT_NAME} ${src_files})
 
 #Visual Studio
 # erstellen der filter fuer die content-files
@@ -92,11 +92,11 @@ endforeach()
 
 # linken der Libraries
 if(WIN32)
-        target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS} ${OPENGL_gl_LIBRARY} glut32 freeglut_static freeglut)
+    target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS} ${OPENGL_gl_LIBRARY} glut32 freeglut_static freeglut)
 elseif(APPLE) #apple
-	target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS} ${OPENGL_gl_LIBRARY} m ${GLUT_LIBRARY})
+    target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS} ${OPENGL_gl_LIBRARY} m ${GLUT_LIBRARY})
 else()
-        target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS} ${OPENGL_gl_LIBRARY} m glut GLU)
+    target_link_libraries(${PROJECT_NAME} ${CMAKE_DL_LIBS} ${OPENGL_gl_LIBRARY} m glut GLU)
 endif()
 
 # C Standard
@@ -105,5 +105,5 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY C_STANDARD 99)
 #copy dll file
 #WINDOWS SYSTEM
 if(WIN32)
-file(COPY ${CMAKE_SOURCE_DIR}/../win/libs/glut32.dll DESTINATION ${RuntimeOutputDir})
+    file(COPY ${CMAKE_SOURCE_DIR}/../win/libs/glut32.dll DESTINATION ${RuntimeOutputDir})
 endif()

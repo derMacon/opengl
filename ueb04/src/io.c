@@ -17,6 +17,8 @@
 #include "math.h"
 #include "stringOutput.h"
 #include "drawWater.h"
+#include "texture.h"
+#include "debug.h"
 
 double idleCounter = 0;
 double lastCallTimeIdle = 0;
@@ -84,7 +86,6 @@ processHits(GLint numHits, GLuint buffer[], GLboolean isLeftMouse) {
                 } else {
                     getState()->grid.vertices[idx][Y] -= WATER_INCREASE_VALUE;
                 }
-                changeColors(idx, getState()->grid.vertices[idx][Y], GL_FALSE);
             }
             printf("Pick: %d", *ptrClosestNames);
         }
@@ -161,7 +162,7 @@ pick(int x, int y, GLboolean isLeftMouse) {
     setCamera();
 
     /* Spheren zeichnen */
-     drawPickingSpheres();
+    drawPickingSpheres();
 
     /* Zeichnen beenden und auswerten */
     glFlush();
@@ -509,6 +510,9 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case GLUT_KEY_F5:
                     toggle(FULLSCREEN);
                     break;
+                case GLUT_KEY_F6:
+                    toggle(TEXTURES);
+                    break;
             }
         }
             /* normale Taste gedrueckt */
@@ -724,14 +728,52 @@ initAndStartIO(char *title, int width, int height) {
     windowID = glutCreateWindow(title);
 
     if (windowID) {
+
+        /* DEBUG-Ausgabe */
+        printf(("Initialisiere Szene...\n"));
+
         if (initScene()) {
-            registerCallbacks();
-            glutMainLoop();
+            /* DEBUG-Ausgabe */
+            printf(("...fertig.\n\n"));
+
+            /* DEBUG-Ausgabe */
+            printf(("Lade und initialisiere Texturen...\n"));
+
+            if (initTextures()) {
+                /* DEBUG-Ausgabe */
+                printf(("...fertig.\n\n"));
+
+                /* DEBUG-Ausgabe */
+                printf(("Registriere Callbacks...\n"));
+
+                registerCallbacks();
+
+                /* DEBUG-Ausgabe */
+                printf(("...fertig.\n\n"));
+
+                /* DEBUG-Ausgabe */
+                printf(("Trete in Schleife der Ereignisbehandlung ein...\n"));
+
+                glutMainLoop();
+            } else {
+                /* DEBUG-Ausgabe */
+                printf(("...fehlgeschlagen.\n\n"));
+
+                glutDestroyWindow(windowID);
+                windowID = 0;
+            }
         } else {
+            /* DEBUG-Ausgabe */
+            printf(("...fehlgeschlagen.\n\n"));
+
             glutDestroyWindow(windowID);
             windowID = 0;
         }
+    } else {
+        /* DEBUG-Ausgabe */
+        printf(("...fehlgeschlagen.\n\n"));
     }
+
 
     return windowID;
 }

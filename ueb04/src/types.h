@@ -38,15 +38,16 @@ typedef struct {
     GLboolean showSpotLight;
     GLboolean showSpheres;
     GLboolean showNormals;
+    GLboolean showTextures;
     GLboolean showWireframe;
     GLboolean showFullScreen;
 } Settings;
 
 typedef enum {
-    X, Y, Z, R, G, B, NX, NY, NZ
+    X, Y, Z, R, G, B, NX, NY, NZ, TX, TY
 } vertexIndices;
 
-typedef GLdouble Vertex[9];
+typedef GLdouble Vertex[11];
 
 typedef struct {
     Vertex *vertices;
@@ -68,6 +69,7 @@ enum e_ToggleTypes {
     FULLSCREEN,
     NORMALS,
     WORLDLIGHT,
+    TEXTURES,
     SPOTLIGHT,
     SPHERES,
     WIREFRAME

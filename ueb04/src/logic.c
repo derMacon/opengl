@@ -20,6 +20,7 @@ State state;
 void initLevel() {
     CameraView or = EMPTY_CAMERA_ORIENTATION;
     state.gameStatus = GAME_RUNNING;
+    state.settings.showTextures = GL_TRUE;
     state.settings.showSpheres = GL_TRUE;
     state.camera = or;
     initGrid(&state.grid, INITIAL_GRID_SIZE);
@@ -156,6 +157,9 @@ void toggle(enum e_ToggleTypes type) {
             break;
         case NORMALS:
             getState()->settings.showNormals = !getState()->settings.showNormals;
+            break;
+        case TEXTURES:
+            getState()->settings.showTextures = !getState()->settings.showTextures;
             break;
         case WORLDLIGHT:
             getState()->settings.showWorldLight = !getState()->settings.showWorldLight;

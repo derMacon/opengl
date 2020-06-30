@@ -46,6 +46,8 @@ void initGrid(Grid *grid, GLuint size) {
             grid->vertices[idx][G] = 0.3f;
             grid->vertices[idx][B] = 0.8f;
 
+            grid->vertices[idx][TX] = (double) x / size - 1;
+            grid->vertices[idx][TY] = (double) y / size - 1;
 
             // todo wtf
             if (y < size - 1 && x < size - 1) {
@@ -66,6 +68,7 @@ void initGrid(Grid *grid, GLuint size) {
     glVertexPointer(3, GL_DOUBLE, sizeof(Vertex), &(grid->vertices[0][X]));
     glColorPointer(3, GL_DOUBLE, sizeof(Vertex), &(grid->vertices[0][R]));
     glNormalPointer(GL_DOUBLE, sizeof(Vertex), &(grid->vertices[0][NX]));
+    glTexCoordPointer(2, GL_DOUBLE, sizeof(Vertex), &(grid->vertices[0][TX]));
 }
 
 /**
@@ -79,7 +82,7 @@ void setMaterialLightning(float r, float g, float b) {
     float multiplier = 0.15f;
 
     float matDiffuse[] = {r, g, b, 1};
-    float matAmbient[] = {r * multiplier, g * multiplier, b * multiplier, 1.0f};
+    float matAmbient[] = {1 * multiplier, 1 * multiplier, 1 * multiplier, 1.0f};
     float matSpecular[] = {r, g, b, 1.0f};
     float matShininess = 20;
 
@@ -89,29 +92,28 @@ void setMaterialLightning(float r, float g, float b) {
     glMaterialfv(GL_FRONT, GL_SHININESS, &matShininess);
 }
 
-void setColors(int index, float r, float g, float b, GLboolean drawKugeln) {
-    if (drawKugeln) {
-        setMaterialLightning(r, g, b);
-    }
+void setColors(int index, float r, float g, float b) {
+    setMaterialLightning(r, g, b);
+    glColor3f(r, g, b);
     getState()->grid.vertices[index][R] = r;
     getState()->grid.vertices[index][G] = g;
     getState()->grid.vertices[index][B] = b;
 }
 
-void changeColors(int index, float height, GLboolean drawKugeln) {
+void changeColors(int index, float height) {
 
     if (height >= COLOR_HEIGHT_1 && height < COLOR_HEIGHT_2) {
         // Gold
-        setColors(index, 1.000f, 0.843f, 0.000f, drawKugeln);
+        setColors(index, 1.000f, 0.843f, 0.000f);
     } else if (height >= COLOR_HEIGHT_2 && height < COLOR_HEIGHT_3) {
         // Gruen
-        setColors(index, 0.180f, 0.545f, 0.341f, drawKugeln);
+        setColors(index, 0.180f, 0.545f, 0.341f);
     } else if (height >= COLOR_HEIGHT_3) {
         // Pink
-        setColors(index, 1.000f, 0.078f, 0.576f, drawKugeln);
+        setColors(index, 1.000f, 0.078f, 0.576f);
     } else if (height < COLOR_HEIGHT_1) {
         // Initial Blau
-        setColors(index, 0, 0.3f, 0.8f, drawKugeln);
+        setColors(index, 0, 0.3f, 0.8f);
     }
 }
 
@@ -174,7 +176,10 @@ void drawSphere(int index) {
                     height,
                     getState()->grid.vertices[index][Z]
             );
-            changeColors(index, height, GL_TRUE);
+
+            if (!getState()->settings.showTextures) {
+                changeColors(index, height);
+            }
 
             /* Quadric erzuegen */
             GLUquadricObj *qobj = gluNewQuadric();

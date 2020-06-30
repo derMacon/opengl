@@ -16,8 +16,7 @@
 #include "helper.h"
 #include "scene.h"
 #include "stringOutput.h"
-#include <math.h>
-
+#include "texture.h"
 GLuint g_renderObjects;
 
 
@@ -25,7 +24,7 @@ GLuint g_renderObjects;
  * Setzt die Weltlicht-Position
  */
 void setWorldLightPos() {
-    float pos[] = {0, 4, -8, 2};
+    float pos[] = {0, 7, 0, 2};
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
 }
 
@@ -35,11 +34,11 @@ void setWorldLightPos() {
 static void initWorldLight(void) {
 
     glEnable(GL_LIGHTING);
-    float value = 0.5f;
+    float value = 1;
 
     /* Globales Licht */
-    float globalAmbient[] = {0.3f, 0.2f, 0.4f, 1.0f};
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
+//    float globalAmbient[] = {0.7f, 0.7f, 0.7f, 1.0f};
+//    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 
     /* Weltlicht */
     float colorDiffus[] = {value, value, value, value};
@@ -85,14 +84,26 @@ void drawLevel() {
 
     glPushMatrix();
     {
+
         glScalef(5, 5, 5);
-        drawWater();
-        if (getState()->settings.showSpheres){
+        if (getState()->settings.showSpheres) {
             drawSpheres();
         }
+
+        glColor3f(1,1,1);
+
+        if (getState()->settings.showTextures) {
+            glEnable(GL_TEXTURE_2D);
+        } else {
+            glEnable(GL_COLOR_MATERIAL);
+        }
+
+        bindTexture(texWater);
+        drawWater();
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_COLOR_MATERIAL);
     }
     glPopMatrix();
-
 }
 
 /**
@@ -182,6 +193,7 @@ initScene(void) {
 
     /* Normalen */
     glEnable(GL_NORMALIZE);
+    glEnable(GL_TEXTURE_2D);
 
     initLight();
     initLevel();
@@ -195,12 +207,13 @@ initScene(void) {
 
     /* Polygonrueckseiten nicht anzeigen */
     glCullFace(GL_BACK);
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
-//    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glColorMaterial(GL_FRONT, GL_DIFFUSE);
 
     /* Alles in Ordnung? */
     return (GLGETERROR == GL_NO_ERROR);
