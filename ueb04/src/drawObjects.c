@@ -231,14 +231,13 @@ void drawIslandTop() {
         glBegin(GL_TRIANGLE_FAN);
         {
             glNormal3f(0.0f, 0.0f, 1.0f);
-            glTexCoord2f(0.5f, 0.5f);
             glVertex3f(0.0f, 0.0f, 0.0f);
 
             for (int i = 0; i <= parts; i++) {
                 float x = cos((i + 0.5f) * (TAU / parts));
                 float y = sinf((i + 0.5f) * (TAU / parts));
 
-                glTexCoord2f((x + 1.0f) / 2.0f, (y + 1.0f) / 2.0f);
+                glTexCoord2f((x + 1) / 2.0f, (y + 1) / 2);
                 glVertex3f(x, y, 0.0f);
             }
         }
@@ -258,8 +257,8 @@ void drawIslandBody() {
         for (int i = 0; i < parts; i++) {
             glPushMatrix();
             {
+                glTexCoord2f(0.5f, 0.5f);
                 float x = 2 * sinf((TAU / parts) / 2.0f);
-
                 glRotatef(i * (360.0f / parts), 0.0f, 1.0f, 0.0f);
                 glTranslatef(0.0f, 0, 0.96f);
                 glScalef(x + 0.01f, x * 2, x);
@@ -275,8 +274,15 @@ void drawIslandBody() {
  * Laesst die Insel zeichnen
  */
 void drawIsland() {
-    glColor3f(0.9f, 0.9f, 0.9f);
-    setMaterialLightning(0.9f, 0.9f, 0.9f);
-    drawIslandBody();
-    drawIslandTop();
+
+    glPushMatrix();
+    {
+        glColor3f(0.9f, 0.9f, 0.9f);
+        setMaterialLightning(0.9f, 0.9f, 0.9f);
+
+        bindTexture(texIsland);
+        drawIslandTop();
+        drawIslandBody();
+    }
+    glPopMatrix();
 }

@@ -127,10 +127,10 @@ void drawLevel() {
 
         drawLighthouse();
 
+        drawIsland();
         glDisable(GL_TEXTURE_2D);
         glDisable(GL_COLOR_MATERIAL);
 
-        drawIsland();
     }
     glPopMatrix();
 }

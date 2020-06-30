@@ -50,7 +50,7 @@ typedef struct {
 
 /* ---- Konstanten ---- */
 /** Anzahl der Texturen. */
-#define TEX_COUNT (2)
+#define TEX_COUNT (3)
 
 /* ---- Globale Daten ---- */
 static int g_texturingStatus = 1;
@@ -82,6 +82,7 @@ initTextureArray(void) {
 
     g_textures[texWater].filename = "../assets/textures/water.jpg";
     g_textures[texLightHouse].filename = "../assets/textures/lighthouse.jpg";
+    g_textures[texIsland].filename = "../assets/textures/island.jpg";
     return (GLGETERROR == GL_NO_ERROR);
 }
 

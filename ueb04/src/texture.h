@@ -17,7 +17,8 @@
 typedef enum
 {
     texWater,
-    texLightHouse
+    texLightHouse,
+    texIsland
 } TexName;
 
 /**
