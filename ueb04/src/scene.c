@@ -111,6 +111,7 @@ void drawLevel() {
         drawBoat(GL_TRUE);
         drawBoat(GL_FALSE);
 
+        drawLighthouse();
         glScalef(5, 5, 5);
         if (getState()->settings.showSpheres) {
             drawSpheres();
