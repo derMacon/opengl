@@ -17,6 +17,7 @@
 #include "scene.h"
 #include "stringOutput.h"
 #include "texture.h"
+
 GLuint g_renderObjects;
 
 
@@ -24,7 +25,7 @@ GLuint g_renderObjects;
  * Setzt die Weltlicht-Position
  */
 void setWorldLightPos() {
-    float pos[] = {0, 7, 0, 2};
+    float pos[] = {0, 3, 0, 1};
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
 }
 
@@ -90,7 +91,7 @@ void drawLevel() {
             drawSpheres();
         }
 
-        glColor3f(1,1,1);
+        glColor3f(1, 1, 1);
 
         if (getState()->settings.showTextures) {
             glEnable(GL_TEXTURE_2D);
@@ -171,6 +172,22 @@ void drawScene() {
     }
 }
 
+void initMatLighting() {
+    float r = 1;
+    float g = 1;
+    float b = 1;
+    float multiplier = 0.15f;
+    float matDiffuse[] = {r, g, b, 1};
+    float matAmbient[] = {1 * multiplier, 1 * multiplier, 1 * multiplier, 1.0f};
+    float matSpecular[] = {r, g, b, 1.0f};
+    float matShininess = 20;
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, &matShininess);
+}
+
 /**
  * Initialisierung der Szene (inbesondere der OpenGL-Statusmaschine).
  * Setzt Hintergrund- und Zeichenfarbe.
@@ -197,6 +214,8 @@ initScene(void) {
 
     initLight();
     initLevel();
+    initMatLighting();
+
 
     // Zeit fuer Random einbeziehen, um Zufallsfarben zu generieren
     // srand steht hier, weil es nur einmal aufgerufen werden darf

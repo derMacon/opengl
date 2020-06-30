@@ -92,12 +92,15 @@ void setMaterialLightning(float r, float g, float b) {
     glMaterialfv(GL_FRONT, GL_SHININESS, &matShininess);
 }
 
+
 void setColors(int index, float r, float g, float b) {
     setMaterialLightning(r, g, b);
     glColor3f(r, g, b);
-    getState()->grid.vertices[index][R] = r;
-    getState()->grid.vertices[index][G] = g;
-    getState()->grid.vertices[index][B] = b;
+    if (!getState()->settings.showTextures) {
+        getState()->grid.vertices[index][R] = r;
+        getState()->grid.vertices[index][G] = g;
+        getState()->grid.vertices[index][B] = b;
+    }
 }
 
 void changeColors(int index, float height) {
@@ -177,9 +180,9 @@ void drawSphere(int index) {
                     getState()->grid.vertices[index][Z]
             );
 
-            if (!getState()->settings.showTextures) {
-                changeColors(index, height);
-            }
+
+            changeColors(index, height);
+
 
             /* Quadric erzuegen */
             GLUquadricObj *qobj = gluNewQuadric();
