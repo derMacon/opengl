@@ -17,6 +17,7 @@
 #include "scene.h"
 #include "stringOutput.h"
 #include "texture.h"
+#include "drawObjects.h"
 
 GLuint g_renderObjects;
 
@@ -79,12 +80,36 @@ static void initLight(void) {
 }
 
 /**
+ * Setzt das Materiallicht fuer die gezeichnetetn Objekte
+ * @param r - rot
+ * @param g - gruen
+ * @param b - blau
+ */
+void setMaterialLightning(float r, float g, float b) {
+    /* Verringert die Saetting der Farben, sodass nur noch x% angzeigt werden */
+    float multiplier = 0.15f;
+
+    float matDiffuse[] = {r, g, b, 1};
+    float matAmbient[] = {1 * multiplier, 1 * multiplier, 1 * multiplier, 1.0f};
+    float matSpecular[] = {r, g, b, 1.0f};
+    float matShininess = 20;
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, &matShininess);
+}
+
+/**
  *  Zeichnen des gesamten Levels
  */
 void drawLevel() {
 
     glPushMatrix();
     {
+
+        drawBoat(GL_TRUE);
+        drawBoat(GL_FALSE);
 
         glScalef(5, 5, 5);
         if (getState()->settings.showSpheres) {

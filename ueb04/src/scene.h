@@ -13,6 +13,8 @@ void drawScene();
  */
 void initDisplayList();
 
+void setMaterialLightning(float r, float g, float b);
+
 /**
  * Initialisierung der Szene (inbesondere der OpenGL-Statusmaschine).
  * Setzt Hintergrund- und Zeichenfarbe.

@@ -91,10 +91,6 @@ void changeGridSize(GLboolean increase) {
     free(vel);
 }
 
-void getKreuzprodukt() {
-
-}
-
 /**
  * Berechnet die Normalen fuer das Wassergrid an Stelle idx
  * @param idx
