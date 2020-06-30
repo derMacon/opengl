@@ -25,4 +25,8 @@ void toggle(enum e_ToggleTypes type);
 
 void changeGridSize(GLboolean increase);
 
+int validateIndex(int i, GLboolean decrease);
+
+void calcNormals(int x, int y, int idx);
+
 #endif

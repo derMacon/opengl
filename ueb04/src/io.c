@@ -84,6 +84,7 @@ processHits(GLint numHits, GLuint buffer[], GLboolean isLeftMouse) {
                 } else {
                     getState()->grid.vertices[idx][Y] -= WATER_INCREASE_VALUE;
                 }
+                changeColors(idx, getState()->grid.vertices[idx][Y], GL_FALSE);
             }
             printf("Pick: %d", *ptrClosestNames);
         }
@@ -715,8 +716,6 @@ initAndStartIO(char *title, int width, int height) {
 
     //Tiefentest (in der init()) aktivieren
     glEnable(GL_DEPTH_TEST);
-
-
 
     // Auf dem aktuellen Bildschirm anzeigen
     glutInitWindowPosition(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);

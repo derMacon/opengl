@@ -8,6 +8,7 @@
 
 #include "variables.h"
 #include "types.h"
+#include <math.h>
 #include "drawWater.h"
 
 State state;
@@ -36,6 +37,16 @@ void freeWater() {
     free(getState()->grid.velocities);
     free(getState()->grid.vertices);
     free(getState()->grid.indices);
+}
+
+int validateIndex(int i, GLboolean decrease) {
+    if (decrease && i > 0) {
+        i--;
+    } else if (!decrease
+               && i < getState()->grid.length - 1) {
+        i++;
+    }
+    return i;
 }
 
 void changeGridSize(GLboolean increase) {
@@ -77,6 +88,61 @@ void changeGridSize(GLboolean increase) {
         }
     }
     free(vel);
+}
+
+void getKreuzprodukt() {
+
+}
+
+/**
+ * Berechnet die Normalen fuer das Wassergrid an Stelle idx
+ * @param idx
+ */
+void calcNormals(int x, int y, int idx) {
+    // Infos von
+    // https://stackoverflow.com/a/27690457
+
+    int length = getState()->grid.length - 1;
+
+    double leftX = (double) (x - 1) / (length);
+    double leftY = getState()->grid.vertices[getIndex(validateIndex(x, GL_TRUE), y, length)][Y];;
+    double leftZ = (double) (y) / (length);
+
+    double rightX = (double) (x + 1) / (length);
+    double rightY = getState()->grid.vertices[getIndex(validateIndex(x, GL_FALSE), y, length)][Y];
+    double rightZ = (double) (y) / (length - 1);
+
+    double upX = (double) (x) / (length);
+    double upY = getState()->grid.vertices[getIndex(x, validateIndex(x, GL_TRUE), length)][Y];;
+    double upZ = (double) (y - 1) / (length);
+
+    double downX = (double) (x) / (length);
+    double downY = getState()->grid.vertices[getIndex(x, validateIndex(x, GL_FALSE), length)][Y];
+    double downZ = (double) (y + 1) / (length);
+
+    double vAx = rightX - leftX;
+    double vAy = rightY - leftY;
+    double vAz = rightZ - leftZ;
+
+    double vBx = downX - upX;
+    double vBy = downY - upY;
+    double vBz = downZ - upZ;
+
+    // x = Ay * Bz - By * Az
+    // y = Az * Bx - Bz * Ax
+    // z = Ax * By - Bx * Ay
+    double nX = vAy * vBz - vBy * vAz;
+    double nY = vAz * vBx - vBz * vAx;
+    double nZ = vAx * vBy - vBx * vAy;
+
+    float len = sqrt(nX * nX + nY * nY + nZ * nZ);
+    nX /= len;
+    nY /= len;
+    nZ /= len;
+
+    getState()->grid.vertices[idx][NX] = nX;
+    getState()->grid.vertices[idx][NY] = nY;
+    getState()->grid.vertices[idx][NZ] = nZ;
 }
 
 /**

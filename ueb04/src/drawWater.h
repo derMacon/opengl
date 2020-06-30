@@ -11,4 +11,6 @@ int getIndex(int x, int y, int size);
 
 void simulateWater();
 
+void changeColors(int index, float height, GLboolean drawKugeln);
+
 #endif

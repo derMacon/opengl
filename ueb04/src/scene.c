@@ -25,7 +25,7 @@ GLuint g_renderObjects;
  * Setzt die Weltlicht-Position
  */
 void setWorldLightPos() {
-    float pos[] = {0, 4, 0, 2};
+    float pos[] = {0, 4, -8, 2};
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
 }
 
@@ -34,6 +34,7 @@ void setWorldLightPos() {
  */
 static void initWorldLight(void) {
 
+    glEnable(GL_LIGHTING);
     float value = 0.5f;
 
     /* Globales Licht */
@@ -183,7 +184,6 @@ initScene(void) {
     glEnable(GL_NORMALIZE);
 
     initLight();
-
     initLevel();
 
     // Zeit fuer Random einbeziehen, um Zufallsfarben zu generieren
@@ -199,7 +199,7 @@ initScene(void) {
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
-//    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 //    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
     /* Alles in Ordnung? */
