@@ -35,7 +35,7 @@ void setWorldLightPos() {
 static void initWorldLight(void) {
 
     glEnable(GL_LIGHTING);
-    float value = 1;
+    float value = 1.5f;
 
     /* Globales Licht */
 //    float globalAmbient[] = {0.7f, 0.7f, 0.7f, 1.0f};
