@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include "logic.h"
+#include "math.h"
 #include "scene.h"
 #include "drawWater.h"
 #include "texture.h"
@@ -185,7 +186,7 @@ void drawLeuchtturmRoof() {
     glPushMatrix();
     {
         glTranslatef(0, 1, 0);
-        glScalef(1,1,1);
+        glScalef(1, 1, 1);
         glRotatef(-90, 1, 0, 0);
 
         GLUquadricObj *quadratic;
@@ -212,4 +213,70 @@ void drawLighthouse() {
     glPopMatrix();
 
     drawLeuchtturmRoof();
+}
+
+/**
+ * Zeichnet das Oberteil der Insel
+ */
+void drawIslandTop() {
+    const float parts = 10;
+    glPushMatrix();
+    {
+        float scaleVal = 0.508f;
+        glScalef(scaleVal, scaleVal, scaleVal);
+        glTranslatef(0, 0.608f, 0);
+        glRotatef(-90.0f, 1.0f, 0.0f, 0);
+        glRotatef(18, 0, 0, 1);
+
+        glBegin(GL_TRIANGLE_FAN);
+        {
+            glNormal3f(0.0f, 0.0f, 1.0f);
+            glTexCoord2f(0.5f, 0.5f);
+            glVertex3f(0.0f, 0.0f, 0.0f);
+
+            for (int i = 0; i <= parts; i++) {
+                float x = cos((i + 0.5f) * (TAU / parts));
+                float y = sinf((i + 0.5f) * (TAU / parts));
+
+                glTexCoord2f((x + 1.0f) / 2.0f, (y + 1.0f) / 2.0f);
+                glVertex3f(x, y, 0.0f);
+            }
+        }
+        glEnd();
+    }
+    glPopMatrix();
+}
+
+/**
+ * Zeichnet den "Körper" der Insel
+ */
+void drawIslandBody() {
+    const int parts = 10;
+    glPushMatrix();
+    {
+        glScalef(0.5f, 0.5f, 0.5f);
+        for (int i = 0; i < parts; i++) {
+            glPushMatrix();
+            {
+                float x = 2 * sinf((TAU / parts) / 2.0f);
+
+                glRotatef(i * (360.0f / parts), 0.0f, 1.0f, 0.0f);
+                glTranslatef(0.0f, 0, 0.96f);
+                glScalef(x + 0.01f, x * 2, x);
+                drawSquare();
+            }
+            glPopMatrix();
+        }
+    }
+    glPopMatrix();
+}
+
+/**
+ * Laesst die Insel zeichnen
+ */
+void drawIsland() {
+    glColor3f(0.9f, 0.9f, 0.9f);
+    setMaterialLightning(0.9f, 0.9f, 0.9f);
+    drawIslandBody();
+    drawIslandTop();
 }

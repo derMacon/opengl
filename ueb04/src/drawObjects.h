@@ -4,4 +4,5 @@
 void drawBoat(GLboolean isFirst);
 void drawLighthouse();
 
+void drawIsland();
 #endif
