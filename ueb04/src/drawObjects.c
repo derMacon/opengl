@@ -14,6 +14,7 @@
 #include "scene.h"
 #include "drawWater.h"
 #include "texture.h"
+#include "debug.h"
 
 /**
  * Zeichnet ein 3D-Viereck
@@ -180,24 +181,29 @@ void drawBoat(GLboolean isFirst) {
 //}
 
 void drawLeuchtturmRoof() {
-    glColor3f(1, 0.1f, 0.1f);
-    setMaterialLightning(1, 0.1f, 0.1f);
+    glColor3f(0.5f, 0.1f, 0.1f);
+    setMaterialLightning(0.5f, 0.1f, 0.1f);
 
     glPushMatrix();
     {
         glTranslatef(0, 1, 0);
-        glScalef(1, 1, 1);
         glRotatef(-90, 1, 0, 0);
-
-        GLUquadricObj *quadratic;
-        quadratic = gluNewQuadric();
-        gluCylinder(quadratic, 0.2f, 0.0f, 0.3f, 32, 32);
+        GLUquadricObj *qobj = gluNewQuadric();
+        if (qobj != 0) {
+            gluQuadricNormals(qobj, GLU_SMOOTH);
+            qobj = gluNewQuadric();
+            gluCylinder(qobj, 0.2f, 0.0f, 0.3f, 32, 32);
+        } else {
+            CG_ERROR(("Could not create Quadric\n"));
+        }
     }
     glPopMatrix();
 }
 
+/* Loeschen des Quadrics nicht vergessen */
+
 void drawLighthouse() {
-    bindTexture(texLightHouse);
+
     glColor3f(0.9f, 0.9f, 0.9f);
     setMaterialLightning(0.9f, 0.9f, 0.9f);
 
@@ -206,13 +212,23 @@ void drawLighthouse() {
         glTranslatef(0, 1, 0);
         glScalef(1, 1, 1);
         glRotatef(90.0f, 1.0f, 0, 0.0f);
-        GLUquadricObj *quadratic;
-        quadratic = gluNewQuadric();
-        gluCylinder(quadratic, 0.2f, 0.2f, 1.0f, 32, 32);
+        /* Quadric erzuegen */
+        GLUquadricObj *qobj = gluNewQuadric();
+        if (qobj != 0) {
+            gluQuadricNormals(qobj, GLU_SMOOTH);
+            gluQuadricTexture(qobj, GL_TRUE);
+            bindTexture(texLightHouse);
+            gluCylinder(qobj, 0.2f, 0.2f, 1.0f, 32, 32);
+            gluDeleteQuadric(qobj);
+        } else {
+            CG_ERROR(("Could not create Quadric\n"));
+        }
     }
+
     glPopMatrix();
 
     drawLeuchtturmRoof();
+
 }
 
 /**
