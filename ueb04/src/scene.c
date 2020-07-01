@@ -147,8 +147,7 @@ void drawGame() {
         /* Taschenlampe setzen */
         if (getState()->settings.showSpotLight) {
             /* Taschenlampe setzen */
-            float spotLightPos[] = {0.2f, 1, 0, 1};
-
+            float spotLightPos[] = {0, 1.7f, 0, 1};
 
             float spotlightDirection[] = {getState()->spotlight.posX, -0.8f, getState()->spotlight.posY};
 
