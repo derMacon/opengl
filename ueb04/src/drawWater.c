@@ -73,9 +73,15 @@ void initGrid(Grid *grid, GLuint size) {
     glTexCoordPointer(2, GL_DOUBLE, sizeof(Vertex), &(grid->vertices[0][TX]));
 }
 
-void setColors(int index, float r, float g, float b) {
-    setMaterialLightning(r, g, b);
-    glColor3f(r, g, b);
+void setColors(int index, float r, float g, float b, GLboolean colorBalls) {
+    if (colorBalls) {
+        setMaterialLightning(1, 1, 1);
+        glColor3f(1, 1, 1);
+    } else {
+        setMaterialLightning(r, g, b);
+        glColor3f(r, g, b);
+    }
+
     if (!getState()->settings.showTextures) {
         getState()->grid.vertices[index][R] = r;
         getState()->grid.vertices[index][G] = g;
@@ -87,16 +93,16 @@ void changeColors(int index, float height) {
 
     if (height >= COLOR_HEIGHT_1 && height < COLOR_HEIGHT_2) {
         // Gold
-        setColors(index, 1.000f, 0.843f, 0.000f);
+        setColors(index, 1.000f, 0.843f, 0.000f, GL_FALSE);
     } else if (height >= COLOR_HEIGHT_2 && height < COLOR_HEIGHT_3) {
         // Gruen
-        setColors(index, 0.180f, 0.545f, 0.341f);
+        setColors(index, 0.180f, 0.545f, 0.341f, GL_FALSE);
     } else if (height >= COLOR_HEIGHT_3) {
         // Pink
-        setColors(index, 1.000f, 0.078f, 0.576f);
+        setColors(index, 1.000f, 0.078f, 0.576f, GL_FALSE);
     } else if (height < COLOR_HEIGHT_1) {
         // Initial Blau
-        setColors(index, 0, 0.3f, 0.8f);
+        setColors(index, 0, 0.3f, 0.8f, GL_TRUE);
     }
 }
 
