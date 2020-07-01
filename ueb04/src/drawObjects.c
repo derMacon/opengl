@@ -235,26 +235,29 @@ void drawLighthouse() {
  * Zeichnet das Oberteil der Insel
  */
 void drawIslandTop() {
-    const float parts = 10;
     glPushMatrix();
     {
-        float scaleVal = 0.508f;
-        glScalef(scaleVal, scaleVal, scaleVal);
-        glTranslatef(0, 0.608f, 0);
-        glRotatef(-90.0f, 1.0f, 0.0f, 0);
-        glRotatef(18, 0, 0, 1);
+
+        glTranslatef(0, 0.3, 0);
+        glColor3f(0.3, 0, 0);
+        glRotatef(10, 0, 1, 0);
+        float size = 0.5f;
+        int count = 18;
+        float a = 0.0f;
+
 
         glBegin(GL_TRIANGLE_FAN);
         {
-            glNormal3f(0.0f, 0.0f, 1.0f);
             glVertex3f(0.0f, 0.0f, 0.0f);
+            for (int i = 0; i <= count; i++) {
+                //Naechsten Vertex berechnen
+                double x = size * sin(a);
+                double y = size * cos(a);
 
-            for (int i = 0; i <= parts; i++) {
-                float x = cos((i + 0.5f) * (TAU / parts));
-                float y = sinf((i + 0.5f) * (TAU / parts));
-
-                glTexCoord2f((x + 1) / 2.0f, (y + 1) / 2);
-                glVertex3f(x, y, 0.0f);
+                glVertex3f(x, 0, y);
+                glTexCoord2f(y, 0);
+                glNormal3f(0, 1, 0);
+                a += M_PI * 2 / (float) count;
             }
         }
         glEnd();
@@ -266,22 +269,24 @@ void drawIslandTop() {
  * Zeichnet den "Körper" der Insel
  */
 void drawIslandBody() {
-    const int parts = 10;
     glPushMatrix();
     {
-        glScalef(0.5f, 0.5f, 0.5f);
-        for (int i = 0; i < parts; i++) {
-            glPushMatrix();
-            {
-                glTexCoord2f(0.5f, 0.5f);
-                float x = 2 * sinf((TAU / parts) / 2.0f);
-                glRotatef(i * (360.0f / parts), 0.0f, 1.0f, 0.0f);
-                glTranslatef(0.0f, 0, 0.96f);
-                glScalef(x + 0.01f, x * 2, x);
-                drawSquare();
-            }
-            glPopMatrix();
+        glScalef(1, 0.3, 1);
+
+        float size = 0.5f;
+        float count = 18;
+        float a = 0.0f;
+
+        glBegin(GL_TRIANGLE_STRIP);
+        for (int i = 0; i <= count; i++) {
+            double x = size * cos(a);
+            double y = size * sin(a);
+
+            glVertex3f(x, -1, y);
+            glVertex3f(x, 1, y);
+            a += M_PI * 2 / (float) count;
         }
+        glEnd();
     }
     glPopMatrix();
 }
