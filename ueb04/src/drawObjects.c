@@ -377,11 +377,14 @@ void changeColors(int index, float height) {
     }
 }
 
+
 /**
  * Zeichnet eine Sphere
  * @param index
  */
 void drawSphere(int index) {
+
+
     glPushName(index);
     {
         glPushMatrix();
@@ -393,6 +396,17 @@ void drawSphere(int index) {
                     getState()->grid.vertices[index][Z]
             );
 
+            /* Normalen zeichnen */
+            if (getState()->settings.showNormals) {
+                glBegin(GL_LINES);
+                {
+                    glVertex3f(0, 0,
+                               0);
+                    glVertex3f(getState()->grid.vertices[index][NX] * 0.1f, 0.1,
+                               getState()->grid.vertices[index][NZ] * 0.1f);
+                }
+                glEnd();
+            }
             changeColors(index, height);
 
             /* Quadric erzuegen */
