@@ -1,8 +1,6 @@
 #include "drawObjects.h"
 #include "io.h"
 #include "types.h"
-#include <GL/glu.h>
-#include <GL/gl.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -10,6 +8,10 @@
 
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
+#else
+
+#include <GL/glu.h>
+
 #endif
 
 #include "logic.h"
@@ -17,8 +19,6 @@
 #include "scene.h"
 #include "texture.h"
 #include "debug.h"
-#include "drawWater.h"
-
 
 /**
  * Zeichnet ein 3D-Viereck
@@ -379,6 +379,7 @@ void changeColors(int index, float height) {
         setColors(index, 0, 0.3f, 0.8f, GL_TRUE);
     }
 }
+
 /**
  * Zeichnet eine Sphere
  * @param index
