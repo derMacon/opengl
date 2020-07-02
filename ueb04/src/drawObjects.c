@@ -384,7 +384,6 @@ void changeColors(int index, float height) {
  */
 void drawSphere(int index) {
 
-
     glPushName(index);
     {
         glPushMatrix();
@@ -450,6 +449,8 @@ void drawSpheres() {
 void drawPickingSpheres() {
     glPushMatrix();
     {
+        drawBoat(GL_TRUE);
+        drawBoat(GL_FALSE);
         glScalef(5, 5, 5);
         drawSpheres();
     }

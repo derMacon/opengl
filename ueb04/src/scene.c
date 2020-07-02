@@ -2,7 +2,9 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+
 #include <GL/glut.h>
+
 #endif
 
 #include <time.h>
@@ -100,8 +102,18 @@ void drawLevel() {
 
     glPushMatrix();
     {
-        drawBoat(GL_TRUE);
-        drawBoat(GL_FALSE);
+
+        glPushName(getState()->grid.length * getState()->grid.length);
+        {
+            drawBoat(GL_TRUE);
+        }
+        glPopName();
+
+        glPushName(getState()->grid.length * getState()->grid.length + 1);
+        {
+            drawBoat(GL_FALSE);
+        }
+        glPopName();
 
         glPushMatrix();
         {
