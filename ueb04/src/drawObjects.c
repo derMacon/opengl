@@ -8,11 +8,9 @@
 #include <OpenGL/glu.h>
 #endif
 
-#include <stdio.h>
 #include "logic.h"
 #include "math.h"
 #include "scene.h"
-#include "drawWater.h"
 #include "texture.h"
 #include "debug.h"
 
@@ -151,10 +149,18 @@ void drawBoatRoof() {
 void drawBoat(GLboolean isFirst) {
     glColor3f(0.600f, 0.240f, 0.100f);
     setMaterialLightning(0.600f, 0.240f, 0.100f);
-    int idx = isFirst ? 0 : getState()->grid.length * getState()->grid.length - 1;
-    float x = isFirst ? 2.2f : -2.3f;
+
+    int idx = isFirst
+              ? 0
+
+              : getState()->grid.length * getState()->grid.length - 1;
+    float x = isFirst
+              ? 2.2f
+              : -2.3f;
     double y = 0.05f + getState()->grid.vertices[idx][Y];
-    float z = isFirst ? 2.25f : -2.3f;
+    float z = isFirst
+              ? 2.25f
+              : -2.3f;
 
     glPushMatrix();
     {
@@ -175,11 +181,8 @@ void drawBoat(GLboolean isFirst) {
 }
 
 /**
- * Zeichnet einen Zylinder
+ * Zeichnet das "Dach" des Leuchtturmes
  */
-//static void drawCylinder() {
-//}
-
 void drawLighthouseRoof() {
     glColor3f(0.5f, 0.1f, 0.1f);
     setMaterialLightning(0.5f, 0.1f, 0.1f);
@@ -201,8 +204,9 @@ void drawLighthouseRoof() {
     glPopMatrix();
 }
 
-/* Loeschen des Quadrics nicht vergessen */
-
+/**
+ * Zeichnet den Leuchtturm
+ */
 void drawLighthouse() {
 
     glColor3f(0.9f, 0.9f, 0.9f);
@@ -213,6 +217,7 @@ void drawLighthouse() {
         glTranslatef(0, 1, 0);
         glScalef(1, 1, 1);
         glRotatef(90.0f, 1.0f, 0, 0.0f);
+
         /* Quadric erzuegen */
         GLUquadricObj *qobj = gluNewQuadric();
         if (qobj != 0) {
@@ -232,7 +237,9 @@ void drawLighthouse() {
 
 /**
  * Zeichnet die Insel
- * @param isBody
+ * - Reduziert Codeverdopplung
+ * @param isBody wenn True, werden die Werte fuer den
+ * Inselboden angepasst
  */
 void islandDrawer(GLboolean isBody) {
 
@@ -247,7 +254,7 @@ void islandDrawer(GLboolean isBody) {
             glTexCoord2f(0, z);
             glVertex3f(x, -1, z);
 
-            glTexCoord2f(z , x);
+            glTexCoord2f(z, x);
             glVertex3f(x, 1, z);
         } else {
             glTexCoord2f(z, x);
@@ -264,7 +271,6 @@ void islandDrawer(GLboolean isBody) {
 void drawIslandTop() {
     glPushMatrix();
     {
-
         glTranslatef(0, 0.3, 0);
         glColor3f(0.3, 0, 0);
         glRotatef(10, 0, 1, 0);
@@ -287,7 +293,6 @@ void drawIslandTop() {
     }
     glPopMatrix();
 }
-
 
 /**
  * Zeichnet den "Körper" der Insel

@@ -16,15 +16,28 @@
 
 #endif
 
+/**
+ * Gibt den Index eines Vertex wider an den Stellen:
+ * @param x - X-Wert
+ * @param y - Y-Wert
+ * @param size - Groeße des Vertex-Arrays
+ * @return - Index an o.g. Stelle
+ */
 int getIndex(int x, int y, int size) {
     return (y * size) + x;
 }
 
+/**
+ * Initialisiert das Wasssergrid
+ * @param grid - Neues Grid
+ * @param size - Diese Groesse sopll es haben
+ */
 void initGrid(Grid *grid, GLuint size) {
 
     GLuint gridSize = size * size;
     grid->length = size;
 
+    // Speicher reservieren
     grid->vertices = malloc(gridSize * sizeof(Vertex));
     grid->velocities = malloc(gridSize * sizeof(double));
     grid->indices = malloc(gridSize * 6 * sizeof(GLuint));
@@ -51,9 +64,12 @@ void initGrid(Grid *grid, GLuint size) {
             grid->vertices[idx][TX] = (double) x / size - 1;
             grid->vertices[idx][TY] = (double) y / size - 1;
 
-            // todo wtf
-            if (y < size - 1 && x < size - 1) {
-                GLuint iIdx = (y * (size - 1) + x) * 6;
+            // Indexarray
+            int max = size - 1;
+            int noOfIndex = 6;
+            if (x < max && y < max ) {
+                GLuint iIdx = (y * (max) + x) * noOfIndex;
+
                 grid->indices[iIdx] = getIndex(x, y, size);
                 grid->indices[iIdx + 1] = getIndex(x, y + 1, size);
                 grid->indices[iIdx + 2] = getIndex(x + 1, y, size);
@@ -67,12 +83,21 @@ void initGrid(Grid *grid, GLuint size) {
 
     getState()->grid = *grid;
 
+    // Pointer setzen
     glVertexPointer(3, GL_DOUBLE, sizeof(Vertex), &(grid->vertices[0][X]));
     glColorPointer(3, GL_DOUBLE, sizeof(Vertex), &(grid->vertices[0][R]));
     glNormalPointer(GL_DOUBLE, sizeof(Vertex), &(grid->vertices[0][NX]));
     glTexCoordPointer(2, GL_DOUBLE, sizeof(Vertex), &(grid->vertices[0][TX]));
 }
 
+/**
+ * Hilfsfunktion, um die Farben der Baelle und des Wasser zu setzen
+ * @param index - an der Stelle
+ * @param r - R Wert
+ * @param g - G Wert
+ * @param b - B Wert
+ * @param colorBalls - True, wenn die Baelle gefaerbt werden sollen
+ */
 void setColors(int index, float r, float g, float b, GLboolean colorBalls) {
     if (colorBalls) {
         setMaterialLightning(1, 1, 1);
@@ -89,6 +114,11 @@ void setColors(int index, float r, float g, float b, GLboolean colorBalls) {
     }
 }
 
+/**
+ * Faerbt die Kugeln / Wasser anhand der Hoehe
+ * @param index - Richtige Kugel awehlen
+ * @param height - Die neue Hoehe, die die Kugel hat
+ */
 void changeColors(int index, float height) {
 
     if (height >= COLOR_HEIGHT_1 && height < COLOR_HEIGHT_2) {
@@ -106,11 +136,17 @@ void changeColors(int index, float height) {
     }
 }
 
+/**
+ * Laesst das Wasser bewegen
+ */
 void simulateWater() {
-    // TODO: Werte anpassen
-    const float speed = 0.1f; // auch speed
-    float pillarSize = 1.5f; // speed xD
-    float time = 0.99f; // force xD
+
+    //Ausbreitungsgschwindigkeit
+    const float c = 0.1f;
+    // Saeulenbreite
+    float h = 1.5f;
+    // vergangene Zeit
+    float t = 0.99f;
 
     int len = getState()->grid.length;
     double *vals = malloc(sizeof(double) * (len * len));
@@ -119,20 +155,23 @@ void simulateWater() {
         for (int x = 0; x < len; x++) {
 
             int index = getIndex(x, y, len);
-            float force = (speed * speed) * (
+            float force = (c * c) * (
                     getState()->grid.vertices[getIndex(validateIndex(x, GL_FALSE), y, len)][Y] +
                     getState()->grid.vertices[getIndex(validateIndex(x, GL_TRUE), y, len)][Y] +
                     getState()->grid.vertices[getIndex(x, validateIndex(y, GL_FALSE), len)][Y] +
                     getState()->grid.vertices[getIndex(x, validateIndex(y, GL_TRUE), len)][Y] -
                     4 * getState()->grid.vertices[getIndex(x, y, len)][Y])
-                          / (pillarSize * pillarSize);
+                          / (h * h);
 
+            // Lokale Kopie, da wir rechnen
+            // Hoehe und Geschwindigkeit
             getState()->grid.velocities[index] =
-                    (getState()->grid.velocities[getIndex(x, y, len)] + force) * time;
-            vals[index] = (getState()->grid.vertices[index][Y] + getState()->grid.velocities[index]) * time;
+                    (getState()->grid.velocities[getIndex(x, y, len)] + force) * t;
+            vals[index] = (getState()->grid.vertices[index][Y] + getState()->grid.velocities[index]) * t;
         }
     }
 
+    // Lokale Kopie wieder setzen
     for (int y = 0; y < len; y++) {
         for (int x = 0; x < len; x++) {
             int idx = getIndex(x, y, len);
@@ -144,6 +183,9 @@ void simulateWater() {
     free(vals);
 }
 
+/**
+ * Laesst das Wasser zeichnen
+ */
 void drawWater() {
     unsigned int length = getState()->grid.length - 1;
 
@@ -151,10 +193,13 @@ void drawWater() {
     glDrawElements(GL_TRIANGLES,             // Primitivtyp
                    length * length * 6, // Anzahl Indizes zum Zeichnen
                    GL_UNSIGNED_INT,             // Typ der Indizes
-                   getState()->grid.indices);   // Index Arrayq
+                   getState()->grid.indices);   // Index Array
 }
 
-
+/**
+ * Zeichnet eine Sphere
+ * @param index
+ */
 void drawSphere(int index) {
     glPushName(index);
     {
@@ -191,6 +236,9 @@ void drawSphere(int index) {
     glPopName();
 }
 
+/**
+ * Laesst alle Spheren zeichnen
+ */
 void drawSpheres() {
 
     int length = getState()->grid.length;
@@ -200,6 +248,10 @@ void drawSpheres() {
     }
 }
 
+/**
+ * Zeichnet die Spheren, die gepickt werden koennen
+ * (sind theoretisch unsichtbar und dienen nur zum Picken)
+ */
 void drawPickingSpheres() {
     glPushMatrix();
     {
