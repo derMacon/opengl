@@ -137,7 +137,7 @@ void drawBoatRoof() {
     setMaterialLightning(0.8f, 0.8f, 0.8f);
     glPushMatrix();
     {
-        glTranslatef(-0.1f, 1.3f, 0);
+        glTranslatef(-0.1f, 1.2f, 0);
         glScalef(0.7f, 1.2f, 0.8);
         drawCube();
     }
@@ -151,10 +151,10 @@ void drawBoatRoof() {
 void drawBoat(GLboolean isFirst) {
     glColor3f(0.600f, 0.240f, 0.100f);
     setMaterialLightning(0.600f, 0.240f, 0.100f);
-    int idx = isFirst ? 32 : 77;
-    float x = isFirst ? 1.7f : -1.7f;
+    int idx = isFirst ? 0 : getState()->grid.length * getState()->grid.length -1;
+    float x = isFirst ? 2.2f : -2.3f;
     double y = 0.05f + getState()->grid.vertices[idx][Y];
-    float z = isFirst ? 1 : -1.7f;
+    float z = isFirst ? 2.25f : -2.3f;
 
     glPushMatrix();
     {
