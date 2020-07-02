@@ -6,7 +6,9 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+
 #include <GL/glut.h>
+
 #endif
 
 #include "logic.h"
@@ -252,6 +254,7 @@ void islandDrawer(GLboolean isBody) {
         double z = size * sinf(a);
 
         if (isBody) {
+            glNormal3f(x, 0.0f, 0);
             glTexCoord2f(0, z);
             glVertex3f(x, -1, z);
 
@@ -273,7 +276,6 @@ void drawIslandTop() {
     glPushMatrix();
     {
         glTranslatef(0, 0.3, 0);
-        glColor3f(0.3, 0, 0);
         glRotatef(10, 0, 1, 0);
 
         if (getState()->settings.showNormals) {

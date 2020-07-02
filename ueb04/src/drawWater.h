@@ -4,7 +4,7 @@
 /**
  * Initialisiert das Wasssergrid
  * @param grid - Neues Grid
- * @param size - Diese Groesse sopll es haben
+ * @param size - Diese Groesse soll es haben
  */
 void initGrid(Grid *grid, GLuint size);
 
