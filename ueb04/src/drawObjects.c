@@ -1,3 +1,7 @@
+#include "drawObjects.h"
+#include "io.h"
+#include "types.h"
+#include <GL/glu.h>
 #include <GL/gl.h>
 
 #ifdef WIN32
@@ -13,6 +17,8 @@
 #include "scene.h"
 #include "texture.h"
 #include "debug.h"
+#include "drawWater.h"
+
 
 /**
  * Zeichnet ein 3D-Viereck
@@ -324,6 +330,116 @@ void drawIsland() {
         bindTexture(texIsland);
         drawIslandTop();
         drawIslandBody();
+    }
+    glPopMatrix();
+}
+
+/**
+ * Hilfsfunktion, um die Farben der Baelle und des Wasser zu setzen
+ * @param index - an der Stelle
+ * @param r - R Wert
+ * @param g - G Wert
+ * @param b - B Wert
+ * @param colorBalls - True, wenn die Baelle gefaerbt werden sollen
+ */
+void setColors(int index, float r, float g, float b, GLboolean colorBalls) {
+    if (colorBalls) {
+        setMaterialLightning(1, 1, 1);
+        glColor3f(1, 1, 1);
+    } else {
+        setMaterialLightning(r, g, b);
+        glColor3f(r, g, b);
+    }
+
+    if (!getState()->settings.showTextures) {
+        getState()->grid.vertices[index][R] = r;
+        getState()->grid.vertices[index][G] = g;
+        getState()->grid.vertices[index][B] = b;
+    }
+}
+
+/**
+ * Faerbt die Kugeln / Wasser anhand der Hoehe
+ * @param index - Richtige Kugel awehlen
+ * @param height - Die neue Hoehe, die die Kugel hat
+ */
+void changeColors(int index, float height) {
+
+    if (height >= COLOR_HEIGHT_1 && height < COLOR_HEIGHT_2) {
+        // Gold
+        setColors(index, 1.000f, 0.843f, 0.000f, GL_FALSE);
+    } else if (height >= COLOR_HEIGHT_2 && height < COLOR_HEIGHT_3) {
+        // Gruen
+        setColors(index, 0.180f, 0.545f, 0.341f, GL_FALSE);
+    } else if (height >= COLOR_HEIGHT_3) {
+        // Pink
+        setColors(index, 1.000f, 0.078f, 0.576f, GL_FALSE);
+    } else if (height < COLOR_HEIGHT_1) {
+        // Initial Blau
+        setColors(index, 0, 0.3f, 0.8f, GL_TRUE);
+    }
+}
+/**
+ * Zeichnet eine Sphere
+ * @param index
+ */
+void drawSphere(int index) {
+    glPushName(index);
+    {
+        glPushMatrix();
+        {
+            float height = getState()->grid.vertices[index][Y];
+            glTranslatef(
+                    getState()->grid.vertices[index][X],
+                    height,
+                    getState()->grid.vertices[index][Z]
+            );
+
+            changeColors(index, height);
+
+            /* Quadric erzuegen */
+            GLUquadricObj *qobj = gluNewQuadric();
+
+            if (qobj != 0) {
+                /* Normalen fuer Quadrics berechnen lassen */
+                gluQuadricNormals(qobj, GLU_SMOOTH);
+
+                /* Kugel zeichen */
+                float radius = 1.0f / (getState()->grid.length * (float) 5);
+                gluSphere(qobj, radius, 20, 20);
+
+                /* Loeschen des Quadrics nicht vergessen */
+                gluDeleteQuadric(qobj);
+            } else {
+                CG_ERROR (("Could not create Quadric\n"));
+            }
+        }
+        glPopMatrix();
+    }
+    glPopName();
+}
+
+/**
+ * Laesst alle Spheren zeichnen
+ */
+void drawSpheres() {
+
+    int length = getState()->grid.length;
+
+    for (int i = 0; i < length * length; i++) {
+        drawSphere(i);
+    }
+}
+
+/**
+ * Zeichnet die Spheren, die gepickt werden koennen
+ * (sind theoretisch unsichtbar und dienen nur zum Picken)
+ */
+void drawPickingSpheres() {
+    glPushMatrix();
+    {
+        glScalef(5, 5, 5);
+        drawSpheres();
     }
     glPopMatrix();
 }

@@ -18,7 +18,7 @@
 #include "stringOutput.h"
 #include "drawWater.h"
 #include "texture.h"
-#include "debug.h"
+#include "drawObjects.h"
 
 double idleCounter = 0;
 double lastCallTimeIdle = 0;
