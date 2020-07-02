@@ -231,6 +231,31 @@ void drawLighthouse() {
 }
 
 /**
+ * Zeichnet die Insel
+ * @param isBody
+ */
+void islandDrawer(GLboolean isBody) {
+
+    int count = 18;
+    float size = 0.5f;
+    float a = 0;
+    for (int i = 0; i <= count; i++) {
+        double x = size * cosf(a);
+        double z = size * sinf(a);
+
+        if (isBody) {
+            glVertex3f(x, -1, z);
+            glVertex3f(x, 1, z);
+        } else {
+            glTexCoord2f(z, x);
+            glVertex3f(z, 0, x);
+        }
+
+        a += M_PI * 2 / (float) count;
+    }
+}
+
+/**
  * Zeichnet das Oberteil der Insel
  */
 void drawIslandTop() {
@@ -240,9 +265,6 @@ void drawIslandTop() {
         glTranslatef(0, 0.3, 0);
         glColor3f(0.3, 0, 0);
         glRotatef(10, 0, 1, 0);
-        float size = 0.5f;
-        int count = 18;
-        float a = 0.0f;
 
         if (getState()->settings.showNormals) {
             glBegin(GL_LINES);
@@ -256,21 +278,13 @@ void drawIslandTop() {
         glBegin(GL_POLYGON);
         {
             glNormal3f(0.0f, 1.0f, 0.0f);
-            //glTexCoord2f(0.5f, 0.5f);
-            // glVertex3f(0.0f, 0.0f, 0.0f);
-            for (int i = 0; i <= count; i++) {
-                double x = size * sin(a);
-                double y = size * cos(a);
-
-                glTexCoord2f(x, y);
-                glVertex3f(x, 0, y);
-                a += M_PI * 2 / (float) count;
-            }
+            islandDrawer(GL_FALSE);
         }
         glEnd();
     }
     glPopMatrix();
 }
+
 
 /**
  * Zeichnet den "Körper" der Insel
@@ -279,21 +293,9 @@ void drawIslandBody() {
     glPushMatrix();
     {
         glScalef(1, 0.3, 1);
-
-        float size = 0.5f;
-        float count = 18;
-        float a = 0.0f;
-
         glBegin(GL_TRIANGLE_STRIP);
         {
-            for (int i = 0; i <= count; i++) {
-                double x = size * cos(a);
-                double y = size * sin(a);
-
-                glVertex3f(x, -1, y);
-                glVertex3f(x, 1, y);
-                a += M_PI * 2 / (float) count;
-            }
+            islandDrawer(GL_TRUE);
         }
         glEnd();
     }
