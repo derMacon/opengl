@@ -193,6 +193,7 @@ void drawLeuchtturmRoof() {
             gluQuadricNormals(qobj, GLU_SMOOTH);
             qobj = gluNewQuadric();
             gluCylinder(qobj, 0.2f, 0.0f, 0.3f, 32, 32);
+            gluDeleteQuadric(qobj);
         } else {
             CG_ERROR(("Could not create Quadric\n"));
         }
