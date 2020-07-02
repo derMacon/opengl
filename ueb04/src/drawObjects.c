@@ -244,7 +244,10 @@ void islandDrawer(GLboolean isBody) {
         double z = size * sinf(a);
 
         if (isBody) {
+            glTexCoord2f(0, z);
             glVertex3f(x, -1, z);
+
+            glTexCoord2f(z , x);
             glVertex3f(x, 1, z);
         } else {
             glTexCoord2f(z, x);

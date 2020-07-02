@@ -15,7 +15,7 @@
 #define COLOR_HEIGHT_3 0.5f
 
 /* Kamera */
-#define CAMERA_MIN_RADIUS 1
+#define CAMERA_MIN_RADIUS 4
 #define CAMERA_MAX_RADIUS  10
 #define EMPTY_CAMERA_ORIENTATION {2.5f, 45.0f, -90}
 
