@@ -521,24 +521,10 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
     /* Taste gedrueckt */
     if (status == GLUT_DOWN) {
 
-        //Status s = getState()->gameStatus;
-
         /* Spezialtaste gedrueckt */
         if (isSpecialKey) {
             switch (key) {
                 /* Bewegung des Rechtecks in entsprechende Richtung beenden */
-                case GLUT_KEY_LEFT:
-
-                    break;
-                case GLUT_KEY_RIGHT:
-
-                    break;
-                case GLUT_KEY_UP:
-
-                    break;
-                case GLUT_KEY_DOWN:
-
-                    break;
                 case GLUT_KEY_F1:
                     toggle(WIREFRAME);
                     break;
@@ -590,26 +576,6 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case 'Q':
                 case ESC:
                     exit(0);
-            }
-        }
-    } else if (status == GLUT_UP) {
-
-        /* Spezialtaste gedrueckt */
-        if (isSpecialKey) {
-            switch (key) {
-                /* Bewegung des Rechtecks in entsprechende Richtung beenden */
-                case GLUT_KEY_LEFT:
-
-                    break;
-                case GLUT_KEY_RIGHT:
-
-                    break;
-                case GLUT_KEY_UP:
-
-                    break;
-                case GLUT_KEY_DOWN:
-
-                    break;
             }
         }
     }

@@ -16,11 +16,9 @@
 #include "helper.h"
 #include "scene.h"
 #include "stringOutput.h"
-#include "texture.h"
 #include "drawObjects.h"
 
 GLuint g_renderObjects;
-
 
 /**
  * Setzt die Weltlicht-Position
@@ -174,15 +172,15 @@ void drawHelp() {
     drawString(0.2f, 0.20f, textColor, "q, Q, ESC                              Spiel beenden");
     drawString(0.2f, 0.25f, textColor, "r, R                                         Level neustarten");
     drawString(0.2f, 0.30f, textColor, "h, H                                        Hilfe anzeigen");
-    drawString(0.2f, 0.35f, textColor, "c, A                                        FirstPerson an/aus");
+    drawString(0.2f, 0.35f, textColor, "s, S                                        Spheren an/aus");
     drawString(0.2f, 0.40f, textColor, "p, P                                        Pause an/aus");
-    drawString(0.2f, 0.45f, textColor, "a, A                                        Animation an/aus");
+    drawString(0.2f, 0.45f, textColor, "+, -                                        Kugeln hinzufuegen / entfernen");
     drawString(0.2f, 0.50f, textColor, "F1                                          Wireframe an/aus");
     drawString(0.2f, 0.55f, textColor, "F2                                          Normalen an/aus");
     drawString(0.2f, 0.60f, textColor, "F3                                          Weltlich an/aus");
     drawString(0.2f, 0.65f, textColor, "F4                                          Taschenlampe an/aus");
     drawString(0.2f, 0.70f, textColor, "F5                                          Vollbild an/aus");
-    drawString(0.2f, 0.75f, textColor, "1, 2, 3, 4                                Direkter Levelzugriff");
+    drawString(0.2f, 0.75f, textColor, "F6                                          Texturen an/aus");
 }
 
 /**
