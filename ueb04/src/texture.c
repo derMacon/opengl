@@ -80,9 +80,9 @@ initTextureArray(void) {
         g_textures[i].id = texIDs[i];
     }
 
-    g_textures[texWater].filename = "../assets/textures/water.jpg";
-    g_textures[texLightHouse].filename = "../assets/textures/lighthouse.jpg";
-    g_textures[texIsland].filename = "../assets/textures/island.jpg";
+    g_textures[texWater].filename = "../content/textures/water.jpg";
+    g_textures[texLightHouse].filename = "../content/textures/lighthouse.jpg";
+    g_textures[texIsland].filename = "../content/textures/island.jpg";
     return (GLGETERROR == GL_NO_ERROR);
 }
 

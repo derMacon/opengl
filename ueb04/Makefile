@@ -13,7 +13,7 @@ SRCS = $(shell find $(SRCDIR) -type f -name '*.c')
 HEDS = $(shell find $(SRCDIR) -type f -name '*.h')
 OBJS = $(SRCS:$(SRCDIR)%.c=$(BUILDDIR)%.o)
 
-GL   = -lglut -lGLU -lGL -lGLEW
+GL   = -lglut -lGLU -lGL
 MATH = -lm
 LIBS = $(MATH) $(GL)
 
