@@ -10,7 +10,6 @@
 #include "scene.h"
 #include "logic.h"
 #include "variables.h"
-#include "helper.h"
 #include "types.h"
 #include "math.h"
 #include "stringOutput.h"

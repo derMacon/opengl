@@ -11,7 +11,6 @@
 #include "drawWater.h"
 #include "io.h"
 #include "logic.h"
-#include "helper.h"
 #include "scene.h"
 #include "stringOutput.h"
 #include "drawObjects.h"
