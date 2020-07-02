@@ -246,18 +246,26 @@ void drawIslandTop() {
         int count = 18;
         float a = 0.0f;
 
+        if (getState()->settings.showNormals) {
+            glBegin(GL_LINES);
+            {
+                glVertex3f(0.0f, 0.0f, 0.0f);
+                glVertex3f(0.0f, 1.0f, 0.0f);
+            }
+            glEnd();
+        }
 
-        glBegin(GL_TRIANGLE_FAN);
+        glBegin(GL_POLYGON);
         {
-            glVertex3f(0.0f, 0.0f, 0.0f);
+            glNormal3f(0.0f, 1.0f, 0.0f);
+            //glTexCoord2f(0.5f, 0.5f);
+            // glVertex3f(0.0f, 0.0f, 0.0f);
             for (int i = 0; i <= count; i++) {
-                //Naechsten Vertex berechnen
                 double x = size * sin(a);
                 double y = size * cos(a);
 
+                glTexCoord2f(x, y);
                 glVertex3f(x, 0, y);
-                glTexCoord2f(y, 0);
-                glNormal3f(0, 1, 0);
                 a += M_PI * 2 / (float) count;
             }
         }
@@ -279,13 +287,15 @@ void drawIslandBody() {
         float a = 0.0f;
 
         glBegin(GL_TRIANGLE_STRIP);
-        for (int i = 0; i <= count; i++) {
-            double x = size * cos(a);
-            double y = size * sin(a);
+        {
+            for (int i = 0; i <= count; i++) {
+                double x = size * cos(a);
+                double y = size * sin(a);
 
-            glVertex3f(x, -1, y);
-            glVertex3f(x, 1, y);
-            a += M_PI * 2 / (float) count;
+                glVertex3f(x, -1, y);
+                glVertex3f(x, 1, y);
+                a += M_PI * 2 / (float) count;
+            }
         }
         glEnd();
     }
