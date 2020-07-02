@@ -165,7 +165,7 @@ void calcNormals(int x, int y, int idx) {
 
     // Neue Werte setzen
     getState()->grid.vertices[idx][NX] = nX;
-    getState()->grid.vertices[idx][NY] = nY;
+    getState()->grid.vertices[idx][NY] = -nY;
     getState()->grid.vertices[idx][NZ] = nZ;
 }
 

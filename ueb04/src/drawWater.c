@@ -123,7 +123,7 @@ void simulateWater() {
         for (int x = 0; x < len; x++) {
             int idx = getIndex(x, y, len);
             getState()->grid.vertices[idx][Y] = vals[idx];
-            calcNormals(x, y, vals[idx]);
+            calcNormals(x, y, idx);
         }
     }
 
