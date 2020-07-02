@@ -2,7 +2,9 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+
 #include <GL/glut.h>
+
 #endif
 
 #include "io.h"
@@ -17,9 +19,12 @@
 #include "texture.h"
 #include "drawObjects.h"
 
-double idleCounter = 0;
+double idleInterval = 0;
 double lastCallTimeIdle = 0;
 
+/**
+ * Stellt die Kamera ein
+ */
 void setCamera() {
     GLfloat radius = getState()->camera.radius;
     GLfloat angleHorizontal = TO_RADIANS(getState()->camera.angleHorizontal);
@@ -84,7 +89,6 @@ processHits(GLint numHits, GLuint buffer[], GLboolean isLeftMouse) {
                     getState()->grid.vertices[idx][Y] -= WATER_INCREASE_VALUE;
                 }
             }
-            printf("Pick: %d", *ptrClosestNames);
         }
     }
 }
@@ -326,28 +330,6 @@ setProjection(GLdouble aspect) {
 
 
 /**
- * Timer-Callback.
- * Initiiert Berechnung der aktuellen Position und anschliessendes Neuzeichnen,
- * setzt sich selbst erneut als Timer-Callback.
- * @param lastCallTime Zeitpunkt, zu dem die Funktion als Timer-Funktion
- *   registriert wurde (In).
- */
-static void
-cbTimer(int lastCallTime) {
-    /* Seit dem Programmstart vergangene Zeit in Millisekunden */
-    int thisCallTime = glutGet(GLUT_ELAPSED_TIME);
-//    double interval = (double) (thisCallTime - lastCallTime) / 1000.0f;
-
-
-
-    /* Wieder als Timer-Funktion registrieren */
-    glutTimerFunc(1000 / TIMER_CALLS_PS, cbTimer, thisCallTime);
-
-    /* Neuzeichnen anstossen */
-    glutPostRedisplay();
-}
-
-/**
  * Funktion, um Codeverdopplung zu sparen.
  * Andert die Richtung des Spotlights
  * Links: 1,0
@@ -387,12 +369,12 @@ void changeSpotLightVal(GLboolean isX, float val) {
  * Wird aufgerufen, um die Zeit fuer das Spiel zu zeichnen
  */
 static void
-decreaseTimer() {
+spotLightTimer() {
     /* Seit dem Programmstart vergangene Zeit in Millisekunden */
     int thisCallTime = glutGet(GLUT_ELAPSED_TIME);
 
     /* Wieder als Timer-Funktion registrieren */
-    glutTimerFunc(50, decreaseTimer, thisCallTime);
+    glutTimerFunc(50, spotLightTimer, thisCallTime);
 
     if (getState()->settings.showSpotLight) {
         float x = getState()->spotlight.posX;
@@ -405,7 +387,6 @@ decreaseTimer() {
     /* Neuzeichnen anstossen */
     glutPostRedisplay();
 }
-
 
 /**
  * Zeichen-Callback.
@@ -627,27 +608,29 @@ cbSpecialUp(int key, int x, int y) {
     handleKeyboardEvent(key, GLUT_UP, GL_TRUE, x, y);
 }
 
+/**
+ * IdleTimer
+ */
 static void cbIdle() {
 
     /* Seit dem Programmstart vergangene Zeit in Millisekunden */
     int thisCallTime = glutGet(GLUT_ELAPSED_TIME);
+    float refresh = 1.0f / TIMER_CALLS_PS;
 
     /* Seit dem letzten Funktionsaufruf vergangene Zeit in Sekunden */
-    double interval = (double) (thisCallTime - lastCallTimeIdle) / 1000.0f;
+    idleInterval += (double) (thisCallTime - lastCallTimeIdle) / 1000.0f;
 
-    idleCounter += interval;
-
-    // TODO: Neuschreiben
-    while (idleCounter >= 1.0f / TIMER_CALLS_PS) {
+    // Wasser simulieren lassen
+    while (idleInterval >= refresh) {
         if (getState()->gameStatus == GAME_RUNNING) {
             simulateWater();
         }
 
-
-        idleCounter -= 1.0f / TIMER_CALLS_PS;
+        idleInterval -= refresh;
     }
 
     lastCallTimeIdle = thisCallTime;
+    glutPostRedisplay();
 }
 
 /**
@@ -679,19 +662,13 @@ void registerCallbacks(void) {
      * waehrend keine Maustaste gedrueckt wird) */
     glutPassiveMotionFunc(cbMousePassiveMotion);
 
-
     /* Spezialtasten-Loslass-Callback - wird ausgefuehrt, wenn eine Spezialtaste losgelassen wird */
     glutSpecialUpFunc(cbSpecialUp);
 
     /* Automat. Tastendruckwiederholung ignorieren */
     glutIgnoreKeyRepeat(1);
 
-    /* Timer-Callback - wird einmalig nach msescs Millisekunden ausgefuehrt */
-    glutTimerFunc(1000 / TIMER_CALLS_PS,
-                  cbTimer,
-                  glutGet(GLUT_ELAPSED_TIME));
-
-    glutIdleFunc(cbIdle), glutTimerFunc(50, decreaseTimer, glutGet(GLUT_ELAPSED_TIME));
+    glutIdleFunc(cbIdle), glutTimerFunc(50, spotLightTimer, glutGet(GLUT_ELAPSED_TIME));
 
     /* Reshape-Callback - wird ausgefuehrt, wenn neu gezeichnet wird (z.B. nach
      * Erzeugen oder Groessenaenderungen des Fensters) */
@@ -780,7 +757,6 @@ initAndStartIO(char *title, int width, int height) {
         /* DEBUG-Ausgabe */
         printf(("...fehlgeschlagen.\n\n"));
     }
-
 
     return windowID;
 }

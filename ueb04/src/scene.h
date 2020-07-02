@@ -9,10 +9,11 @@
 void drawScene();
 
 /**
- *  Initialisiert die Displaylisten
+ * Setzt das Materiallicht fuer die gezeichnetetn Objekte
+ * @param r - rot
+ * @param g - gruen
+ * @param b - blau
  */
-void initDisplayList();
-
 void setMaterialLightning(float r, float g, float b);
 
 /**

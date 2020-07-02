@@ -15,8 +15,6 @@
 #include "stringOutput.h"
 #include "drawObjects.h"
 
-GLuint g_renderObjects;
-
 /**
  * Setzt die Weltlicht-Position
  */
@@ -34,8 +32,8 @@ static void initWorldLight(void) {
     float value = 1.5f;
 
     /* Globales Licht */
-//    float globalAmbient[] = {0.7f, 0.7f, 0.7f, 1.0f};
-//    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
+    float globalAmbient[] = {0.7f, 0.7f, 0.7f, 1.0f};
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 
     /* Weltlicht */
     float colorDiffus[] = {value, value, value, value};
@@ -193,6 +191,9 @@ void drawScene() {
     }
 }
 
+/**
+ * Initialisiert das Materiallighting
+ */
 void initMatLighting() {
     float r = 1;
     float g = 1;
@@ -236,7 +237,6 @@ initScene(void) {
     initLight();
     initLevel();
     initMatLighting();
-
 
     // Zeit fuer Random einbeziehen, um Zufallsfarben zu generieren
     // srand steht hier, weil es nur einmal aufgerufen werden darf

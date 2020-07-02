@@ -45,16 +45,21 @@ initAndStartIO(char *title, int width, int height);
 void handleMouseEvent(int x, int y, CGMouseEventType eventType,
                       int button, int state);
 
-
+/**
+ * Berechnung der Frames pro Sekunde.
+ * @return aktuelle Framerate.
+ */
 float frameRate(void);
 
 /**
- * Getter fuer die Richtung des Spielers
- * @return
+ * Zeichnet die Spheren, die gepickt werden koennen
+ * (sind theoretisch unsichtbar und dienen nur zum Picken)
  */
-enum e_Direction getDirection();
 void drawPickingSpheres();
 
+/**
+ *  Stellt die Kamera ein
+ */
 void setCamera();
 
 #endif

@@ -38,12 +38,21 @@ State *getState(void) {
     return &state;
 }
 
+/**
+ * Reservierten Speicherplatz wieder freigeben
+ */
 void freeWater() {
     free(getState()->grid.velocities);
     free(getState()->grid.vertices);
     free(getState()->grid.indices);
 }
 
+/**
+ * Sorgt dafuer, dass der Index innerhalb des Grids bleibt
+ * @param i - dieser Wert
+ * @param decrease - Wenn der Wert verkleinert werden soll
+ * @return - neuer Wert
+ */
 int validateIndex(int i, GLboolean decrease) {
     if (decrease && i > 0) {
         i--;
@@ -54,11 +63,17 @@ int validateIndex(int i, GLboolean decrease) {
     return i;
 }
 
+/**
+ * Aendert die Grid-Size nachdem man die Anzahl der
+ * Kugeln veraendert hat
+ * @param increase True, wenn es groesser werden soll
+ */
 void changeGridSize(GLboolean increase) {
     int currentSize = getState()->grid.length;
     double *vel = malloc(sizeof(double) * (currentSize * currentSize));
     GLboolean changed = GL_FALSE;
 
+    // Lokales Grid erstellen, damit man dieses neue erstellen kann
     for (int y = 0; y < currentSize; y++) {
         for (int x = 0; x < currentSize; x++) {
             int idx = getIndex(x, y, currentSize);
@@ -66,6 +81,7 @@ void changeGridSize(GLboolean increase) {
         }
     }
 
+    // Pruefen, ob es innerhalb unserer festgelegten Groessen liegt
     if (increase && currentSize + 1 <= MAX_GRID_SIZE) {
         getState()->grid.length = (currentSize + 1);
         changed = GL_TRUE;
@@ -74,6 +90,7 @@ void changeGridSize(GLboolean increase) {
         changed = GL_TRUE;
     }
 
+    // Falls es in usneren Groessen liegt, aendern
     if (changed) {
         freeWater();
 
@@ -84,6 +101,7 @@ void changeGridSize(GLboolean increase) {
 
         initGrid(&getState()->grid, getState()->grid.length);
 
+        // Grid anhand von der Kopie neu erstellen
         for (int y = 0; y < len; y++) {
             for (int x = 0; x < len; x++) {
                 int idx = getIndex(x, y, getState()->grid.length);
@@ -105,6 +123,7 @@ void calcNormals(int x, int y, int idx) {
 
     int length = getState()->grid.length - 1;
 
+    // Eckpunkte eines Tiles
     double leftX = (double) (x - 1) / (length);
     double leftY = getState()->grid.vertices[getIndex(validateIndex(x, GL_TRUE), y, length)][Y];;
     double leftZ = (double) (y) / (length);
@@ -121,6 +140,7 @@ void calcNormals(int x, int y, int idx) {
     double downY = getState()->grid.vertices[getIndex(x, validateIndex(x, GL_FALSE), length)][Y];
     double downZ = (double) (y + 1) / (length);
 
+    // Mittelpunkte von jeweils 2 angrenzenden Vektoren nehmen
     double vAx = rightX - leftX;
     double vAy = rightY - leftY;
     double vAz = rightZ - leftZ;
@@ -129,6 +149,7 @@ void calcNormals(int x, int y, int idx) {
     double vBy = downY - upY;
     double vBz = downZ - upZ;
 
+    // Formel fuer Kreuzprodukt
     // x = Ay * Bz - By * Az
     // y = Az * Bx - Bz * Ax
     // z = Ax * By - Bx * Ay
@@ -136,11 +157,13 @@ void calcNormals(int x, int y, int idx) {
     double nY = vAz * vBx - vBz * vAx;
     double nZ = vAx * vBy - vBx * vAy;
 
+    // Normalisieren
     float len = sqrt(nX * nX + nY * nY + nZ * nZ);
     nX /= len;
     nY /= len;
     nZ /= len;
 
+    // Neue Werte setzen
     getState()->grid.vertices[idx][NX] = nX;
     getState()->grid.vertices[idx][NY] = nY;
     getState()->grid.vertices[idx][NZ] = nZ;

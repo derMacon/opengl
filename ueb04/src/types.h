@@ -46,12 +46,14 @@ typedef struct {
     GLboolean showFullScreen;
 } Settings;
 
+typedef GLdouble Vertex[11];
+
+/* Indices des Vertex-Arrays */
 typedef enum {
     X, Y, Z, R, G, B, NX, NY, NZ, TX, TY
 } vertexIndices;
 
-typedef GLdouble Vertex[11];
-
+/* Struct fuer das Grid */
 typedef struct {
     Vertex *vertices;
     GLuint *indices;
@@ -59,6 +61,7 @@ typedef struct {
     double *velocities;
 } Grid;
 
+/* Spotlight-Einstellungen */
 typedef struct {
     float posX;
     float posY;
@@ -85,6 +88,5 @@ enum e_ToggleTypes {
     SPHERES,
     WIREFRAME
 };
-
 
 #endif //UEB04_TYPES_H
