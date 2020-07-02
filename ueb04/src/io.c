@@ -376,7 +376,7 @@ spotLightTimer() {
     /* Wieder als Timer-Funktion registrieren */
     glutTimerFunc(50, spotLightTimer, thisCallTime);
 
-    if (getState()->settings.showSpotLight) {
+    if (getState()->settings.showSpotLight && getState()->gameStatus == GAME_RUNNING) {
         float x = getState()->spotlight.posX;
         float y = getState()->spotlight.posY;
 
