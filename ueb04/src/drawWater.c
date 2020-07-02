@@ -1,11 +1,8 @@
-#ifdef WIN32
-#include <windows.h>
-#endif
-
+/* ---- System Header einbinden ---- */
 #ifdef __APPLE__
-#include <OpenGL/glu.h>
+#include <GLUT/glut.h>
 #else
-#include <GL/glu.h>
+#include <GL/glut.h>
 #endif
 
 #include "types.h"
