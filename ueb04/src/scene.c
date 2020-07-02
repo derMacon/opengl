@@ -24,7 +24,7 @@ GLuint g_renderObjects;
  * Setzt die Weltlicht-Position
  */
 void setWorldLightPos() {
-    float pos[] = {0, 3, 0, 1};
+    float pos[] = {0.5f, 3, 0, 1};
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
 }
 

@@ -151,7 +151,7 @@ void drawBoatRoof() {
 void drawBoat(GLboolean isFirst) {
     glColor3f(0.600f, 0.240f, 0.100f);
     setMaterialLightning(0.600f, 0.240f, 0.100f);
-    int idx = isFirst ? 0 : getState()->grid.length * getState()->grid.length -1;
+    int idx = isFirst ? 0 : getState()->grid.length * getState()->grid.length - 1;
     float x = isFirst ? 2.2f : -2.3f;
     double y = 0.05f + getState()->grid.vertices[idx][Y];
     float z = isFirst ? 2.25f : -2.3f;
@@ -180,7 +180,7 @@ void drawBoat(GLboolean isFirst) {
 //static void drawCylinder() {
 //}
 
-void drawLeuchtturmRoof() {
+void drawLighthouseRoof() {
     glColor3f(0.5f, 0.1f, 0.1f);
     setMaterialLightning(0.5f, 0.1f, 0.1f);
 
@@ -227,9 +227,7 @@ void drawLighthouse() {
     }
 
     glPopMatrix();
-
-    drawLeuchtturmRoof();
-
+    drawLighthouseRoof();
 }
 
 /**
@@ -309,8 +307,9 @@ void drawIsland() {
 
     glPushMatrix();
     {
-        glColor3f(0.9f, 0.9f, 0.9f);
-        setMaterialLightning(0.9f, 0.9f, 0.9f);
+        float c = 0.1f;
+        glColor3f(c, c, c);
+        setMaterialLightning(c, c, c);
 
         bindTexture(texIsland);
         drawIslandTop();
