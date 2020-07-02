@@ -2,7 +2,9 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+
 #include <GL/glut.h>
+
 #endif
 
 #include "variables.h"
@@ -132,13 +134,13 @@ void calcNormals(int x, int y, int idx) {
     double rightY = getState()->grid.vertices[getIndex(validateIndex(x, GL_FALSE), y, length)][Y];
     double rightZ = (double) (y) / (length - 1);
 
-    double upX = (double) (x) / (length);
-    double upY = getState()->grid.vertices[getIndex(x, validateIndex(x, GL_TRUE), length)][Y];;
-    double upZ = (double) (y - 1) / (length);
-
     double downX = (double) (x) / (length);
-    double downY = getState()->grid.vertices[getIndex(x, validateIndex(x, GL_FALSE), length)][Y];
-    double downZ = (double) (y + 1) / (length);
+    double downY = getState()->grid.vertices[getIndex(x, validateIndex(x, GL_FALSE), length)][Y];;
+    double downZ = (double) (y - 1) / (length);
+
+    double upX = (double) (x) / (length);
+    double upY = getState()->grid.vertices[getIndex(x, validateIndex(x, GL_TRUE), length)][Y];
+    double upZ = (double) (y + 1) / (length);
 
     // Mittelpunkte von jeweils 2 angrenzenden Vektoren nehmen
     double vAx = rightX - leftX;
@@ -165,7 +167,7 @@ void calcNormals(int x, int y, int idx) {
 
     // Neue Werte setzen
     getState()->grid.vertices[idx][NX] = nX;
-    getState()->grid.vertices[idx][NY] = -nY;
+    getState()->grid.vertices[idx][NY] = nY;
     getState()->grid.vertices[idx][NZ] = nZ;
 }
 
