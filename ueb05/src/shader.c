@@ -14,6 +14,7 @@
 /* ---- Eigene Header einbinden ---- */
 #include "utility.h"
 #include "debugGL.h"
+#include "variables.h"
 
 /* Bibliothek um Bilddateien zu laden. Es handelt sich um eine
  * Bibliothek, die sowohl den Header als auch die Quelle in einer Datei
@@ -109,7 +110,7 @@ drawScene(void) {
      * Ab dem ersten Dreieck im Buffer werden alle 8 Dreiecke gerendert.
      * Dem Draw-Command wird jedoch die Anzahl der Vertizes übergeben, die
      * gezeichnet werden sollen. */
-    glDrawArrays(GL_TRIANGLES, 0, 24);
+    glDrawArrays(GL_TRIANGLES, 0, ((SUBDIVS - 1) * (SUBDIVS -1)));
 
     /* Zurücksetzen des OpenGL-Zustands, um Seiteneffekte zu verhindern */
     glBindVertexArray(0);
@@ -124,70 +125,53 @@ typedef struct {
     float s, t;    /**< Textur-Koordinate */
 } Vertex;
 
+
+/**
+ * Gibt den Index eines Vertex wider an den Stellen:
+ * @param x - X-Wert
+ * @param y - Y-Wert
+ * @param size - Groeße des Vertex-Arrays
+ * @return - Index an o.g. Stelle
+ */
+int getIndex(int x, int y, int size) {
+    return (y * size) + x;
+}
+
+/**
+ * Initialisiert das Wasssergrid
+ * @param grid - Neues Grid
+ * @param size - Diese Groesse sopll es haben
+ */
+void initGrid() {
+
+    GLint size = SUBDIVS * SUBDIVS;
+    Vertex vert[size];
+
+    for (int y = 0; y < SUBDIVS; y++) {
+        for (int x = 0; x < SUBDIVS; x++) {
+            int idx = getIndex(x, y, SUBDIVS);
+
+            vert[idx].x = 0.5f - (GLfloat) x / ((GLfloat) SUBDIVS);
+            vert[idx].y = 0.0f;
+            vert[idx].z = 0.5f - ((GLfloat) y) / ((GLfloat) SUBDIVS);
+
+            vert[idx].s = ((GLfloat) x / (GLfloat) SUBDIVS);
+            vert[idx].t = ((GLfloat) y / (GLfloat) SUBDIVS);
+        }
+    }
+
+    glGenBuffers(1, &g_arrayBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, g_arrayBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vert), vert, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 /**
  * Bereitet die Szene vor.
  */
 static void
 initScene(void) {
-    Vertex vertices[] = {
-            {-1.0f, 0.0f, -0.5f, 0.0f, 0.0f},
-            {-0.5f, 0.0f, -0.5f, 1.0f, 0.0f},
-            {-0.5f, 0.0f, 0.5f,  1.0f, 1.0f},
-
-            {-1.0f, 0.0f, -0.5f, 0.0f, 0.0f},
-            {-0.5f, 0.0f, 0.5f,  1.0f, 1.0f},
-            {-1.0f, 0.0f, 0.5f,  0.0f, 1.0f},
-
-            {-0.5f, 0.0f, -0.5f, 0.0f, 0.0f},
-            {0.0f,  0.0f, -0.5f, 1.0f, 0.0f},
-            {0.0f,  0.0f, 0.5f,  1.0f, 1.0f},
-
-            {-0.5f, 0.0f, -0.5f, 0.0f, 0.0f},
-            {0.0f,  0.0f, 0.5f,  1.0f, 1.0f},
-            {-0.5f, 0.0f, 0.5f,  0.0f, 1.0f},
-
-            {-0.0f, 0.0f, -0.5f, 0.0f, 0.0f},
-            {0.5f,  0.0f, -0.5f, 1.0f, 0.0f},
-            {0.5f,  0.0f, 0.5f,  1.0f, 1.0f},
-
-            {0.0f,  0.0f, -0.5f, 0.0f, 0.0f},
-            {0.5f,  0.0f, 0.5f,  1.0f, 1.0f},
-            {0.0f,  0.0f, 0.5f,  0.0f, 1.0f},
-
-            {0.5f,  0.0f, -0.5f, 0.0f, 0.0f},
-            {1.0f,  0.0f, -0.5f, 1.0f, 0.0f},
-            {1.0f,  0.0f, 0.5f,  1.0f, 1.0f},
-
-            {0.5f,  0.0f, -0.5f, 0.0f, 0.0f},
-            {1.0f,  0.0f, 0.5f,  1.0f, 1.0f},
-            {0.5f,  0.0f, 0.5f,  0.0f, 1.0f},
-    };
-
-    {
-        /* Erstellen eines Buffer-Objektes.
-         * In modernem OpenGL werden alle Vertex-Daten in Buffer-Objekten
-         * gespeichert. Dabei handelt es sich um Speicherbereiche die von
-         * der OpenGL-Implementierung verwaltet werden und typischerweise
-         * auf der Grafikkarte angelegt werden.
-         *
-         * Mit der Funktion glGenBuffers können Namen für Buffer-Objekte
-         * erzeugt werden. Mit glBindBuffer werden diese anschließend
-         * erzeugt, ohne jedoch einen Speicherbereich für die Nutzdaten
-         * anzulegen. Dies geschieht nachfolgend mit einem Aufruf der
-         * Funktion glBufferData.
-         *
-         * Um mit Buffer-Objekten zu arbeiten, mussen diese an Targets
-         * gebunden werden. Hier wird das Target GL_ARRAY_BUFFER verwendet.
-         *
-         * Der OpenGL-Implementierung wird zusätzlich ein Hinweis mitgegeben,
-         * wie die Daten eingesetzt werden. Hier wird GL_STATIC_DRAW
-         * übergeben. OpenGL kann diesen Hinweis nutzen, um Optimierungen
-         * vorzunehmen. */
-        glGenBuffers(1, &g_arrayBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, g_arrayBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
+    initGrid();
 
     {
         const GLuint positionLocation = 0;
@@ -405,6 +389,9 @@ cbKeyboard(unsigned char key, int x, int y) {
         case '-':
             g_elevation -= 0.1f;
             printf("Elevation: %f\n", g_elevation);
+            break;
+        case 'f':
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             break;
     }
 }
