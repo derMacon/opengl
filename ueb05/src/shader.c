@@ -170,7 +170,6 @@ void initSingleTile(int x, int z, int idx) {
     vert[idx + 5].x = vert[idx].x;
     vert[idx + 5].z = vert[idx].z;
 
-
     setTextureAndHeight(idx);
 }
 
@@ -282,7 +281,7 @@ initScene(void) {
     {
         /* Laden der Textur. */
         int width, height, comp;
-        GLubyte *data = stbi_load("../content/textures/eye.png", &width, &height, &comp, 4);
+        GLubyte *data = stbi_load("../content/textures/SS20_worldmap.png", &width, &height, &comp, 4);
 
         /* Erstellen des Textur-Objekts. */
         glGenTextures(1, &g_texture);
