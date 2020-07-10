@@ -69,7 +69,7 @@ typedef struct {
     float s, t;    /**< Textur-Koordinate */
 } Vertex;
 
-Vertex vert[10000];
+Vertex vert[SUBDIVS * SUBDIVS];
 
 /* ---- Funktionen ---- */
 
@@ -120,30 +120,19 @@ drawScene(void) {
      * Ab dem ersten Dreieck im Buffer werden alle 8 Dreiecke gerendert.
      * Dem Draw-Command wird jedoch die Anzahl der Vertizes übergeben, die
      * gezeichnet werden sollen. */
-    glDrawArrays(GL_TRIANGLES, 0, ((SUBDIVS - 1) * (SUBDIVS - 1)));
+    glDrawArrays(GL_TRIANGLES, 0, ((SUBDIVS) * (SUBDIVS)));
 
     /* Zurücksetzen des OpenGL-Zustands, um Seiteneffekte zu verhindern */
     glBindVertexArray(0);
     glUseProgram(0);
 }
 
-/**
- * Gibt den Index eines Vertex wider an den Stellen:
- * @param x - X-Wert
- * @param y - Y-Wert
- * @param size - Groeße des Vertex-Arrays
- * @return - Index an o.g. Stelle
- */
-int getIndex(int x, int y, int size) {
-    return (y * size) + x;
-}
-
 void createMesh(float x, float z, int idx) {
 
-    float meshWidth = 1;
+    float meshWidth = 3;
     float cellWidth = meshWidth / (SUBDIVS);
     float offset = -meshWidth / 2;
-
+    offset = 0;
 
     vert[idx].x = offset + cellWidth * x;
     vert[idx].y = 0;
@@ -181,9 +170,7 @@ void createMesh(float x, float z, int idx) {
     vert[idx + 5].s = (vert[idx + 5].x - offset) / meshWidth;
     vert[idx + 5].t = (vert[idx + 5].z - offset) / meshWidth;
 
-
 }
-
 
 /**
  * Initialisiert das Wasssergrid
@@ -192,14 +179,12 @@ void createMesh(float x, float z, int idx) {
  */
 void initGrid() {
     int idx = 0;
-
-    for (int z = 0; z < SUBDIVS; z++) {
-        for (int x = 0; x < SUBDIVS; x++) {
+    int val = 10;
+    for (int z = 0; z < val; z++) {
+        for (int x = 0; x < val; x++) {
             createMesh(x, z, idx);
             idx += 6;
-
         }
-        printf("Testlpl\n");
     }
 
     glGenBuffers(1, &g_arrayBuffer);
@@ -207,7 +192,6 @@ void initGrid() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vert), vert, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-
 
 /**
  * Bereitet die Szene vor.
