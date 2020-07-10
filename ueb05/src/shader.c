@@ -181,9 +181,8 @@ void initSingleTile(int x, int z, int idx) {
  */
 void initGridArray() {
     int idx = 0;
-    int val = GRID_LENGTH;
-    for (int z = 0; z < val; z++) {
-        for (int x = 0; x < val; x++) {
+    for (int z = 0; z < GRID_LENGTH; z++) {
+        for (int x = 0; x < GRID_LENGTH; x++) {
             initSingleTile(x, z, idx);
             idx += 6;
         }
