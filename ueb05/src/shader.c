@@ -61,6 +61,16 @@ static GLint g_locationElevation;
 /** Location der uniform-Variable "Texture" */
 static GLuint g_locationTexture;
 
+/**
+ * Alle Daten eines Vertexes.
+ */
+typedef struct {
+    float x, y, z; /**< Position */
+    float s, t;    /**< Textur-Koordinate */
+} Vertex;
+
+Vertex vert[10000];
+
 /* ---- Funktionen ---- */
 
 /**
@@ -110,21 +120,12 @@ drawScene(void) {
      * Ab dem ersten Dreieck im Buffer werden alle 8 Dreiecke gerendert.
      * Dem Draw-Command wird jedoch die Anzahl der Vertizes übergeben, die
      * gezeichnet werden sollen. */
-    glDrawArrays(GL_TRIANGLES, 0, ((SUBDIVS - 1) * (SUBDIVS -1)));
+    glDrawArrays(GL_TRIANGLES, 0, ((SUBDIVS - 1) * (SUBDIVS - 1)));
 
     /* Zurücksetzen des OpenGL-Zustands, um Seiteneffekte zu verhindern */
     glBindVertexArray(0);
     glUseProgram(0);
 }
-
-/**
- * Alle Daten eines Vertexes.
- */
-typedef struct {
-    float x, y, z; /**< Position */
-    float s, t;    /**< Textur-Koordinate */
-} Vertex;
-
 
 /**
  * Gibt den Index eines Vertex wider an den Stellen:
@@ -137,27 +138,68 @@ int getIndex(int x, int y, int size) {
     return (y * size) + x;
 }
 
+void createMesh(float x, float z, int idx) {
+
+    float meshWidth = 1;
+    float cellWidth = meshWidth / (SUBDIVS);
+    float offset = -meshWidth / 2;
+
+
+    vert[idx].x = offset + cellWidth * x;
+    vert[idx].y = 0;
+    vert[idx].z = offset + cellWidth * z;
+    vert[idx].s = (vert[idx].x - offset) / meshWidth;
+    vert[idx].t = (vert[idx].z - offset) / meshWidth;
+
+    vert[idx + 1].x = vert[idx].x + cellWidth;
+    vert[idx + 1].y = 0;
+    vert[idx + 1].z = vert[idx].z + cellWidth;
+    vert[idx + 1].s = (vert[idx + 1].x - offset) / meshWidth;
+    vert[idx + 1].t = (vert[idx + 1].z - offset) / meshWidth;
+
+    vert[idx + 2].x = vert[idx].x;
+    vert[idx + 2].y = 0;
+    vert[idx + 2].z = vert[idx].z + cellWidth;
+    vert[idx + 2].s = (vert[idx + 2].x - offset) / meshWidth;
+    vert[idx + 2].t = (vert[idx + 2].z - offset) / meshWidth;
+
+    vert[idx + 3].x = vert[idx].x;
+    vert[idx + 3].y = 0;
+    vert[idx + 3].z = vert[idx].z;
+    vert[idx + 3].s = (vert[idx + 3].x - offset) / meshWidth;
+    vert[idx + 3].t = (vert[idx + 3].z - offset) / meshWidth;
+
+    vert[idx + 4].x = vert[idx].x + cellWidth;
+    vert[idx + 4].y = 0;
+    vert[idx + 4].z = vert[idx].z;
+    vert[idx + 4].s = (vert[idx + 4].x - offset) / meshWidth;
+    vert[idx + 4].t = (vert[idx + 4].z - offset) / meshWidth;
+
+    vert[idx + 5].x = vert[idx].x + cellWidth;
+    vert[idx + 5].y = 0;
+    vert[idx + 5].z = vert[idx].z + cellWidth;
+    vert[idx + 5].s = (vert[idx + 5].x - offset) / meshWidth;
+    vert[idx + 5].t = (vert[idx + 5].z - offset) / meshWidth;
+
+
+}
+
+
 /**
  * Initialisiert das Wasssergrid
  * @param grid - Neues Grid
  * @param size - Diese Groesse sopll es haben
  */
 void initGrid() {
+    int idx = 0;
 
-    GLint size = SUBDIVS * SUBDIVS;
-    Vertex vert[size];
-
-    for (int y = 0; y < SUBDIVS; y++) {
+    for (int z = 0; z < SUBDIVS; z++) {
         for (int x = 0; x < SUBDIVS; x++) {
-            int idx = getIndex(x, y, SUBDIVS);
+            createMesh(x, z, idx);
+            idx += 6;
 
-            vert[idx].x = 0.5f - (GLfloat) x / ((GLfloat) SUBDIVS);
-            vert[idx].y = 0.0f;
-            vert[idx].z = 0.5f - ((GLfloat) y) / ((GLfloat) SUBDIVS);
-
-            vert[idx].s = ((GLfloat) x / (GLfloat) SUBDIVS);
-            vert[idx].t = ((GLfloat) y / (GLfloat) SUBDIVS);
         }
+        printf("Testlpl\n");
     }
 
     glGenBuffers(1, &g_arrayBuffer);
@@ -165,6 +207,7 @@ void initGrid() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vert), vert, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
 
 /**
  * Bereitet die Szene vor.
@@ -499,7 +542,7 @@ main(int argc, char **argv) {
 
 
     /* Erzeugen des Fensters */
-    if (!createWindow("Mein erstes OpenGL3.3-Programm", 500, 500)) {
+    if (!createWindow("ueb05", 500, 500)) {
         fprintf(stderr, "Initialisierung des Fensters fehlgeschlagen!");
         exit(1);
     }
