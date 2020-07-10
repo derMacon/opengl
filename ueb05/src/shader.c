@@ -127,49 +127,40 @@ drawScene(void) {
     glUseProgram(0);
 }
 
+void setTextureAndHeight(int idx, float offset, float meshWidth) {
+    for (int i = 0; i < 6; ++i) {
+        vert[idx + i].s = (vert[idx + i].x - offset) / meshWidth;
+        vert[idx + i].t = (vert[idx + i].z - offset) / meshWidth;
+        vert[idx + i].y = 0;
+    }
+}
+
 void createMesh(float x, float z, int idx) {
 
-    float meshWidth = 3;
+    float meshWidth = 7;
     float cellWidth = meshWidth / (SUBDIVS * SUBDIVS);
     float offset = -meshWidth / 2;
     offset = 0;
 
     vert[idx].x = offset + cellWidth * x;
-    vert[idx].y = 0;
     vert[idx].z = offset + cellWidth * z;
-    vert[idx].s = (vert[idx].x - offset) / meshWidth;
-    vert[idx].t = (vert[idx].z - offset) / meshWidth;
 
     vert[idx + 1].x = vert[idx].x + cellWidth;
-    vert[idx + 1].y = 0;
     vert[idx + 1].z = vert[idx].z + cellWidth;
-    vert[idx + 1].s = (vert[idx + 1].x - offset) / meshWidth;
-    vert[idx + 1].t = (vert[idx + 1].z - offset) / meshWidth;
 
     vert[idx + 2].x = vert[idx].x;
-    vert[idx + 2].y = 0;
     vert[idx + 2].z = vert[idx].z + cellWidth;
-    vert[idx + 2].s = (vert[idx + 2].x - offset) / meshWidth;
-    vert[idx + 2].t = (vert[idx + 2].z - offset) / meshWidth;
 
     vert[idx + 3].x = vert[idx].x;
-    vert[idx + 3].y = 0;
     vert[idx + 3].z = vert[idx].z;
-    vert[idx + 3].s = (vert[idx + 3].x - offset) / meshWidth;
-    vert[idx + 3].t = (vert[idx + 3].z - offset) / meshWidth;
 
     vert[idx + 4].x = vert[idx].x + cellWidth;
-    vert[idx + 4].y = 0;
     vert[idx + 4].z = vert[idx].z;
-    vert[idx + 4].s = (vert[idx + 4].x - offset) / meshWidth;
-    vert[idx + 4].t = (vert[idx + 4].z - offset) / meshWidth;
 
     vert[idx + 5].x = vert[idx].x + cellWidth;
-    vert[idx + 5].y = 0;
     vert[idx + 5].z = vert[idx].z + cellWidth;
-    vert[idx + 5].s = (vert[idx + 5].x - offset) / meshWidth;
-    vert[idx + 5].t = (vert[idx + 5].z - offset) / meshWidth;
 
+    setTextureAndHeight(idx, offset, meshWidth);
 }
 
 /**
