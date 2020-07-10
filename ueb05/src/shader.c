@@ -154,21 +154,22 @@ void initSingleTile(int x, int z, int idx) {
     vert[idx].x = TILE_LENGTH * (GLfloat) x - OFFSET;
     vert[idx].z = TILE_LENGTH * (GLfloat) z - OFFSET;
 
-    vert[idx + 1].x = vert[idx].x + TILE_LENGTH;
+    vert[idx + 1].x = vert[idx].x;
     vert[idx + 1].z = vert[idx].z + TILE_LENGTH;
 
-    vert[idx + 2].x = vert[idx].x;
+    vert[idx + 2].x = vert[idx].x + TILE_LENGTH;
     vert[idx + 2].z = vert[idx].z + TILE_LENGTH;
 
     // Zweites Dreieck
-    vert[idx + 3].x = vert[idx].x;
-    vert[idx + 3].z = vert[idx].z;
+    vert[idx + 3].x = vert[idx].x + TILE_LENGTH;
+    vert[idx + 3].z = vert[idx].z + TILE_LENGTH;
 
     vert[idx + 4].x = vert[idx].x + TILE_LENGTH;
     vert[idx + 4].z = vert[idx].z;
 
-    vert[idx + 5].x = vert[idx].x + TILE_LENGTH;
-    vert[idx + 5].z = vert[idx].z + TILE_LENGTH;
+    vert[idx + 5].x = vert[idx].x;
+    vert[idx + 5].z = vert[idx].z;
+
 
     setTextureAndHeight(idx);
 }
