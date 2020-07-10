@@ -69,7 +69,7 @@ typedef struct {
     float s, t;    /**< Textur-Koordinate */
 } Vertex;
 
-Vertex vert[SUBDIVS * SUBDIVS * 6];
+Vertex vert[GRID_LENGTH * GRID_LENGTH * 6];
 
 /* ---- Funktionen ---- */
 
@@ -120,13 +120,19 @@ drawScene(void) {
      * Ab dem ersten Dreieck im Buffer werden alle 8 Dreiecke gerendert.
      * Dem Draw-Command wird jedoch die Anzahl der Vertizes übergeben, die
      * gezeichnet werden sollen. */
-    glDrawArrays(GL_TRIANGLES, 0, ((SUBDIVS) * (SUBDIVS) * 6));
+    glDrawArrays(GL_TRIANGLES, 0, ((GRID_LENGTH) * (GRID_LENGTH) * 6));
 
     /* Zurücksetzen des OpenGL-Zustands, um Seiteneffekte zu verhindern */
     glBindVertexArray(0);
     glUseProgram(0);
 }
 
+/**
+ * Setzt die Textur und die Hoehe fuer ein Tile des Meshes
+ * @param idx - Derzeitger Index
+ * @param offset - bla
+ * @param meshWidth - bla
+ */
 void setTextureAndHeight(int idx, float offset, float meshWidth) {
     for (int i = 0; i < 6; ++i) {
         vert[idx + i].s = (vert[idx + i].x - offset) / meshWidth;
@@ -135,13 +141,20 @@ void setTextureAndHeight(int idx, float offset, float meshWidth) {
     }
 }
 
-void createMesh(float x, float z, int idx) {
+/**
+ * Erzeugt ein Tile des gesamten Meshes
+ * @param x Derzeitge x-Position im Mesh
+ * @param z Derzeitge y-Position im Mesh
+ * @param idx  Derzeitger im Mesh Array
+ */
+void initSingleTile(float x, float z, int idx) {
 
     float meshWidth = 7;
-    float cellWidth = meshWidth / (SUBDIVS * SUBDIVS);
+    float cellWidth = meshWidth / (GRID_LENGTH * GRID_LENGTH);
     float offset = -meshWidth / 2;
     offset = 0;
 
+    // Erstes Dreieck
     vert[idx].x = offset + cellWidth * x;
     vert[idx].z = offset + cellWidth * z;
 
@@ -151,6 +164,7 @@ void createMesh(float x, float z, int idx) {
     vert[idx + 2].x = vert[idx].x;
     vert[idx + 2].z = vert[idx].z + cellWidth;
 
+    // Zweites Dreieck
     vert[idx + 3].x = vert[idx].x;
     vert[idx + 3].z = vert[idx].z;
 
@@ -168,12 +182,12 @@ void createMesh(float x, float z, int idx) {
  * @param grid - Neues Grid
  * @param size - Diese Groesse sopll es haben
  */
-void initGrid() {
+void initGridArray() {
     int idx = 0;
-    int val = SUBDIVS;
+    int val = GRID_LENGTH;
     for (int z = 0; z < val; z++) {
         for (int x = 0; x < val; x++) {
-            createMesh(x, z, idx);
+            initSingleTile(x, z, idx);
             idx += 6;
         }
     }
@@ -189,7 +203,7 @@ void initGrid() {
  */
 static void
 initScene(void) {
-    initGrid();
+    initGridArray();
 
     {
         const GLuint positionLocation = 0;

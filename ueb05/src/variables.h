@@ -1,7 +1,7 @@
 #ifndef variables_h
 #define variables_h
 
-#define SUBDIVS 10
+#define GRID_LENGTH 10
 
 
 #endif
