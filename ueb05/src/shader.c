@@ -69,7 +69,7 @@ typedef struct {
     float s, t;    /**< Textur-Koordinate */
 } Vertex;
 
-Vertex vert[SUBDIVS * SUBDIVS];
+Vertex vert[SUBDIVS * SUBDIVS * 6];
 
 /* ---- Funktionen ---- */
 
@@ -120,7 +120,7 @@ drawScene(void) {
      * Ab dem ersten Dreieck im Buffer werden alle 8 Dreiecke gerendert.
      * Dem Draw-Command wird jedoch die Anzahl der Vertizes übergeben, die
      * gezeichnet werden sollen. */
-    glDrawArrays(GL_TRIANGLES, 0, ((SUBDIVS) * (SUBDIVS)));
+    glDrawArrays(GL_TRIANGLES, 0, ((SUBDIVS) * (SUBDIVS) * 6));
 
     /* Zurücksetzen des OpenGL-Zustands, um Seiteneffekte zu verhindern */
     glBindVertexArray(0);
@@ -130,7 +130,7 @@ drawScene(void) {
 void createMesh(float x, float z, int idx) {
 
     float meshWidth = 3;
-    float cellWidth = meshWidth / (SUBDIVS);
+    float cellWidth = meshWidth / (SUBDIVS * SUBDIVS);
     float offset = -meshWidth / 2;
     offset = 0;
 
@@ -179,7 +179,7 @@ void createMesh(float x, float z, int idx) {
  */
 void initGrid() {
     int idx = 0;
-    int val = 10;
+    int val = SUBDIVS;
     for (int z = 0; z < val; z++) {
         for (int x = 0; x < val; x++) {
             createMesh(x, z, idx);
