@@ -71,6 +71,9 @@ typedef struct {
 
 Vertex vert[GRID_LENGTH * GRID_LENGTH * 6];
 
+#define OFFSET (0.5)
+#define TILE_LENGTH (1.0f / (GRID_LENGTH))
+
 /* ---- Funktionen ---- */
 
 /**
@@ -130,13 +133,11 @@ drawScene(void) {
 /**
  * Setzt die Textur und die Hoehe fuer ein Tile des Meshes
  * @param idx - Derzeitger Index
- * @param offset - bla
- * @param meshWidth - bla
  */
-void setTextureAndHeight(int idx, float offset, float meshWidth) {
+void setTextureAndHeight(int idx) {
     for (int i = 0; i < 6; ++i) {
-        vert[idx + i].s = (vert[idx + i].x - offset) / meshWidth;
-        vert[idx + i].t = (vert[idx + i].z - offset) / meshWidth;
+        vert[idx + i].s = (GLfloat) (vert[idx + i].x + OFFSET);
+        vert[idx + i].t = (GLfloat) (vert[idx + i].z + OFFSET);
         vert[idx + i].y = 0;
     }
 }
@@ -149,32 +150,27 @@ void setTextureAndHeight(int idx, float offset, float meshWidth) {
  */
 void initSingleTile(int x, int z, int idx) {
 
-    GLfloat meshWidth = 7;
-    GLfloat cellWidth = meshWidth / (GRID_LENGTH * GRID_LENGTH);
-    GLfloat offset = -meshWidth / 2;
-    offset = 0;
-
     // Erstes Dreieck
-    vert[idx].x = offset + cellWidth * (GLfloat) x;
-    vert[idx].z = offset + cellWidth * (GLfloat) z;
+    vert[idx].x = TILE_LENGTH * (GLfloat) x - OFFSET;
+    vert[idx].z = TILE_LENGTH * (GLfloat) z - OFFSET;
 
-    vert[idx + 1].x = vert[idx].x + cellWidth;
-    vert[idx + 1].z = vert[idx].z + cellWidth;
+    vert[idx + 1].x = vert[idx].x + TILE_LENGTH;
+    vert[idx + 1].z = vert[idx].z + TILE_LENGTH;
 
     vert[idx + 2].x = vert[idx].x;
-    vert[idx + 2].z = vert[idx].z + cellWidth;
+    vert[idx + 2].z = vert[idx].z + TILE_LENGTH;
 
     // Zweites Dreieck
     vert[idx + 3].x = vert[idx].x;
     vert[idx + 3].z = vert[idx].z;
 
-    vert[idx + 4].x = vert[idx].x + cellWidth;
+    vert[idx + 4].x = vert[idx].x + TILE_LENGTH;
     vert[idx + 4].z = vert[idx].z;
 
-    vert[idx + 5].x = vert[idx].x + cellWidth;
-    vert[idx + 5].z = vert[idx].z + cellWidth;
+    vert[idx + 5].x = vert[idx].x + TILE_LENGTH;
+    vert[idx + 5].z = vert[idx].z + TILE_LENGTH;
 
-    setTextureAndHeight(idx, offset, meshWidth);
+    setTextureAndHeight(idx);
 }
 
 /**
