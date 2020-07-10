@@ -147,16 +147,16 @@ void setTextureAndHeight(int idx, float offset, float meshWidth) {
  * @param z Derzeitge y-Position im Mesh
  * @param idx  Derzeitger im Mesh Array
  */
-void initSingleTile(float x, float z, int idx) {
+void initSingleTile(int x, int z, int idx) {
 
-    float meshWidth = 7;
-    float cellWidth = meshWidth / (GRID_LENGTH * GRID_LENGTH);
-    float offset = -meshWidth / 2;
+    GLfloat meshWidth = 7;
+    GLfloat cellWidth = meshWidth / (GRID_LENGTH * GRID_LENGTH);
+    GLfloat offset = -meshWidth / 2;
     offset = 0;
 
     // Erstes Dreieck
-    vert[idx].x = offset + cellWidth * x;
-    vert[idx].z = offset + cellWidth * z;
+    vert[idx].x = offset + cellWidth * (GLfloat) x;
+    vert[idx].z = offset + cellWidth * (GLfloat) z;
 
     vert[idx + 1].x = vert[idx].x + cellWidth;
     vert[idx + 1].z = vert[idx].z + cellWidth;
