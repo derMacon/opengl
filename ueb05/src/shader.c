@@ -156,8 +156,8 @@ void setTextureAndHeight(int idx) {
  */
 void initSingleTile(int x, int z, int idx) {
     // Erstes Dreieck
-    vert[idx].x = GRID_LENGTH_Z / GRID_LENGTH * x - OFFSET_X;
-    vert[idx].z = GRID_LENGTH_X / GRID_LENGTH * z - OFFSET_Z;
+    vert[idx].x = GRID_LENGTH_Z / GRID_LENGTH * (GLfloat) x - OFFSET_X;
+    vert[idx].z = GRID_LENGTH_X / GRID_LENGTH * (GLfloat) z - OFFSET_Z;
 
     vert[idx + 1].x = vert[idx].x;
     vert[idx + 1].z = vert[idx].z + TILE_HEIGHT;
