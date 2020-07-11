@@ -49,27 +49,16 @@ void main(void)
      * von der OpenGL-Implementierung automatisch auf 1 gesetzt. */
     vec4 elevatedPosition;
 
-    elevatedPosition.x = vPosition.x * 3.141592;
-    elevatedPosition.z  = vPosition.z * 2;
+    elevatedPosition.z = vTexCoord.s * 3.14151 *  2;
+    elevatedPosition.x  = vTexCoord.t * 3.14151;
     elevatedPosition.w = vPosition.w;
 
     float radius = 1;
-    float theta = elevatedPosition.x;
-    float phi = elevatedPosition.z;
-    elevatedPosition.x = radius * sin(theta) * cos(phi);
-    elevatedPosition.y = radius * sin(theta) * sin(phi);
-    elevatedPosition.z = radius * cos(theta);
-
-
-
-//    float a1 = vTexCoord.s;
-//    float a2 = vTexCoord.t;
-//    float r = 1;
-//
-//    elevatedPosition.x = r *  sin(a2) * cos(a1);
-//    elevatedPosition.y = r *  sin(a2) * sin(a1);
-//    elevatedPosition.z = r *  cos(a1);
-//    elevatedPosition.w = vPosition.w;
+    float a = elevatedPosition.x;
+    float b = elevatedPosition.z;
+    elevatedPosition.x = radius * sin(a) * cos(b);
+    elevatedPosition.y = radius * sin(a) * sin(b);
+    elevatedPosition.z = radius * cos(a);
 
     /* Die Textur-Koordinate wird untransformiert an den Fragment-
      * Shader weitergereicht. Bei der Rasterization wird dieser Wert
