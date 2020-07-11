@@ -71,13 +71,11 @@ typedef struct {
 
 Vertex vert[GRID_LENGTH * GRID_LENGTH * 6];
 
-
 #define GRID_LENGTH_X (GLfloat) (2.0)
 #define GRID_LENGTH_Z (GLfloat) (M_PI)
 
 #define TILE_WIDTH  (GLfloat) (GRID_LENGTH_Z / (GRID_LENGTH ));
 #define TILE_HEIGHT (GLfloat) (GRID_LENGTH_X / (GRID_LENGTH ));
-
 
 #define OFFSET_X (GLfloat) (GRID_LENGTH_Z / 2)
 #define OFFSET_Z (GLfloat) (GRID_LENGTH_X / 2)
@@ -92,7 +90,7 @@ drawScene(void) {
     float viewMatrix[16];
     float t = (float) glutGet(GLUT_ELAPSED_TIME) / 1000;
 
-    const float distance = 2;
+    const float distance = 3;
     lookAt(distance * sinf(t), 1, distance * cosf(t), 0, 0, 0, 0, 1, 0, viewMatrix);
 
     /* Aktivieren des Programms. Ab jetzt ist die Fixed-Function-Pipeline
