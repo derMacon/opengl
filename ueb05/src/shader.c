@@ -88,7 +88,7 @@ Vertex vert[GRID_LENGTH * GRID_LENGTH * 6];
 static void
 drawScene(void) {
     float viewMatrix[16];
-    float t = (float) glutGet(GLUT_ELAPSED_TIME) / 1000;
+    float t = (float) glutGet(GLUT_ELAPSED_TIME) / 2000;
 
     const float distance = 3;
     lookAt(distance * sinf(t), 1, distance * cosf(t), 0, 0, 0, 0, 1, 0, viewMatrix);
@@ -284,7 +284,7 @@ initScene(void) {
     {
         /* Laden der Textur. */
         int width, height, comp;
-        GLubyte *data = stbi_load("../content/textures/SS20_worldmap.png", &width, &height, &comp, 4);
+        GLubyte *data = stbi_load("../content/textures/SS20_heightmap.jpg", &width, &height, &comp, 4);
 
         /* Erstellen des Textur-Objekts. */
         glGenTextures(1, &g_texture);
@@ -412,12 +412,16 @@ cbKeyboard(unsigned char key, int x, int y) {
             break;
             /* Anhebung erhöhen */
         case '+':
-            g_elevation += 0.1f;
+            if (g_elevation < MAX_ELEVATION){
+                g_elevation += 0.1f;
+            }
             printf("Elevation: %f\n", g_elevation);
             break;
             /* Anhebung verringern */
         case '-':
-            g_elevation -= 0.1f;
+            if (g_elevation > MIN_ELEVATION){
+                g_elevation -= 0.1f;
+            }
             printf("Elevation: %f\n", g_elevation);
             break;
         case 'f':

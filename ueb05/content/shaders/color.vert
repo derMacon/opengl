@@ -37,6 +37,10 @@ uniform mat4 ModelView;
  */
 uniform float Elevation;
 
+
+
+uniform sampler2D Texture;
+
 /**
  * Hauptprogramm des Vertex-Shaders.
  * Diese Funktion wird für jeden Vertex ausgeführt!
@@ -48,17 +52,41 @@ void main(void)
      * Anwendung im Buffer gespeichert wurde. Die w-Komponente wird
      * von der OpenGL-Implementierung automatisch auf 1 gesetzt. */
     vec4 elevatedPosition;
+    vec4 sphere;
 
-    elevatedPosition.z = vTexCoord.s * 3.14151 *  2;
-    elevatedPosition.x  = vTexCoord.t * 3.14151;
+    vec4 height = texture(Texture, vTexCoord);
+    float damp = 0.1f * Elevation;
+
+    elevatedPosition.x  = vTexCoord.t * 3.14159265358979323846;
+    elevatedPosition.y = vPosition.y;
+    elevatedPosition.z = vTexCoord.s * 3.14159265358979323846 *  2;
     elevatedPosition.w = vPosition.w;
 
     float radius = 1;
-    float a = elevatedPosition.x;
-    float b = elevatedPosition.z;
-    elevatedPosition.x = radius * sin(a) * cos(b);
-    elevatedPosition.y = radius * sin(a) * sin(b);
-    elevatedPosition.z = radius * cos(a);
+    float angleA = elevatedPosition.x;
+    float angleB = elevatedPosition.z;
+
+    sphere.x = radius * sin(angleA) * cos(angleB);
+    sphere.y = radius * sin(angleA) * sin(angleB);
+    sphere.z = radius * cos(angleA);
+    sphere.w = vPosition.w;
+
+    if (sphere.x > 0){
+        sphere.x += height.x * damp;
+    } else {
+        sphere.x -= height.x * damp;
+    }
+    if (sphere.y > 0){
+        sphere.y += height.y * damp;
+    } else {
+        sphere.y -= height.y * damp;
+    }
+
+    if (sphere.z > 0){
+        sphere.z += height.z * damp;
+    } else {
+        sphere.z -= height.z * damp;
+    }
 
     /* Die Textur-Koordinate wird untransformiert an den Fragment-
      * Shader weitergereicht. Bei der Rasterization wird dieser Wert
@@ -67,5 +95,5 @@ void main(void)
 
     /* Setzen der Vertex-Position im Device-Koordinatensystem.
      * Nachfolgend findet das Clipping und die Rasterization statt. */
-    gl_Position = Projection * ModelView * elevatedPosition;
+    gl_Position = Projection * ModelView * sphere;
 }
