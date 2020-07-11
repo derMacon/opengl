@@ -413,14 +413,14 @@ cbKeyboard(unsigned char key, int x, int y) {
             /* Anhebung erhöhen */
         case '+':
             if (g_elevation < MAX_ELEVATION){
-                g_elevation += 0.1f;
+                g_elevation += 0.01f;
             }
             printf("Elevation: %f\n", g_elevation);
             break;
             /* Anhebung verringern */
         case '-':
             if (g_elevation > MIN_ELEVATION){
-                g_elevation -= 0.1f;
+                g_elevation -= 0.01f;
             }
             printf("Elevation: %f\n", g_elevation);
             break;

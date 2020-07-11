@@ -37,9 +37,15 @@ uniform mat4 ModelView;
  */
 uniform float Elevation;
 
-
+#define M_PI (3.14159265358979323846)
 
 uniform sampler2D Texture;
+
+float modifySphere(float val, float height){
+    float modifier = height * Elevation;
+
+    return val > 0 ? val + modifier : val - modifier;
+}
 
 /**
  * Hauptprogramm des Vertex-Shaders.
@@ -55,38 +61,24 @@ void main(void)
     vec4 sphere;
 
     vec4 height = texture(Texture, vTexCoord);
-    float damp = 0.1f * Elevation;
-
-    elevatedPosition.x  = vTexCoord.t * 3.14159265358979323846;
+    elevatedPosition.x  = vTexCoord.t * M_PI;
     elevatedPosition.y = vPosition.y;
-    elevatedPosition.z = vTexCoord.s * 3.14159265358979323846 *  2;
+    elevatedPosition.z = vTexCoord.s * M_PI *  2;
     elevatedPosition.w = vPosition.w;
 
-    float radius = 1;
     float angleA = elevatedPosition.x;
     float angleB = elevatedPosition.z;
 
-    sphere.x = radius * sin(angleA) * cos(angleB);
-    sphere.y = radius * sin(angleA) * sin(angleB);
-    sphere.z = radius * cos(angleA);
+    // Die Erde ist eine Scheibe!!!! (c) FlatEarthers
+    sphere.x = sin(angleA) * cos(angleB);
+    sphere.y = sin(angleA) * sin(angleB);
+    sphere.z = cos(angleA);
     sphere.w = vPosition.w;
 
-    if (sphere.x > 0){
-        sphere.x += height.x * damp;
-    } else {
-        sphere.x -= height.x * damp;
-    }
-    if (sphere.y > 0){
-        sphere.y += height.y * damp;
-    } else {
-        sphere.y -= height.y * damp;
-    }
-
-    if (sphere.z > 0){
-        sphere.z += height.z * damp;
-    } else {
-        sphere.z -= height.z * damp;
-    }
+    // Heightmap
+    sphere.x = modifySphere(sphere.x, height.x);
+    sphere.y = modifySphere(sphere.y, height.y);
+    sphere.z = modifySphere(sphere.z, height.z);
 
     /* Die Textur-Koordinate wird untransformiert an den Fragment-
      * Shader weitergereicht. Bei der Rasterization wird dieser Wert
