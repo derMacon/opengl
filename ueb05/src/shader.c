@@ -71,10 +71,16 @@ typedef struct {
 
 Vertex vert[GRID_LENGTH * GRID_LENGTH * 6];
 
-#define OFFSET (0.5)
-#define TILE_LENGTH (1.0f / (GRID_LENGTH))
 
-/* ---- Funktionen ---- */
+#define GRID_LENGTH_X (2.0)
+#define GRID_LENGTH_Z (M_PI)
+
+#define TILE_WIDTH  GRID_LENGTH_Z / (GRID_LENGTH );
+#define TILE_HEIGHT GRID_LENGTH_X / (GRID_LENGTH );
+
+
+#define OFFSET_X (GRID_LENGTH_Z / 2)
+#define OFFSET_Z (GRID_LENGTH_X / 2)
 
 /**
  * Zeichen-Funktion.
@@ -136,8 +142,8 @@ drawScene(void) {
  */
 void setTextureAndHeight(int idx) {
     for (int i = 0; i < 6; ++i) {
-        vert[idx + i].s = (GLfloat) (vert[idx + i].x + OFFSET);
-        vert[idx + i].t = (GLfloat) (vert[idx + i].z + OFFSET);
+        vert[idx + i].s = (GLfloat) (vert[idx + i].x + OFFSET_X) / GRID_LENGTH_Z;
+        vert[idx + i].t = (GLfloat) (vert[idx + i].z + OFFSET_Z) / GRID_LENGTH_X;
         vert[idx + i].y = 0;
     }
 }
@@ -149,22 +155,21 @@ void setTextureAndHeight(int idx) {
  * @param idx  Derzeitger im Mesh Array
  */
 void initSingleTile(int x, int z, int idx) {
-
     // Erstes Dreieck
-    vert[idx].x = TILE_LENGTH * (GLfloat) x - OFFSET;
-    vert[idx].z = TILE_LENGTH * (GLfloat) z - OFFSET;
+    vert[idx].x = GRID_LENGTH_Z / GRID_LENGTH * (GLfloat) x - OFFSET_X;
+    vert[idx].z = GRID_LENGTH_X / GRID_LENGTH * (GLfloat) z - OFFSET_Z;
 
     vert[idx + 1].x = vert[idx].x;
-    vert[idx + 1].z = vert[idx].z + TILE_LENGTH;
+    vert[idx + 1].z = vert[idx].z + TILE_HEIGHT;
 
-    vert[idx + 2].x = vert[idx].x + TILE_LENGTH;
-    vert[idx + 2].z = vert[idx].z + TILE_LENGTH;
+    vert[idx + 2].x = vert[idx].x + TILE_WIDTH;
+    vert[idx + 2].z = vert[idx].z + TILE_HEIGHT;
 
     // Zweites Dreieck
-    vert[idx + 3].x = vert[idx].x + TILE_LENGTH;
-    vert[idx + 3].z = vert[idx].z + TILE_LENGTH;
+    vert[idx + 3].x = vert[idx].x + TILE_WIDTH;
+    vert[idx + 3].z = vert[idx].z + TILE_HEIGHT;
 
-    vert[idx + 4].x = vert[idx].x + TILE_LENGTH;
+    vert[idx + 4].x = vert[idx].x + TILE_WIDTH;
     vert[idx + 4].z = vert[idx].z;
 
     vert[idx + 5].x = vert[idx].x;
