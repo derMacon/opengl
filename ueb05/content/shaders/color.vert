@@ -43,7 +43,6 @@ uniform sampler2D Texture;
 
 float modifySphere(float val, float height){
     float modifier = height * Elevation;
-
     return val > 0 ? val + modifier : val - modifier;
 }
 
@@ -58,7 +57,7 @@ void main(void)
      * Anwendung im Buffer gespeichert wurde. Die w-Komponente wird
      * von der OpenGL-Implementierung automatisch auf 1 gesetzt. */
     vec4 elevatedPosition;
-    vec4 sphere;
+    vec4 tempPosition;
 
     vec4 height = texture(Texture, vTexCoord);
     elevatedPosition.x  = vTexCoord.t * M_PI;
@@ -70,15 +69,15 @@ void main(void)
     float angleB = elevatedPosition.z;
 
     // Die Erde ist eine Scheibe!!!! (c) FlatEarthers
-    sphere.x = sin(angleA) * cos(angleB);
-    sphere.y = sin(angleA) * sin(angleB);
-    sphere.z = cos(angleA);
-    sphere.w = vPosition.w;
+    tempPosition.x = sin(angleA) * cos(angleB);
+    tempPosition.y = sin(angleA) * sin(angleB);
+    tempPosition.z = cos(angleA);
+    tempPosition.w = vPosition.w;
 
     // Heightmap
-    sphere.x = modifySphere(sphere.x, height.x);
-    sphere.y = modifySphere(sphere.y, height.y);
-    sphere.z = modifySphere(sphere.z, height.z);
+    tempPosition.x = modifySphere(tempPosition.x, height.x);
+    tempPosition.y = modifySphere(tempPosition.y, height.y);
+    tempPosition.z = modifySphere(tempPosition.z, height.z);
 
     /* Die Textur-Koordinate wird untransformiert an den Fragment-
      * Shader weitergereicht. Bei der Rasterization wird dieser Wert
@@ -87,5 +86,5 @@ void main(void)
 
     /* Setzen der Vertex-Position im Device-Koordinatensystem.
      * Nachfolgend findet das Clipping und die Rasterization statt. */
-    gl_Position = Projection * ModelView * sphere;
+    gl_Position = Projection * ModelView * tempPosition;
 }
