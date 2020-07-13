@@ -14,7 +14,8 @@
 
 #define OFFSET_X (GLfloat) (GRID_LENGTH_Z / 2)
 #define OFFSET_Z (GLfloat) (GRID_LENGTH_X / 2)
-
+#define STB_IMAGE_STATIC
+#define STB_IMAGE_IMPLEMENTATION
 /**
  * Alle Daten eines Vertexes.
  */
