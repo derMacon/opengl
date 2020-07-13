@@ -3,7 +3,7 @@
 #include <stddef.h>
 
 #include "utility.h"
-#include "shader.h"
+#include "main.h"
 #include <stb/stb_image.h>
 
 /** Buffer-Objekt, um die Vertizes zu speichern. */

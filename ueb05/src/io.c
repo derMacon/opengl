@@ -1,7 +1,7 @@
 #include "utility.h"
 #include <GL/freeglut.h>
 #include "variables.h"
-#include "shader.h"
+#include "main.h"
 #include "debugGL.h"
 
 /**
