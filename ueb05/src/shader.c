@@ -26,19 +26,7 @@
 // define global functions as static inline
 #define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
-
-#include <stb/stb_image.h>  // Bibliothek um Bilder zu laden
-// Quelle: https://github.com/nothings/stb
-
-/* ---- Konstanten ---- */
-
-/** Anzahl der Aufrufe der Timer-Funktion pro Sekunde */
-#define TIMER_CALLS_PS 144
-
-typedef enum {
-    worldMap,
-    heightMap
-} TexName;
+#include <stb/stb_image.h>
 
 /* ---- Globale Variablen ---- */
 
@@ -70,24 +58,7 @@ static GLuint g_locationHeightMap;
 
 static Settings settings;
 
-/**
- * Alle Daten eines Vertexes.
- */
-typedef struct {
-    float x, y, z; /**< Position */
-    float s, t;    /**< Textur-Koordinate */
-} Vertex;
-
 Vertex vert[GRID_LENGTH * GRID_LENGTH * 6];
-
-#define GRID_LENGTH_X (GLfloat) (2.0)
-#define GRID_LENGTH_Z (GLfloat) (M_PI)
-
-#define TILE_WIDTH  (GLfloat) (GRID_LENGTH_Z / (GRID_LENGTH ));
-#define TILE_HEIGHT (GLfloat) (GRID_LENGTH_X / (GRID_LENGTH ));
-
-#define OFFSET_X (GLfloat) (GRID_LENGTH_Z / 2)
-#define OFFSET_Z (GLfloat) (GRID_LENGTH_X / 2)
 
 /**
  * Zeichen-Funktion.

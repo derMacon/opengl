@@ -4,6 +4,29 @@
 #define GRID_LENGTH 50
 #define MAX_ELEVATION 0.2
 #define MIN_ELEVATION 0
+#define TIMER_CALLS_PS 144
+
+#define GRID_LENGTH_X (GLfloat) (2.0)
+#define GRID_LENGTH_Z (GLfloat) (M_PI)
+
+#define TILE_WIDTH  (GLfloat) (GRID_LENGTH_Z / (GRID_LENGTH ));
+#define TILE_HEIGHT (GLfloat) (GRID_LENGTH_X / (GRID_LENGTH ));
+
+#define OFFSET_X (GLfloat) (GRID_LENGTH_Z / 2)
+#define OFFSET_Z (GLfloat) (GRID_LENGTH_X / 2)
+
+/**
+ * Alle Daten eines Vertexes.
+ */
+typedef struct {
+    float x, y, z; /**< Position */
+    float s, t;    /**< Textur-Koordinate */
+} Vertex;
+
+typedef enum {
+    worldMap,
+    heightMap
+} TexName;
 
 /** Wird verwendet, um u.g. Einstellungen zu togglen */
 enum e_ToggleTypes {
