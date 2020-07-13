@@ -346,6 +346,20 @@ initOpenGL(void) {
 }
 
 /**
+ * Gibt die Hilfe in der Console aus
+ */
+void showHelp() {
+    printf("%s\n", "--- Hilfe ---");
+    printf("%s\n", "q,Q,ESC:    Beenden");
+    printf("%s\n", "F1:         Wireframe an/aus");
+    printf("%s\n", "F2:         Normals an/aus");
+    printf("%s\n", "F3:         Worldlight an/aus");
+    printf("%s\n", "F4:         Textures an/aus");
+    printf("%s\n", "F5:         Fullscreen an/aus");
+    printf("%s\n", "----------");
+}
+
+/**
  * Timer-Callback.
  * Initiiert Berechnung der aktuellen Position und Farben und anschliessendes
  * Neuzeichnen, setzt sich selbst erneut als Timer-Callback.
@@ -465,11 +479,11 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case GLUT_KEY_F3:
                     toggle(WORLDLIGHT);
                     break;
+                case GLUT_KEY_F4:
+                    toggle(TEXTURES);
+                    break;
                 case GLUT_KEY_F5:
                     toggle(FULLSCREEN);
-                    break;
-                case GLUT_KEY_F6:
-                    toggle(TEXTURES);
                     break;
             }
         }
@@ -478,8 +492,7 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
             switch (key) {
                 case 'h':
                 case 'H':
-                    // TODO: Help
-                    toggle(WIREFRAME);
+                    showHelp();
                     break;
 
                 case 'b':
