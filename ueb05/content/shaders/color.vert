@@ -20,6 +20,24 @@ layout (location = 1) in vec2 vTexCoord;
  */
 out vec2 fTexCoord;
 
+/**
+ * Vertex-Positon.
+ */
+out vec4 fFragPos;
+/**
+ * Vertex-Normale.
+ */
+out vec3 fNormal;
+
+/**
+ * Vertex-Binormale.
+ */
+out vec3 fBinormal;
+/**
+ * Vertex-Tangente.
+ */
+out vec3 fTangent;
+
 /** 
  * Projektions-Matrix.
  * Wird dem Shader mit einem Aufruf von glUniformMatrix4fv übergeben.
@@ -42,9 +60,45 @@ uniform float Elevation;
 uniform sampler2D Texture;
 uniform sampler2D HeightMap;
 
+
+const float normalOffset = 0.1;
+
 float modifySphere(float val, float height){
     float modifier = height * Elevation;
     return val > 0 ? val + modifier : val - modifier;
+}
+
+vec4 calcElevatedPosition(vec2 offset)
+{
+    vec4 elevatedPosition;
+    elevatedPosition.x = vPosition.x + offset.x;
+    elevatedPosition.y = vPosition.y;
+    elevatedPosition.z = vPosition.z + offset.y;
+    elevatedPosition.w = vPosition.w;
+
+       return elevatedPosition;
+}
+
+/**
+ * Berechnet die Normalen an diesem Vertex.
+ *
+ * @return die approximierte Normale
+ */
+vec3 calcNormal()
+{
+    vec3 up = calcElevatedPosition(vec2(0, -normalOffset)).xyz;
+    vec3 down = calcElevatedPosition(vec2(0, normalOffset)).xyz;
+    vec3 right = calcElevatedPosition(vec2(normalOffset, 0)).xyz;
+    vec3 left = calcElevatedPosition(vec2(-normalOffset, 0)).xyz;
+
+    vec3 horizontal = right - left;
+    vec3 vertical = down - up;
+
+    fTangent = horizontal;
+    fBinormal = vertical;
+
+    vec3 normal = cross(vertical, horizontal);
+    return normalize(normal);
 }
 
 /**
@@ -59,6 +113,7 @@ void main(void)
      * von der OpenGL-Implementierung automatisch auf 1 gesetzt. */
     vec4 elevatedPosition;
     vec4 tempPosition;
+    fNormal = calcNormal();
 
     vec4 height = texture(HeightMap, vTexCoord);
     elevatedPosition.x  = vTexCoord.t * M_PI;
@@ -84,6 +139,7 @@ void main(void)
      * Shader weitergereicht. Bei der Rasterization wird dieser Wert
      * jedoch interpoliert. */
     fTexCoord = vTexCoord;
+    fFragPos = tempPosition;
 
     /* Setzen der Vertex-Position im Device-Koordinatensystem.
      * Nachfolgend findet das Clipping und die Rasterization statt. */
