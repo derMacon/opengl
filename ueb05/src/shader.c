@@ -61,6 +61,8 @@ static GLint g_locationElevation;
 /** Location der uniform-Variable "Texture" */
 static GLuint g_locationTexture;
 
+static Settings settings;
+
 /**
  * Alle Daten eines Vertexes.
  */
@@ -91,6 +93,11 @@ drawScene(void) {
     float t = (float) glutGet(GLUT_ELAPSED_TIME) / 2000;
 
     const float distance = 3;
+
+    if (settings.showBreak) {
+        t = 0;
+    }
+
     lookAt(distance * sinf(t), 1, distance * cosf(t), 0, 0, 0, 0, 1, 0, viewMatrix);
 
     /* Aktivieren des Programms. Ab jetzt ist die Fixed-Function-Pipeline
@@ -299,6 +306,15 @@ initScene(void) {
 
         stbi_image_free(data);
     }
+
+    {
+        settings.showNormals = GL_FALSE;
+        settings.showTextures = GLU_TRUE;
+        settings.showWireframe = GL_FALSE;
+        settings.showFullscreen = GL_FALSE;
+        settings.showWorldlight = GL_TRUE;
+        settings.showBreak = GL_FALSE;
+    }
 }
 
 /**
@@ -390,6 +406,112 @@ cbDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei le
 #endif
 
 /**
+ * Togglet verschiedene Dinge (z.B. FirstPerson oder Weltlich)
+ * @param type - Das angegebene soll getoggled werden
+ */
+void toggle(enum e_ToggleTypes type) {
+    switch (type) {
+        case NORMALS:
+            settings.showNormals = !settings.showNormals;
+            break;
+        case TEXTURES:
+            settings.showTextures = !settings.showTextures;
+            break;
+        case FULLSCREEN:
+            settings.showFullscreen = !settings.showFullscreen;
+            if (settings.showFullscreen) {
+                glutFullScreen();
+            } else {
+                glutPositionWindow(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
+            }
+            break;
+        case WORLDLIGHT:
+            settings.showWorldlight = !settings.showWorldlight;
+            break;
+        case WIREFRAME:
+            settings.showWireframe = !settings.showWireframe;
+            if (settings.showWireframe) {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            } else {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            }
+            break;
+        case BREAK:
+            settings.showBreak = !settings.showBreak;
+            break;
+        default:
+            break;
+    }
+}
+
+static void
+handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
+                    int y) {
+#define ESC 27
+
+    /* Taste gedrueckt */
+    if (status == GLUT_DOWN) {
+
+        /* Spezialtaste gedrueckt */
+        if (isSpecialKey) {
+            switch (key) {
+                /* Bewegung des Rechtecks in entsprechende Richtung beenden */
+                case GLUT_KEY_F1:
+                    toggle(WIREFRAME);
+                    break;
+                case GLUT_KEY_F2:
+                    toggle(NORMALS);
+                    break;
+                case GLUT_KEY_F3:
+                    toggle(WORLDLIGHT);
+                    break;
+                case GLUT_KEY_F5:
+                    toggle(FULLSCREEN);
+                    break;
+                case GLUT_KEY_F6:
+                    toggle(TEXTURES);
+                    break;
+            }
+        }
+            /* normale Taste gedrueckt */
+        else {
+            switch (key) {
+                case 'h':
+                case 'H':
+                    // TODO: Help
+                    toggle(WIREFRAME);
+                    break;
+
+                case 'b':
+                case 'B':
+                    toggle(BREAK);
+                    break;
+
+                case '+':
+                    if (g_elevation < MAX_ELEVATION && !settings.showBreak) {
+                        g_elevation += 0.01f;
+                    }
+                    printf("Elevation: %f\n", g_elevation);
+                    break;
+                    /* Anhebung verringern */
+                case '-':
+                    if (g_elevation > MIN_ELEVATION && !settings.showBreak) {
+                        g_elevation -= 0.01f;
+                    }
+                    printf("Elevation: %f\n", g_elevation);
+                    break;
+
+                    /* Programm beenden */
+                case 'q':
+                case 'Q':
+                case ESC:
+                    exit(0);
+            }
+        }
+    }
+}
+
+/**
  * Callback fuer Tastendruck.
  * Ruft Ereignisbehandlung fuer Tastaturereignis auf.
  * @param key betroffene Taste (In).
@@ -398,36 +520,19 @@ cbDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei le
  */
 static void
 cbKeyboard(unsigned char key, int x, int y) {
-    (void) x;
-    (void) y;
-/** Keycode der ESC-Taste */
-#define ESC 27
+    handleKeyboardEvent(key, GLUT_DOWN, GL_FALSE, x, y);
+}
 
-    switch (key) {
-        /* Programm beenden */
-        case 'q':
-        case 'Q':
-        case ESC:
-            exit(0);
-            break;
-            /* Anhebung erhöhen */
-        case '+':
-            if (g_elevation < MAX_ELEVATION){
-                g_elevation += 0.01f;
-            }
-            printf("Elevation: %f\n", g_elevation);
-            break;
-            /* Anhebung verringern */
-        case '-':
-            if (g_elevation > MIN_ELEVATION){
-                g_elevation -= 0.01f;
-            }
-            printf("Elevation: %f\n", g_elevation);
-            break;
-        case 'f':
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            break;
-    }
+/**
+ * Callback fuer Druck auf Spezialtasten.
+ * Ruft Ereignisbehandlung fuer Tastaturereignis auf.
+ * @param key betroffene Taste (In).
+ * @param x x-Position der Maus zur Zeit des Tastendrucks (In).
+ * @param y y-Position der Maus zur Zeit des Tastendrucks (In).
+ */
+static void
+cbSpecial(int key, int x, int y) {
+    handleKeyboardEvent(key, GLUT_DOWN, GL_TRUE, x, y);
 }
 
 /**
@@ -474,6 +579,12 @@ registerCallbacks(void) {
 
     /* Tasten-Druck-Callback - wird ausgefuehrt, wenn eine Taste gedrueckt wird */
     glutKeyboardFunc(cbKeyboard);
+
+    /* Spezialtasten-Druck-Callback - wird ausgefuehrt, wenn Spezialtaste
+    * (F1 - F12, Links, Rechts, Oben, Unten, Bild-Auf, Bild-Ab, Pos1, Ende oder Einfuegen)
+    * gedrueckt wird
+    * */
+    glutSpecialFunc(cbSpecial);
 
     /* Timer-Callback - wird einmalig nach msescs Millisekunden ausgefuehrt */
     glutTimerFunc(1000 / TIMER_CALLS_PS,         /* msecs - bis Aufruf von func */
