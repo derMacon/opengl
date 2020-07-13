@@ -40,6 +40,7 @@ uniform float Elevation;
 #define M_PI (3.14159265358979323846)
 
 uniform sampler2D Texture;
+uniform sampler2D HeightMap;
 
 float modifySphere(float val, float height){
     float modifier = height * Elevation;
@@ -59,7 +60,7 @@ void main(void)
     vec4 elevatedPosition;
     vec4 tempPosition;
 
-    vec4 height = texture(Texture, vTexCoord);
+    vec4 height = texture(HeightMap, vTexCoord);
     elevatedPosition.x  = vTexCoord.t * M_PI;
     elevatedPosition.y = vPosition.y;
     elevatedPosition.z = vTexCoord.s * M_PI *  2;

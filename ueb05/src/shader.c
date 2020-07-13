@@ -35,6 +35,11 @@
 /** Anzahl der Aufrufe der Timer-Funktion pro Sekunde */
 #define TIMER_CALLS_PS 144
 
+typedef enum {
+    worldMap,
+    heightMap
+} TexName;
+
 /* ---- Globale Variablen ---- */
 
 /** Buffer-Objekt, um die Vertizes zu speichern. */
@@ -50,7 +55,8 @@ static GLuint g_program;
 static float g_elevation;
 
 /** Textur */
-static GLuint g_texture;
+static GLuint g_texture_WorldMap;
+static GLuint g_texture_HeightMap;
 
 /** Location der uniform-Variable "ModelView" */
 static GLint g_locationModelViewMatrix;
@@ -60,6 +66,7 @@ static GLint g_locationElevation;
 
 /** Location der uniform-Variable "Texture" */
 static GLuint g_locationTexture;
+static GLuint g_locationHeightMap;
 
 static Settings settings;
 
@@ -122,8 +129,12 @@ drawScene(void) {
      * zuerst an eine Textureinheit gebunden. Anschließend wird dem
      * Programm nur der Index der Textureinheit übergeben. */
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, g_texture);
-    glUniform1i(g_locationTexture, 0);
+    glBindTexture(GL_TEXTURE_2D, g_texture_WorldMap);
+    glUniform1i(g_locationTexture, worldMap);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, g_texture_HeightMap);
+    glUniform1i(g_locationHeightMap, heightMap);
 
     /* Aktivieren des Vertex-Array-Objekts (VAO).
      * Hiermit werden alle Attribut-Pointer aktiv, die auf diesem VAO
@@ -269,6 +280,7 @@ initScene(void) {
         g_locationModelViewMatrix = glGetUniformLocation(g_program, "ModelView");
         g_locationElevation = glGetUniformLocation(g_program, "Elevation");
         g_locationTexture = glGetUniformLocation(g_program, "Texture");
+        g_locationHeightMap = glGetUniformLocation(g_program, "HeightMap");
 
         /* DEBUG-Ausgabe */
         printf("ModelView hat 'location': %i\n", g_locationModelViewMatrix);
@@ -289,22 +301,30 @@ initScene(void) {
     }
 
     {
-        /* Laden der Textur. */
-        int width, height, comp;
-        GLubyte *data = stbi_load("../content/textures/SS20_heightmap.jpg", &width, &height, &comp, 4);
+        for (int i = 0; i < 2; ++i) {
+            int width, height, comp;
+            GLubyte *data;
+            if (i == 0) {
+                data = stbi_load("../content/textures/SS20_heightmap.jpg", &width, &height, &comp, 4);
 
-        /* Erstellen des Textur-Objekts. */
-        glGenTextures(1, &g_texture);
-        glBindTexture(GL_TEXTURE_2D, g_texture);
+                glGenTextures(1, &g_texture_HeightMap);
+                glBindTexture(GL_TEXTURE_2D, g_texture_HeightMap);
+            } else {
+                data = stbi_load("../content/textures/SS20_worldmap.png", &width, &height, &comp, 4);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                glGenTextures(1, &g_texture_WorldMap);
+                glBindTexture(GL_TEXTURE_2D, g_texture_WorldMap);
+            }
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-        glBindTexture(GL_TEXTURE_2D, 0);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-        stbi_image_free(data);
+            glBindTexture(GL_TEXTURE_2D, i);
+
+            stbi_image_free(data);
+        }
     }
 
     {
