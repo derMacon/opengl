@@ -25,6 +25,8 @@ static GLint g_locationModelViewMatrix;
 /** Location der uniform-Variable "Elevation" */
 static GLint g_locationElevation;
 
+static GLint g_locationPhong;
+
 /** Location der uniform-Variable "Texture" */
 static GLuint g_locationTexture;
 static GLuint g_locationHeightMap;
@@ -65,6 +67,7 @@ drawScene(void) {
 
     /* Übermitteln der aktuellen Anhebung */
     glUniform1f(g_locationElevation, *getElevation());
+    glUniform1f(g_locationPhong, getSettings()->showPhong ? 1.0f : 0);
 
     /* Übergeben der Textur an den Shader.
      * Texturen werden nicht direkt an den Shader übergeben, sondern
@@ -93,7 +96,6 @@ drawScene(void) {
     glBindVertexArray(0);
     glUseProgram(0);
 }
-
 
 /**
  * Setzt die Textur und die Hoehe fuer ein Tile des Meshes
@@ -223,6 +225,7 @@ void initScene(void) {
          * werden müssen. */
         g_locationModelViewMatrix = glGetUniformLocation(g_program, "ModelView");
         g_locationElevation = glGetUniformLocation(g_program, "Elevation");
+        g_locationPhong = glGetUniformLocation(g_program, "showPhong");
         g_locationTexture = glGetUniformLocation(g_program, "Texture");
         g_locationHeightMap = glGetUniformLocation(g_program, "HeightMap");
 
@@ -272,11 +275,11 @@ void initScene(void) {
     }
 
     {
-       getSettings()->showNormals = GL_FALSE;
-       getSettings()->showTextures = GLU_TRUE;
-       getSettings()->showWireframe = GL_FALSE;
-       getSettings()->showFullscreen = GL_FALSE;
-       getSettings()->showWorldlight = GL_TRUE;
-       getSettings()->showBreak = GL_FALSE;
+        getSettings()->showNormals = GL_FALSE;
+        getSettings()->showTextures = GLU_TRUE;
+        getSettings()->showWireframe = GL_FALSE;
+        getSettings()->showFullscreen = GL_FALSE;
+        getSettings()->showPhong = GL_TRUE;
+        getSettings()->showBreak = GL_FALSE;
     }
 }

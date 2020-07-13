@@ -12,9 +12,10 @@ void showHelp() {
     printf("%s\n", "q,Q,ESC:    Beenden");
     printf("%s\n", "F1:         Wireframe an/aus");
     printf("%s\n", "F2:         Normals an/aus");
-    printf("%s\n", "F3:         Worldlight an/aus");
+    printf("%s\n", "F3:         Phong an/aus");
     printf("%s\n", "F4:         Textures an/aus");
     printf("%s\n", "F5:         Fullscreen an/aus");
+    printf("%s\n", "b,B:        Pause an/aus");
     printf("%s\n", "----------");
 }
 
@@ -75,8 +76,8 @@ void toggle(enum e_ToggleTypes type) {
                 glutPositionWindow(glutGet(GLUT_SCREEN_WIDTH) / 2, glutGet(GLUT_SCREEN_HEIGHT) / 2);
             }
             break;
-        case WORLDLIGHT:
-            getSettings()->showWorldlight = !getSettings()->showWorldlight;
+        case PHONG:
+            getSettings()->showPhong = !getSettings()->showPhong;
             break;
         case WIREFRAME:
             getSettings()->showWireframe = !getSettings()->showWireframe;
@@ -113,7 +114,7 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     toggle(NORMALS);
                     break;
                 case GLUT_KEY_F3:
-                    toggle(WORLDLIGHT);
+                    toggle(PHONG);
                     break;
                 case GLUT_KEY_F4:
                     toggle(TEXTURES);

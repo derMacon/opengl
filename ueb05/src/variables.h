@@ -33,7 +33,7 @@ typedef enum {
 enum e_ToggleTypes {
     FULLSCREEN,
     NORMALS,
-    WORLDLIGHT,
+    PHONG,
     TEXTURES,
     WIREFRAME,
     BREAK
@@ -42,7 +42,7 @@ enum e_ToggleTypes {
 typedef struct {
     GLboolean showFullscreen;
     GLboolean showNormals;
-    GLboolean showWorldlight;
+    GLboolean showPhong;
     GLboolean showTextures;
     GLboolean showWireframe;
     GLboolean showBreak;

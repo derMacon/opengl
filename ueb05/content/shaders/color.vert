@@ -43,6 +43,7 @@ out vec3 fTangent;
  * Wird dem Shader mit einem Aufruf von glUniformMatrix4fv übergeben.
  */
 uniform mat4 Projection;
+
 /**
  * View-Matrix. 
  * Wird dem Shader mit einem Aufruf von glUniformMatrix4fv übergeben.
@@ -76,7 +77,7 @@ vec4 calcElevatedPosition(vec2 offset)
     elevatedPosition.z = vPosition.z + offset.y;
     elevatedPosition.w = vPosition.w;
 
-       return elevatedPosition;
+    return elevatedPosition;
 }
 
 /**

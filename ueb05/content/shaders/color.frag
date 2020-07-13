@@ -30,6 +30,9 @@ in vec3 fBinormal;
  */
 in vec3 fTangent;
 
+
+uniform float showPhong;
+
 /**
  * Position der Kamera.
  */
@@ -76,6 +79,10 @@ vec4 phong()
  */
 void main(void)
 {
-    FragColor = texture(Texture, fTexCoord) * phong();
-//    FragColor = phong();
+    if (showPhong == 1.0f){
+        FragColor = texture(Texture, fTexCoord) * phong();
+    } else {
+        FragColor = texture(Texture, fTexCoord);
+    }
+    //    FragColor = phong();
 }
