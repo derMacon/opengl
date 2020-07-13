@@ -30,8 +30,8 @@ in vec3 fBinormal;
  */
 in vec3 fTangent;
 
-
 uniform float showPhong;
+uniform float showSepia;
 
 /**
  * Position der Kamera.
@@ -45,15 +45,18 @@ uniform vec3 CameraPos;
  */
 uniform sampler2D Texture;
 
+uniform float colors[3];
+
 const vec3 materialAmbi = vec3(0.1, 0.1, 0.1);
 const vec3 materialDiff = vec3(0.85, 0.85, 0.85);
 const vec3 materialSpec = vec3(0.5, 0.5, 0.5);
 const float materialShi = 3;
 
 const vec3 lightPosition = vec3(1, -5, 5);
-const vec3 lightAmbi = vec3(1, 1, 1);
-const vec3 lightDiff = vec3(1, 1, 1);
-const vec3 lightSpec = vec3(1, 1, 1);
+
+vec3 lightAmbi = vec3(colors[0], colors[1], colors[2]);
+vec3 lightDiff = vec3(colors[0], colors[1], colors[2]);
+vec3 lightSpec = vec3(colors[0], colors[1], colors[2]);
 
 /**
     Berechnet Phong
@@ -84,5 +87,4 @@ void main(void)
     } else {
         FragColor = texture(Texture, fTexCoord);
     }
-    //    FragColor = phong();
 }

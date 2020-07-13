@@ -30,6 +30,7 @@ static GLint g_locationPhong;
 /** Location der uniform-Variable "Texture" */
 static GLuint g_locationTexture;
 static GLuint g_locationHeightMap;
+static GLuint g_locationColors;
 
 Vertex vert[GRID_LENGTH * GRID_LENGTH * 6];
 
@@ -77,9 +78,14 @@ drawScene(void) {
     glBindTexture(GL_TEXTURE_2D, g_texture_WorldMap);
     glUniform1i(g_locationTexture, worldMap);
 
+    // Farbwerter aendern
+    Color c = getSettings()->color;
+    GLfloat color[3] = {c.r, c.g, c.b};
+
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, g_texture_HeightMap);
     glUniform1i(g_locationHeightMap, heightMap);
+    glUniform1fv(g_locationColors, 3, color);
 
     /* Aktivieren des Vertex-Array-Objekts (VAO).
      * Hiermit werden alle Attribut-Pointer aktiv, die auf diesem VAO
@@ -139,7 +145,6 @@ void initSingleTile(int x, int z, int idx) {
 
     setTextureAndHeight(idx);
 }
-
 
 /**
  * Initialisiert das Wasssergrid
@@ -228,6 +233,7 @@ void initScene(void) {
         g_locationPhong = glGetUniformLocation(g_program, "showPhong");
         g_locationTexture = glGetUniformLocation(g_program, "Texture");
         g_locationHeightMap = glGetUniformLocation(g_program, "HeightMap");
+        g_locationColors = glGetUniformLocation(g_program, "colors");
 
         /* DEBUG-Ausgabe */
         printf("ModelView hat 'location': %i\n", g_locationModelViewMatrix);
@@ -281,5 +287,9 @@ void initScene(void) {
         getSettings()->showFullscreen = GL_FALSE;
         getSettings()->showPhong = GL_TRUE;
         getSettings()->showBreak = GL_FALSE;
+        getSettings()->color.r = 1;
+        getSettings()->color.g = 1;
+        getSettings()->color.b = 1;
+
     }
 }

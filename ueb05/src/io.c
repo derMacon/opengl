@@ -13,8 +13,11 @@ void showHelp() {
     printf("%s\n", "F1:         Wireframe an/aus");
     printf("%s\n", "F2:         Normals an/aus");
     printf("%s\n", "F3:         Phong an/aus");
-    printf("%s\n", "F4:         Textures an/aus");
+    printf("%s\n", "F4:         Texturen an/aus");
     printf("%s\n", "F5:         Fullscreen an/aus");
+    printf("%s\n", "1:          Sepia an");
+    printf("%s\n", "2:          Graustufen an");
+    printf("%s\n", "3:          Normale Farben an");
     printf("%s\n", "b,B:        Pause an/aus");
     printf("%s\n", "----------");
 }
@@ -54,6 +57,34 @@ cbDisplay(void) {
 
     /* Objekt anzeigen */
     glutSwapBuffers();
+}
+
+/**
+ * Aendert die Farben im PHONG-Modus
+ * @param color
+ */
+void changeColor(enum ColorType color) {
+    switch (color) {
+
+        case COLOR_NORMAL:
+            getSettings()->color.r = 1;
+            getSettings()->color.g = 1;
+            getSettings()->color.b = 1;
+            break;
+        case COLOR_SEPIA:
+            getSettings()->color.r = 0.393f + 0.769f + 0.189f;
+            getSettings()->color.g = 0.343f + 0.786f + 0.168f;
+            getSettings()->color.b = 0.272f + 0.534f + 0.131f;
+            break;
+        case COLOR_GRAYSCALE:
+            // TODO: Graustufen wird nur dunkler
+            getSettings()->color.r = 0.8f;
+            getSettings()->color.g = 0.8f;
+            getSettings()->color.b = 0.8f;
+            break;
+        default:
+            break;
+    }
 }
 
 /**
@@ -127,6 +158,15 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
             /* normale Taste gedrueckt */
         else {
             switch (key) {
+                case '1':
+                    changeColor(COLOR_SEPIA);
+                    break;
+                case '2':
+                    changeColor(COLOR_GRAYSCALE);
+                    break;
+                case '3':
+                    changeColor(COLOR_NORMAL);
+                    break;
                 case 'h':
                 case 'H':
                     showHelp();

@@ -61,7 +61,6 @@ uniform float Elevation;
 uniform sampler2D Texture;
 uniform sampler2D HeightMap;
 
-
 const float normalOffset = 0.1;
 
 float modifySphere(float val, float height){
