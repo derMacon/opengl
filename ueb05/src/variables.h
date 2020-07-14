@@ -29,6 +29,10 @@ typedef enum {
     heightMap
 } TexName;
 
+typedef struct {
+    float x, y,z;
+} CamPos;
+
 enum ColorType {
     COLOR_GRAYSCALE,
     COLOR_SEPIA,
@@ -53,6 +57,7 @@ typedef struct {
     GLboolean showWireframe;
     GLboolean showBreak;
     enum ColorType color;
+    CamPos campos;
 } Settings;
 
 #endif

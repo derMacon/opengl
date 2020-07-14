@@ -32,6 +32,7 @@ in vec3 fTangent;
 
 uniform float showPhong;
 uniform float showSepia;
+uniform float camPos[3];
 
 /**
  * Position der Kamera.
@@ -46,7 +47,7 @@ uniform vec3 CameraPos;
 uniform sampler2D Texture;
 
 uniform float colorType;
-const vec3 lightPosition = vec3(1, -5, 5);
+vec3 lightPosition = vec3(camPos[0], camPos[1], camPos[2]);
 
 const vec3 ambient_material = vec3(0.2, 0.2, 0.2);
 const vec3 diffuse_material = vec3(0.85, 0.85, 0.85);
@@ -96,45 +97,28 @@ void main(void)
     float b = FragColor.b;
 
     FragColor.r = mix(
-        r * 1 + 0 * g + 0 * b,                  // NM
-        mix(
-            r * 0.393 + 0.769 * g + 0.189 * b, // Sepia
-            0.299 * r + 0.587 * g + 0.114 * b, // GS
-            (step(colorType, inner))
-        ),
-        (step(colorType, outer))
+    r * 1 + 0 * g + 0 * b, // NM
+    mix(
+    r * 0.393 + 0.769 * g + 0.189 * b, // Sepia
+    0.299 * r + 0.587 * g + 0.114 * b, // GS
+    (step(colorType, inner))
+    ),
+    (step(colorType, outer))
     );
 
     FragColor.g = mix(
-    r * 0 + 1 * g + 0 * b,                  // NM
+    r * 0 + 1 * g + 0 * b, // NM
     mix(
-        r * 0.343 + 0.786 * g + 0.168 * b, // Sepia
-        0.299 * r + 0.587 * g + 0.114 * b, // GS
-        (step(colorType, inner))
+    r * 0.343 + 0.786 * g + 0.168 * b, // Sepia
+    0.299 * r + 0.587 * g + 0.114 * b, // GS
+    (step(colorType, inner))
     ), (step(colorType, outer)));
 
     FragColor.b = mix(
-    r * 0 + g * 0 + b * 1,                  // NM
+    r * 0 + g * 0 + b * 1, // NM
     mix(
-        r * 0.272 + g * 0.534 + b * 0.131, // Sepia
-        0.299 * r + 0.587 * g + 0.114 * b, // GS
-        (step(colorType, inner))
+    r * 0.272 + g * 0.534 + b * 0.131, // Sepia
+    0.299 * r + 0.587 * g + 0.114 * b, // GS
+    (step(colorType, inner))
     ), step(colorType, outer));
-
-
-    //        Grayscale
-    //        FragColor.r = 0.299 * r + 0.587 * g + 0.114 * b;
-    //        FragColor.g = FragColor.r;
-    //        FragColor.b = FragColor.r;
-
-    // Normal
-    //    FragColor.r = r * 1 + 0 * g + 0 * b;
-    //    FragColor.g = r * 0 + 1 * g + 0 * b;
-    //    FragColor.b = r * 0 + g * 0 + b * 1;
-
-    //        Sepia
-    //        FragColor.r = r * 0.393 + 0.769 * g + 0.189 * b;
-    //        FragColor.g = r * 0.343 + 0.786 * g + 0.168 * b;
-    //        FragColor.b = r * 0.272 + g * 0.534 + b * 0.131;
-
 }

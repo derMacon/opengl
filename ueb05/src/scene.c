@@ -31,6 +31,8 @@ static GLint g_locationPhong;
 static GLuint g_locationTexture;
 static GLuint g_locationHeightMap;
 static GLuint g_locationColors;
+static GLuint g_locationCamPos;
+
 static float t = 0;
 Vertex vert[GRID_LENGTH * GRID_LENGTH * 6];
 
@@ -49,9 +51,14 @@ drawScene(void) {
         t = (float) glutGet(GLUT_ELAPSED_TIME) / 2000;
     }
 
-    lookAt(distance * sinf(t), 1, distance * cosf(t), 0, 0, 0, 0, 1, 0, viewMatrix);
+    float x = distance * sinf(t);
+    float z = distance * cosf(t);
 
-    // TODO: Position fuer Licht an Shader uebergeben
+    lookAt(x, 1, z, 0, 0, 0, 0, 1, 0, viewMatrix);
+
+    getSettings()->campos.x = x;
+    getSettings()->campos.y = -3;
+    getSettings()->campos.z = z;
 
     /* Aktivieren des Programms. Ab jetzt ist die Fixed-Function-Pipeline
      * inaktiv und die Shader des Programms aktiv. */
@@ -79,10 +86,14 @@ drawScene(void) {
     glBindTexture(GL_TEXTURE_2D, g_texture_WorldMap);
     glUniform1i(g_locationTexture, worldMap);
 
+    CamPos cp = getSettings()->campos;
+    float pos[3] = {cp.x, cp.y, cp.z};
+
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, g_texture_HeightMap);
     glUniform1i(g_locationHeightMap, heightMap);
     glUniform1f(g_locationColors, getSettings()->color);
+    glUniform1fv(g_locationCamPos, 3, pos);
 
     /* Aktivieren des Vertex-Array-Objekts (VAO).
      * Hiermit werden alle Attribut-Pointer aktiv, die auf diesem VAO
@@ -230,6 +241,7 @@ void initScene(void) {
         g_locationTexture = glGetUniformLocation(g_program, "Texture");
         g_locationHeightMap = glGetUniformLocation(g_program, "HeightMap");
         g_locationColors = glGetUniformLocation(g_program, "colorType");
+        g_locationCamPos = glGetUniformLocation(g_program, "camPos");
 
         /* DEBUG-Ausgabe */
         printf("ModelView hat 'location': %i\n", g_locationModelViewMatrix);
