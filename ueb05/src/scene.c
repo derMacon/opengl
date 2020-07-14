@@ -31,7 +31,7 @@ static GLint g_locationPhong;
 static GLuint g_locationTexture;
 static GLuint g_locationHeightMap;
 static GLuint g_locationColors;
-
+static float t = 0;
 Vertex vert[GRID_LENGTH * GRID_LENGTH * 6];
 
 /**
@@ -41,16 +41,17 @@ Vertex vert[GRID_LENGTH * GRID_LENGTH * 6];
  */
 void
 drawScene(void) {
-    float viewMatrix[16];
-    float t = (float) glutGet(GLUT_ELAPSED_TIME) / 2000;
 
+    float viewMatrix[16];
     const float distance = 3;
 
-    if (getSettings()->showBreak) {
-        t = 0;
+    if (!getSettings()->showBreak) {
+        t = (float) glutGet(GLUT_ELAPSED_TIME) / 2000;
     }
 
     lookAt(distance * sinf(t), 1, distance * cosf(t), 0, 0, 0, 0, 1, 0, viewMatrix);
+
+    // TODO: Position fuer Licht an Shader uebergeben
 
     /* Aktivieren des Programms. Ab jetzt ist die Fixed-Function-Pipeline
      * inaktiv und die Shader des Programms aktiv. */
