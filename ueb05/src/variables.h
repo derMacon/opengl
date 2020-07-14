@@ -24,19 +24,15 @@ typedef struct {
     float s, t;    /**< Textur-Koordinate */
 } Vertex;
 
-typedef struct {
-    float r, g, b;
-} Color;
-
 typedef enum {
     worldMap,
     heightMap
 } TexName;
 
 enum ColorType {
-    COLOR_NORMAL,
+    COLOR_GRAYSCALE,
     COLOR_SEPIA,
-    COLOR_GRAYSCALE
+    COLOR_NORMAL,
 };
 
 /** Wird verwendet, um u.g. Einstellungen zu togglen */
@@ -56,7 +52,7 @@ typedef struct {
     GLboolean showTextures;
     GLboolean showWireframe;
     GLboolean showBreak;
-    Color color;
+    enum ColorType color;
 } Settings;
 
 #endif

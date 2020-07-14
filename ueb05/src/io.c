@@ -64,27 +64,7 @@ cbDisplay(void) {
  * @param color
  */
 void changeColor(enum ColorType color) {
-    switch (color) {
-
-        case COLOR_NORMAL:
-            getSettings()->color.r = 1;
-            getSettings()->color.g = 1;
-            getSettings()->color.b = 1;
-            break;
-        case COLOR_SEPIA:
-            getSettings()->color.r = 0.393f + 0.769f + 0.189f;
-            getSettings()->color.g = 0.343f + 0.786f + 0.168f;
-            getSettings()->color.b = 0.272f + 0.534f + 0.131f;
-            break;
-        case COLOR_GRAYSCALE:
-            // TODO: Graustufen wird nur dunkler
-            getSettings()->color.r = 0.8f;
-            getSettings()->color.g = 0.8f;
-            getSettings()->color.b = 0.8f;
-            break;
-        default:
-            break;
-    }
+    getSettings()->color = color;
 }
 
 /**

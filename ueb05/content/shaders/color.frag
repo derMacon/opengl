@@ -45,18 +45,18 @@ uniform vec3 CameraPos;
  */
 uniform sampler2D Texture;
 
-uniform float colors[3];
-
-const vec3 materialAmbi = vec3(0.1, 0.1, 0.1);
-const vec3 materialDiff = vec3(0.85, 0.85, 0.85);
-const vec3 materialSpec = vec3(0.5, 0.5, 0.5);
-const float materialShi = 3;
-
+uniform float colorType;
 const vec3 lightPosition = vec3(1, -5, 5);
 
-vec3 lightAmbi = vec3(colors[0], colors[1], colors[2]);
-vec3 lightDiff = vec3(colors[0], colors[1], colors[2]);
-vec3 lightSpec = vec3(colors[0], colors[1], colors[2]);
+const vec3 ambient_material = vec3(0.2, 0.2, 0.2);
+const vec3 diffuse_material = vec3(0.85, 0.85, 0.85);
+const vec3 specular_material = vec3(0.5, 0.5, 0.5);
+const float shinyness = 3;
+
+float val = 1;
+vec3 ambient_light = vec3(val, val, val);
+vec3 diffuse_light = vec3(val, val, val);
+vec3 spectacular_light = vec3(val, val, val);
 
 /**
     Berechnet Phong
@@ -69,9 +69,9 @@ vec4 phong()
     vec3 reflectVec = reflect(-lightVec, normal);
     vec3 viewVec = normalize(CameraPos - fFragPos.xyz);
 
-    vec3 iAmbi = materialAmbi * lightAmbi;
-    vec3 iDiff = max(dot(normal, lightVec), 0) * materialDiff * lightDiff;
-    vec3 iSpec = pow(max(dot(viewVec, reflectVec), 0), materialShi) * materialSpec * lightSpec;
+    vec3 iAmbi = ambient_material * ambient_light;
+    vec3 iDiff = max(dot(normal, lightVec), 0) * diffuse_material * diffuse_light;
+    vec3 iSpec = pow(max(dot(viewVec, reflectVec), 0), shinyness) * specular_material * spectacular_light;
 
     return vec4(iAmbi + iDiff + iSpec, 1);
 }
@@ -82,9 +82,59 @@ vec4 phong()
  */
 void main(void)
 {
-    if (showPhong == 1.0f){
-        FragColor = texture(Texture, fTexCoord) * phong();
-    } else {
-        FragColor = texture(Texture, fTexCoord);
-    }
+    FragColor = mix(texture(Texture, fTexCoord) * phong(), texture(Texture, fTexCoord), (step(showPhong, 0)));
+
+    //    0 : grayscale
+    //    1 : sepia
+    //    2: normal
+
+    float outer = 1;
+    float inner = 0;
+
+    float r = FragColor.r;
+    float g = FragColor.g;
+    float b = FragColor.b;
+
+    FragColor.r = mix(
+        r * 1 + 0 * g + 0 * b,                  // NM
+        mix(
+            r * 0.393 + 0.769 * g + 0.189 * b, // Sepia
+            0.299 * r + 0.587 * g + 0.114 * b, // GS
+            (step(colorType, inner))
+        ),
+        (step(colorType, outer))
+    );
+
+    FragColor.g = mix(
+    r * 0 + 1 * g + 0 * b,                  // NM
+    mix(
+        r * 0.343 + 0.786 * g + 0.168 * b, // Sepia
+        0.299 * r + 0.587 * g + 0.114 * b, // GS
+        (step(colorType, inner))
+    ), (step(colorType, outer)));
+
+    FragColor.b = mix(
+    r * 0 + g * 0 + b * 1,                  // NM
+    mix(
+        r * 0.272 + g * 0.534 + b * 0.131, // Sepia
+        0.299 * r + 0.587 * g + 0.114 * b, // GS
+        (step(colorType, inner))
+    ), step(colorType, outer));
+
+
+    //        Grayscale
+    //        FragColor.r = 0.299 * r + 0.587 * g + 0.114 * b;
+    //        FragColor.g = FragColor.r;
+    //        FragColor.b = FragColor.r;
+
+    // Normal
+    //    FragColor.r = r * 1 + 0 * g + 0 * b;
+    //    FragColor.g = r * 0 + 1 * g + 0 * b;
+    //    FragColor.b = r * 0 + g * 0 + b * 1;
+
+    //        Sepia
+    //        FragColor.r = r * 0.393 + 0.769 * g + 0.189 * b;
+    //        FragColor.g = r * 0.343 + 0.786 * g + 0.168 * b;
+    //        FragColor.b = r * 0.272 + g * 0.534 + b * 0.131;
+
 }
