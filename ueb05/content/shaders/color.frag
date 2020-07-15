@@ -23,16 +23,17 @@ in vec4 fragmentPosition;
  */
 in vec3 fragmentNormal;
 
+// "Booleans", die angeben, ob etwas angezeigt werden soll oder nicht
 uniform float showPhong;
 uniform float showSepia;
 uniform float showTexture;
 uniform float showNormals;
-uniform float camPos[3];
 
 /**
  * Position der Kamera.
  */
-uniform vec3 CameraPos;
+uniform float camPos[3];
+vec3 cameraPosition = vec3(camPos[0], camPos[1], camPos[2]);
 
 /**
  * Texture-Sampler, um auf die Textur zuzugreifen. Die Einstellungen
@@ -41,8 +42,8 @@ uniform vec3 CameraPos;
  */
 uniform sampler2D Texture;
 
+// 0: Grayscale, 1: Sepia, 2: Normal
 uniform float colorType;
-vec3 lightPosition = vec3(camPos[0], camPos[1], camPos[2]);
 
 // Material
 const vec3 materialAmbient = vec3(0.2, 0.2, 0.2);
@@ -62,9 +63,9 @@ vec3 lightSpecular = vec3(ONE, ONE, ONE);
 vec4 phong()
 {
     vec3 normal = normalize(fragmentNormal);
-    vec3 light = normalize(lightPosition - fragmentPosition.xyz);
+    vec3 light = normalize(cameraPosition - fragmentPosition.xyz);
     vec3 reflection = reflect(-light, normal);
-    vec3 view = normalize(CameraPos - fragmentPosition.xyz);
+    vec3 view = normalize(cameraPosition - fragmentPosition.xyz);
 
     // https://intern.fh-wedel.de/fileadmin/mitarbeiter/ne/CG/Beleuchtung.pdf Seite 16
     vec3 iAmb = materialAmbient * lightAmbient;
@@ -133,10 +134,10 @@ void main(void)
 
     // Farbwechsel (mix, um schwarz auszuschliessen)
     vec3 color = mix (
-        lightPosition,
+        cameraPosition,
         vec3 (0.2f, 0.2f, 0.2f),
         step(
-            lightPosition, zero
+            cameraPosition, zero
         )
     );
 

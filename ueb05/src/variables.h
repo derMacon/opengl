@@ -6,6 +6,7 @@
 #define MIN_ELEVATION 0
 #define TIMER_CALLS_PS 144
 
+#define CAMERA_SPEED 3000;
 #define GRID_LENGTH_X (GLfloat) (2.0)
 #define GRID_LENGTH_Z (GLfloat) (M_PI)
 

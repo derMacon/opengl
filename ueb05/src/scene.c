@@ -51,7 +51,7 @@ drawScene(void) {
 
     // Wen nicht pausiert, die Position der Kamera berechnen
     if (!getSettings()->showBreak) {
-        t = (float) glutGet(GLUT_ELAPSED_TIME) / 2000;
+        t = (float) glutGet(GLUT_ELAPSED_TIME) / CAMERA_SPEED;
     }
 
     float x = distance * sinf(t);
