@@ -77,11 +77,27 @@ vec4 phong()
 void main(void)
 {
 
-    vec4 tex;
+    vec4 textures;
 
-    tex = mix (
+    // Zum ueberpruefen, ob Farbe schwarz ist
+    vec3 zero = vec3(0, 0, 0);
+
+    // Farbewechsel (mix, um schwarz auszuschliessen)
+    vec3 color = mix (
+        lightPosition,
+        vec3 (1.0, 1.0, 1.0),
+        step(
+            lightPosition, zero
+        )
+    );
+
+    // Farbe setzten
+    vec4 colorChange = vec4(color, 1);
+
+    // Textur an- oder ausschalten
+    textures = mix (
         texture(Texture, fTexCoord),
-        vec4(1.0, 1.0, 1.0, 1.0),
+        colorChange,
         step(
             showTexture, 0
         )
@@ -90,8 +106,8 @@ void main(void)
 
     // Phong an- oder ausschalten
     FragColor = mix(
-        tex * phong(),
-        tex,
+        textures * phong(),
+        textures,
         (
             step(showPhong, 0)
         )
