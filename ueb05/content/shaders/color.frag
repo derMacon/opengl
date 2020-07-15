@@ -1,5 +1,7 @@
 #version 330 core
 
+#define ONE  1
+
 /**
  * Interpolierte Textur-Koordinate des Fragments.
  */
@@ -48,10 +50,9 @@ const vec3 materialSpecular = vec3(0.5, 0.5, 0.5);
 const float shinyness = 3;
 
 // Lichter
-float one = 1;
-vec3 ambient_light = vec3(one, one, one);
-vec3 diffuse_light = vec3(one, one, one);
-vec3 spectacular_light = vec3(one, one, one);
+vec3 lightAmbient = vec3(ONE, ONE, ONE);
+vec3 lightDiffuse = vec3(ONE, ONE, ONE);
+vec3 lightSpecular = vec3(ONE, ONE, ONE);
 
 /**
     Berechnet Phong
@@ -64,11 +65,12 @@ vec4 phong()
     vec3 reflection = reflect(-light, normal);
     vec3 view = normalize(CameraPos - fragmentPosition.xyz);
 
-    vec3 matAmbient = materialAmbient * ambient_light;
-    vec3 matDiff = max(dot(normal, light), 0) * materialDiffuse * diffuse_light;
-    vec3 matSpec = pow(max(dot(view, reflection), 0), shinyness) * materialSpecular * spectacular_light;
+    // https://intern.fh-wedel.de/fileadmin/mitarbeiter/ne/CG/Beleuchtung.pdf Seite 16
+    vec3 iAmb = materialAmbient * lightAmbient;
+    vec3 iDiff = max(dot(normal, light), 0) * materialDiffuse * lightDiffuse;
+    vec3 iSpec = pow(max(dot(view, reflection), 0), shinyness) * materialSpecular * lightSpecular;
 
-    return vec4(matAmbient + matDiff + matSpec, 1);
+    return vec4(iAmb + iDiff + iSpec, 1);
 }
 
 /**

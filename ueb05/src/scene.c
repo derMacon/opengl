@@ -263,7 +263,7 @@ void initScene(void) {
          * Da die Projektions-Matrix für die Laufzeit des Programms konstant
          * ist, wird sie einmalig gesetzt. */
         float projectionMatrix[16];
-        perspective(60, (float) glutGet(GLUT_WINDOW_WIDTH) / glutGet(GLUT_WINDOW_HEIGHT), 0.01f, 5.0f,
+        perspective(60, (GLfloat) glutGet(GLUT_WINDOW_WIDTH) / glutGet(GLUT_WINDOW_HEIGHT), 0.01f, 5.0f,
                     projectionMatrix);
         glUseProgram(g_program);
         glUniformMatrix4fv(glGetUniformLocation(g_program, "Projection"), 1, GL_FALSE, projectionMatrix);
