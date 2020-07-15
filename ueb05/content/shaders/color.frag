@@ -13,22 +13,12 @@ out vec4 FragColor;
 /**
  * Interpolierte Fragment-Koordinate des Fragments.
  */
-in vec4 fFragPos;
+in vec4 fragmentPosition;
 
 /**
  * Normale des Fragments.
  */
-in vec3 fNormal;
-
-/**
- * Binormale des Fragments.
- */
-in vec3 fBinormal;
-
-/**
- * Tangente des Fragments.
- */
-in vec3 fTangent;
+in vec3 fragmentNormal;
 
 uniform float showPhong;
 uniform float showSepia;
@@ -49,15 +39,17 @@ uniform sampler2D Texture;
 uniform float colorType;
 vec3 lightPosition = vec3(camPos[0], camPos[1], camPos[2]);
 
-const vec3 ambient_material = vec3(0.2, 0.2, 0.2);
-const vec3 diffuse_material = vec3(0.85, 0.85, 0.85);
-const vec3 specular_material = vec3(0.5, 0.5, 0.5);
+// Material
+const vec3 materialAmbient = vec3(0.2, 0.2, 0.2);
+const vec3 materialDiffuse = vec3(0.85, 0.85, 0.85);
+const vec3 materialSpecular = vec3(0.5, 0.5, 0.5);
 const float shinyness = 3;
 
-float val = 1;
-vec3 ambient_light = vec3(val, val, val);
-vec3 diffuse_light = vec3(val, val, val);
-vec3 spectacular_light = vec3(val, val, val);
+// Lichter
+float one = 1;
+vec3 ambient_light = vec3(one, one, one);
+vec3 diffuse_light = vec3(one, one, one);
+vec3 spectacular_light = vec3(one, one, one);
 
 /**
     Berechnet Phong
@@ -65,16 +57,16 @@ vec3 spectacular_light = vec3(val, val, val);
 */
 vec4 phong()
 {
-    vec3 normal = normalize(fNormal);
-    vec3 lightVec = normalize(lightPosition - fFragPos.xyz);
-    vec3 reflectVec = reflect(-lightVec, normal);
-    vec3 viewVec = normalize(CameraPos - fFragPos.xyz);
+    vec3 normal = normalize(fragmentNormal);
+    vec3 light = normalize(lightPosition - fragmentPosition.xyz);
+    vec3 reflection = reflect(-light, normal);
+    vec3 view = normalize(CameraPos - fragmentPosition.xyz);
 
-    vec3 iAmbi = ambient_material * ambient_light;
-    vec3 iDiff = max(dot(normal, lightVec), 0) * diffuse_material * diffuse_light;
-    vec3 iSpec = pow(max(dot(viewVec, reflectVec), 0), shinyness) * specular_material * spectacular_light;
+    vec3 matAmbient = materialAmbient * ambient_light;
+    vec3 matDiff = max(dot(normal, light), 0) * materialDiffuse * diffuse_light;
+    vec3 matSpec = pow(max(dot(view, reflection), 0), shinyness) * materialSpecular * spectacular_light;
 
-    return vec4(iAmbi + iDiff + iSpec, 1);
+    return vec4(matAmbient + matDiff + matSpec, 1);
 }
 
 /**
@@ -83,42 +75,60 @@ vec4 phong()
  */
 void main(void)
 {
+    // Phong an- oder ausschalten
     FragColor = mix(texture(Texture, fTexCoord) * phong(), texture(Texture, fTexCoord), (step(showPhong, 0)));
+
+    // Temp var, damit wir korrekt rechnen koennen
+    float r = FragColor.r;
+    float g = FragColor.g;
+    float b = FragColor.b;
 
     //    0 : grayscale
     //    1 : sepia
     //    2: normal
 
+    // Hilfe fuer MIX
     float outer = 1;
     float inner = 0;
 
-    float r = FragColor.r;
-    float g = FragColor.g;
-    float b = FragColor.b;
-
+    // R
     FragColor.r = mix(
-    r * 1 + 0 * g + 0 * b, // NM
-    mix(
-    r * 0.393 + 0.769 * g + 0.189 * b, // Sepia
-    0.299 * r + 0.587 * g + 0.114 * b, // GS
-    (step(colorType, inner))
-    ),
-    (step(colorType, outer))
+        r * 1 + 0 * g + 0 * b,                 // Normal
+        mix(
+            r * 0.393 + 0.769 * g + 0.189 * b, // Sepia
+            0.299 * r + 0.587 * g + 0.114 * b, // GrayScale
+            (
+                step(colorType, inner)
+            )
+        ),
+        (
+            step(colorType, outer)
+        )
     );
 
+    // G
     FragColor.g = mix(
-    r * 0 + 1 * g + 0 * b, // NM
-    mix(
-    r * 0.343 + 0.786 * g + 0.168 * b, // Sepia
-    0.299 * r + 0.587 * g + 0.114 * b, // GS
-    (step(colorType, inner))
-    ), (step(colorType, outer)));
+        r * 0 + 1 * g + 0 * b,             // Normal
+        mix(
+            r * 0.343 + 0.786 * g + 0.168 * b, // Sepia
+            0.299 * r + 0.587 * g + 0.114 * b, // GrayScale
+            (
+                step(colorType, inner)
+            )
+        ), (
+            step(colorType, outer)
+        )
+    );
 
+    // B
     FragColor.b = mix(
-    r * 0 + g * 0 + b * 1, // NM
-    mix(
-    r * 0.272 + g * 0.534 + b * 0.131, // Sepia
-    0.299 * r + 0.587 * g + 0.114 * b, // GS
-    (step(colorType, inner))
-    ), step(colorType, outer));
+        r * 0 + g * 0 + b * 1, // Normal
+        mix(
+            r * 0.272 + g * 0.534 + b * 0.131, // Sepia
+            0.299 * r + 0.587 * g + 0.114 * b, // GrayScale
+            (
+                step(colorType, inner)
+            )
+        ), step(colorType, outer)
+    );
 }

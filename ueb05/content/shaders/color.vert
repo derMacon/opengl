@@ -1,5 +1,7 @@
 #version 330 core
 
+#define M_PI (3.14159265358979323846)
+
 /** 
  * Position des Vertex. 
  * Wird von der Host-Anwendung über den Attribut-Pointer 0 
@@ -23,20 +25,11 @@ out vec2 fTexCoord;
 /**
  * Vertex-Positon.
  */
-out vec4 fFragPos;
+out vec4 fragmentPosition;
 /**
  * Vertex-Normale.
  */
-out vec3 fNormal;
-
-/**
- * Vertex-Binormale.
- */
-out vec3 fBinormal;
-/**
- * Vertex-Tangente.
- */
-out vec3 fTangent;
+out vec3 fragmentNormal;
 
 /** 
  * Projektions-Matrix.
@@ -56,49 +49,45 @@ uniform mat4 ModelView;
  */
 uniform float Elevation;
 
-#define M_PI (3.14159265358979323846)
-
 uniform sampler2D Texture;
 uniform sampler2D HeightMap;
 
-const float normalOffset = 0.1;
-
+/*
+* Hilft beim erhoehen oder verringern der Heightmap
+* Eingebaut, um Codeverdopplung zu vermeiden
+*/
 float modifySphere(float val, float height){
     float modifier = height * Elevation;
-    return val > 0 ? val + modifier : val - modifier;
+    return val > 0
+        ? val + modifier
+        : val - modifier;
 }
 
-vec4 calcElevatedPosition(vec2 offset)
+/*
+* Errechnet die Elevated Position
+*/
+vec4 calcNewPos (vec2 offset)
 {
-    vec4 elevatedPosition;
-    elevatedPosition.x = vPosition.x + offset.x;
-    elevatedPosition.y = vPosition.y;
-    elevatedPosition.z = vPosition.z + offset.y;
-    elevatedPosition.w = vPosition.w;
+    vec4 newPos;
+    newPos.x = vPosition.x + offset.x;
+    newPos.y = vPosition.y;
+    newPos.z = vPosition.z + offset.y;
+    newPos.w = vPosition.w;
 
-    return elevatedPosition;
+    return newPos;
 }
 
 /**
- * Berechnet die Normalen an diesem Vertex.
- *
- * @return die approximierte Normale
+ * Berechnet die Normalen
  */
 vec3 calcNormal()
 {
-    vec3 up = calcElevatedPosition(vec2(0, -normalOffset)).xyz;
-    vec3 down = calcElevatedPosition(vec2(0, normalOffset)).xyz;
-    vec3 right = calcElevatedPosition(vec2(normalOffset, 0)).xyz;
-    vec3 left = calcElevatedPosition(vec2(-normalOffset, 0)).xyz;
-
-    vec3 horizontal = right - left;
-    vec3 vertical = down - up;
-
-    fTangent = horizontal;
-    fBinormal = vertical;
-
-    vec3 normal = cross(vertical, horizontal);
-    return normalize(normal);
+    const float offset = 0.1;
+    vec3 left = calcNewPos(vec2(-offset, 0)).xyz;
+    vec3 right = calcNewPos(vec2(offset, 0)).xyz;
+    vec3 top = calcNewPos(vec2(0, -offset)).xyz;
+    vec3 bottom = calcNewPos(vec2(0, offset)).xyz;
+    return normalize(cross(bottom - top, right - left));
 }
 
 /**
@@ -113,7 +102,7 @@ void main(void)
      * von der OpenGL-Implementierung automatisch auf 1 gesetzt. */
     vec4 elevatedPosition;
     vec4 tempPosition;
-    fNormal = calcNormal();
+    fragmentNormal = calcNormal();
 
     vec4 height = texture(HeightMap, vTexCoord);
     elevatedPosition.x  = vTexCoord.t * M_PI;
@@ -121,16 +110,15 @@ void main(void)
     elevatedPosition.z = vTexCoord.s * M_PI *  2;
     elevatedPosition.w = vPosition.w;
 
+    // Scheibe zum Glove wandeln
     float angleA = elevatedPosition.x;
     float angleB = elevatedPosition.z;
-
-    // Die Erde ist eine Scheibe!!!! (c) FlatEarthers
     tempPosition.x = sin(angleA) * cos(angleB);
     tempPosition.y = sin(angleA) * sin(angleB);
     tempPosition.z = cos(angleA);
     tempPosition.w = vPosition.w;
 
-    // Heightmap
+    // Heightmap (und Elevation)
     tempPosition.x = modifySphere(tempPosition.x, height.x);
     tempPosition.y = modifySphere(tempPosition.y, height.y);
     tempPosition.z = modifySphere(tempPosition.z, height.z);
@@ -139,7 +127,7 @@ void main(void)
      * Shader weitergereicht. Bei der Rasterization wird dieser Wert
      * jedoch interpoliert. */
     fTexCoord = vTexCoord;
-    fFragPos = tempPosition;
+    fragmentPosition = tempPosition;
 
     /* Setzen der Vertex-Position im Device-Koordinatensystem.
      * Nachfolgend findet das Clipping und die Rasterization statt. */

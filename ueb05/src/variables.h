@@ -57,7 +57,7 @@ typedef struct {
     GLboolean showWireframe;
     GLboolean showBreak;
     enum ColorType color;
-    CamPos campos;
+    CamPos camPos;
 } Settings;
 
 #endif

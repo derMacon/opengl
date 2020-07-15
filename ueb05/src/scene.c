@@ -47,6 +47,7 @@ drawScene(void) {
     float viewMatrix[16];
     const float distance = 3;
 
+    // Wen nicht pausiert, die Position der Kamera berechnen
     if (!getSettings()->showBreak) {
         t = (float) glutGet(GLUT_ELAPSED_TIME) / 2000;
     }
@@ -56,9 +57,9 @@ drawScene(void) {
 
     lookAt(x, 1, z, 0, 0, 0, 0, 1, 0, viewMatrix);
 
-    getSettings()->campos.x = x;
-    getSettings()->campos.y = -3;
-    getSettings()->campos.z = z;
+    getSettings()->camPos.x = x;
+    getSettings()->camPos.y = -3;
+    getSettings()->camPos.z = z;
 
     /* Aktivieren des Programms. Ab jetzt ist die Fixed-Function-Pipeline
      * inaktiv und die Shader des Programms aktiv. */
@@ -86,7 +87,9 @@ drawScene(void) {
     glBindTexture(GL_TEXTURE_2D, g_texture_WorldMap);
     glUniform1i(g_locationTexture, worldMap);
 
-    CamPos cp = getSettings()->campos;
+    // Kameraposition an Shader uebergeben,
+    // damit das Licht mit der Kamera mitgeht
+    CamPos cp = getSettings()->camPos;
     float pos[3] = {cp.x, cp.y, cp.z};
 
     glActiveTexture(GL_TEXTURE1);
@@ -289,6 +292,7 @@ void initScene(void) {
     }
 
     {
+        // Settings intial setzen
         getSettings()->showNormals = GL_FALSE;
         getSettings()->showTextures = GLU_TRUE;
         getSettings()->showWireframe = GL_FALSE;
