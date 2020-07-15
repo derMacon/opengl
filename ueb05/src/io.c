@@ -135,7 +135,6 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     break;
             }
         }
-            /* normale Taste gedrueckt */
         else {
             switch (key) {
                 case '1':
@@ -151,27 +150,22 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                 case 'H':
                     showHelp();
                     break;
-
                 case 'b':
                 case 'B':
                     toggle(BREAK);
                     break;
-
                 case '+':
                     if (*getElevation() < MAX_ELEVATION && !getSettings()->showBreak) {
                         *getElevation() += 0.01f;
                     }
                     printf("Elevation: %f\n", *getElevation());
                     break;
-                    /* Anhebung verringern */
                 case '-':
                     if (*getElevation() > MIN_ELEVATION && !getSettings()->showBreak) {
                         *getElevation() -= 0.01f;
                     }
                     printf("Elevation: %f\n", *getElevation());
                     break;
-
-                    /* Programm beenden */
                 case 'q':
                 case 'Q':
                 case ESC:
