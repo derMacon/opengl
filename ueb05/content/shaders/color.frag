@@ -23,6 +23,7 @@ in vec3 fragmentNormal;
 uniform float showPhong;
 uniform float showSepia;
 uniform float showTexture;
+uniform float showNormals;
 uniform float camPos[3];
 
 /**
@@ -82,7 +83,7 @@ void main(void)
     // Zum ueberpruefen, ob Farbe schwarz ist
     vec3 zero = vec3(0, 0, 0);
 
-    // Farbewechsel (mix, um schwarz auszuschliessen)
+    // Farbwechsel (mix, um schwarz auszuschliessen)
     vec3 color = mix (
         lightPosition,
         vec3 (0.2f, 0.2f, 0.2f),
@@ -91,8 +92,25 @@ void main(void)
         )
     );
 
-    // Farbe setzten
-    vec4 colorChange = vec4(color, 1);
+    vec4 colorChange;
+
+    // mix geht nicht, deshalb muessen wir if nutzen :(
+    if (showNormals == 1.0){
+        // Normalen anzeigen
+        colorChange = fragmentPosition;
+    } else {
+        // Farbverlauf
+        colorChange = vec4(color, 1);
+    }
+
+    // Geht leider nicht!
+    //    vec4 colorChange = mix(
+    //        vec4(color, 1),
+    //        fragmentPosition,
+    //        step(
+    //            showNormals, zero
+    //        )
+    //    );
 
     // Textur an- oder ausschalten
     textures = mix (
