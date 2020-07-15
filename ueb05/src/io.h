@@ -1,7 +1,9 @@
 #ifndef io_h
 #define io_h
 
-void
-registerCallbacks(void);
+/**
+ * Registrierung der GLUT-Callback-Routinen.
+ */
+void registerCallbacks(void);
 
 #endif

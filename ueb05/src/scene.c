@@ -40,8 +40,6 @@ Vertex vert[GRID_LENGTH * GRID_LENGTH * 6];
 
 /**
  * Zeichen-Funktion.
- * Stellt die Szene dar.
- * Ausgabe eines Rechtecks.
  */
 void
 drawScene(void) {

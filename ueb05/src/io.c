@@ -134,8 +134,7 @@ handleKeyboardEvent(int key, int status, GLboolean isSpecialKey, int x,
                     toggle(FULLSCREEN);
                     break;
             }
-        }
-        else {
+        } else {
             switch (key) {
                 case '1':
                     changeColor(COLOR_SEPIA);
@@ -202,8 +201,7 @@ cbSpecial(int key, int x, int y) {
 /**
  * Registrierung der GLUT-Callback-Routinen.
  */
-void
-registerCallbacks(void) {
+void registerCallbacks(void) {
     /* DEBUG-Ausgabe */
     INFO(("Registriere Callbacks...\n"));
 

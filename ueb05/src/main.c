@@ -133,7 +133,6 @@ main(int argc, char **argv) {
     /* Glut initialisieren */
     glutInit(&argc, argv);
 
-
     /* Erzeugen des Fensters */
     if (!createWindow("ueb05", 500, 500)) {
         fprintf(stderr, "Initialisierung des Fensters fehlgeschlagen!");

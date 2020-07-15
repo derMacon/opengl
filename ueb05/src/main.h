@@ -1,13 +1,22 @@
-#ifndef shader_h
-#define shader_h
-
+#ifndef main_h
+#define main_h
 #include "variables.h"
 
-void
-drawScene(void);
+/**
+ * Zeichen-Funktion.
+ */
+void drawScene(void);
 
+/**
+ * Getter fuer die Settings
+ * @return die Settings
+ */
 Settings *getSettings();
 
+/**
+ * Getter fuer die Elevation
+ * @return die Elevation?
+ */
 float *getElevation();
 
 #endif
