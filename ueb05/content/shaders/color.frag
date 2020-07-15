@@ -22,6 +22,7 @@ in vec3 fragmentNormal;
 
 uniform float showPhong;
 uniform float showSepia;
+uniform float showTexture;
 uniform float camPos[3];
 
 /**
@@ -75,8 +76,26 @@ vec4 phong()
  */
 void main(void)
 {
+
+    vec4 tex;
+
+    tex = mix (
+        texture(Texture, fTexCoord),
+        vec4(1.0, 1.0, 1.0, 1.0),
+        step(
+            showTexture, 0
+        )
+    );
+
+
     // Phong an- oder ausschalten
-    FragColor = mix(texture(Texture, fTexCoord) * phong(), texture(Texture, fTexCoord), (step(showPhong, 0)));
+    FragColor = mix(
+        tex * phong(),
+        tex,
+        (
+            step(showPhong, 0)
+        )
+    );
 
     // Temp var, damit wir korrekt rechnen koennen
     float r = FragColor.r;

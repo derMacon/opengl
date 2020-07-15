@@ -32,6 +32,7 @@ static GLuint g_locationTexture;
 static GLuint g_locationHeightMap;
 static GLuint g_locationColors;
 static GLuint g_locationCamPos;
+static GLuint g_locationShowTexture;
 
 static float t = 0;
 Vertex vert[GRID_LENGTH * GRID_LENGTH * 6];
@@ -97,6 +98,7 @@ drawScene(void) {
     glUniform1i(g_locationHeightMap, heightMap);
     glUniform1f(g_locationColors, getSettings()->color);
     glUniform1fv(g_locationCamPos, 3, pos);
+    glUniform1f(g_locationShowTexture, getSettings()->showTextures ? 1 : 0);
 
     /* Aktivieren des Vertex-Array-Objekts (VAO).
      * Hiermit werden alle Attribut-Pointer aktiv, die auf diesem VAO
@@ -245,6 +247,7 @@ void initScene(void) {
         g_locationHeightMap = glGetUniformLocation(g_program, "HeightMap");
         g_locationColors = glGetUniformLocation(g_program, "colorType");
         g_locationCamPos = glGetUniformLocation(g_program, "camPos");
+        g_locationShowTexture = glGetUniformLocation(g_program, "showTexture");
 
         /* DEBUG-Ausgabe */
         printf("ModelView hat 'location': %i\n", g_locationModelViewMatrix);
