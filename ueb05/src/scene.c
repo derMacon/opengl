@@ -35,7 +35,7 @@ static GLuint g_locationCamPos;
 static GLuint g_locationShowTexture;
 static GLuint g_locationShowNormals;
 
-static float t = 0;
+static float time = 0;
 Vertex vert[GRID_LENGTH * GRID_LENGTH * 6];
 
 /**
@@ -49,11 +49,11 @@ drawScene(void) {
 
     // Wen nicht pausiert, die Position der Kamera berechnen
     if (!getSettings()->showBreak) {
-        t = (float) glutGet(GLUT_ELAPSED_TIME) / CAMERA_SPEED;
+        time = (float) glutGet(GLUT_ELAPSED_TIME) / CAMERA_SPEED;
     }
 
-    float x = distance * sinf(t);
-    float z = distance * cosf(t);
+    float x = distance * sinf(time);
+    float z = distance * cosf(time);
 
     lookAt(x, 1, z, 0, 0, 0, 0, 1, 0, viewMatrix);
 

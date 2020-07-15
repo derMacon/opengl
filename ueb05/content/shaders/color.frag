@@ -75,6 +75,8 @@ vec4 phong()
     return vec4(iAmb + iDiff + iSpec, 1);
 }
 
+/* Hilfsfunktion, um Farben zu setzen
+ Globale Variable colorType bestimmt die Farben */
 vec4 setColor(vec4 FragColor){
 
     // Temp var, damit wir korrekt rechnen koennen
