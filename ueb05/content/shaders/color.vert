@@ -110,7 +110,7 @@ void main(void)
     elevatedPosition.z = vTexCoord.s * M_PI *  2;
     elevatedPosition.w = vPosition.w;
 
-    // Scheibe zum Glove wandeln
+    // Scheibe zum Globe wandeln
     float angleA = elevatedPosition.x;
     float angleB = elevatedPosition.z;
     tempPosition.x = sin(angleA) * cos(angleB);

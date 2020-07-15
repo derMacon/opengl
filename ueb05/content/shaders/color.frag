@@ -85,7 +85,7 @@ void main(void)
     // Farbewechsel (mix, um schwarz auszuschliessen)
     vec3 color = mix (
         lightPosition,
-        vec3 (1.0, 1.0, 1.0),
+        vec3 (0.2f, 0.2f, 0.2f),
         step(
             lightPosition, zero
         )
@@ -102,7 +102,6 @@ void main(void)
             showTexture, 0
         )
     );
-
 
     // Phong an- oder ausschalten
     FragColor = mix(
