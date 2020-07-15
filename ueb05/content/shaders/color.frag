@@ -1,5 +1,6 @@
 #version 330 core
 
+#define ZERO 0
 #define ONE  1
 
 /**
@@ -73,17 +74,62 @@ vec4 phong()
     return vec4(iAmb + iDiff + iSpec, 1);
 }
 
+vec4 setColor(vec4 FragColor){
+
+    // Temp var, damit wir korrekt rechnen koennen
+    float r = FragColor.r;
+    float g = FragColor.g;
+    float b = FragColor.b;
+
+    // 0 : grayscale
+    // 1 : sepia
+    // 2 : normal
+
+    // R
+    FragColor.r = mix(
+        r * 1 + 0 * g + 0 * b,                 // Normal
+        mix(
+            r * 0.393 + 0.769 * g + 0.189 * b, // Sepia
+            0.299 * r + 0.587 * g + 0.114 * b, // GrayScale
+            step(colorType, ZERO)
+        ),
+        step(colorType, ONE)
+    );
+
+    // G
+    FragColor.g = mix(
+        r * 0 + 1 * g + 0 * b,                 // Normal
+        mix(
+            r * 0.343 + 0.786 * g + 0.168 * b, // Sepia
+            0.299 * r + 0.587 * g + 0.114 * b, // GrayScale
+            step(colorType, ZERO)
+        ), step(colorType, ONE)
+    );
+
+    // B
+    FragColor.b = mix(
+        r * 0 + g * 0 + b * 1,                 // Normal
+        mix(
+            r * 0.272 + g * 0.534 + b * 0.131, // Sepia
+            0.299 * r + 0.587 * g + 0.114 * b, // GrayScale
+            step(colorType, ZERO)
+        ), step(colorType, ONE)
+    );
+
+    return FragColor;
+}
+
 /**
  * Hauptprogramm des Fragment-Shaders.
  * Diese Funktion wird für jedes Fragment ausgeführt!
  */
 void main(void)
 {
-
     vec4 textures;
+    vec4 colorChange;
 
     // Zum ueberpruefen, ob Farbe schwarz ist
-    vec3 zero = vec3(0, 0, 0);
+    vec3 zero = vec3(ZERO, ZERO, ZERO);
 
     // Farbwechsel (mix, um schwarz auszuschliessen)
     vec3 color = mix (
@@ -93,8 +139,6 @@ void main(void)
             lightPosition, zero
         )
     );
-
-    vec4 colorChange;
 
     // mix geht nicht, deshalb muessen wir if nutzen :(
     if (showNormals == 1.0){
@@ -132,57 +176,5 @@ void main(void)
         )
     );
 
-    // Temp var, damit wir korrekt rechnen koennen
-    float r = FragColor.r;
-    float g = FragColor.g;
-    float b = FragColor.b;
-
-    //    0 : grayscale
-    //    1 : sepia
-    //    2: normal
-
-    // Hilfe fuer MIX
-    float outer = 1;
-    float inner = 0;
-
-    // R
-    FragColor.r = mix(
-        r * 1 + 0 * g + 0 * b,                 // Normal
-        mix(
-            r * 0.393 + 0.769 * g + 0.189 * b, // Sepia
-            0.299 * r + 0.587 * g + 0.114 * b, // GrayScale
-            (
-                step(colorType, inner)
-            )
-        ),
-        (
-            step(colorType, outer)
-        )
-    );
-
-    // G
-    FragColor.g = mix(
-        r * 0 + 1 * g + 0 * b,             // Normal
-        mix(
-            r * 0.343 + 0.786 * g + 0.168 * b, // Sepia
-            0.299 * r + 0.587 * g + 0.114 * b, // GrayScale
-            (
-                step(colorType, inner)
-            )
-        ), (
-            step(colorType, outer)
-        )
-    );
-
-    // B
-    FragColor.b = mix(
-        r * 0 + g * 0 + b * 1, // Normal
-        mix(
-            r * 0.272 + g * 0.534 + b * 0.131, // Sepia
-            0.299 * r + 0.587 * g + 0.114 * b, // GrayScale
-            (
-                step(colorType, inner)
-            )
-        ), step(colorType, outer)
-    );
+    FragColor = setColor(FragColor);
 }
