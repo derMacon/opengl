@@ -2,7 +2,7 @@
 cmake_minimum_required (VERSION 3.3)
 
 # Project Name
-project(Shader_old)
+project(ueb05)
 
 set(RuntimeOutputDir ${CMAKE_CURRENT_SOURCE_DIR}/build)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${RuntimeOutputDir})

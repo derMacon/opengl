@@ -1,4 +1,4 @@
-PROG = Shader_old
+PROG = ueb05
 
 SRCDIR = src/
 BUILDDIR = build/
